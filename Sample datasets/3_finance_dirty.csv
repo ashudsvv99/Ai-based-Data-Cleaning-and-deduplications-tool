@@ -1,0 +1,11 @@
+account_number,account_holder,balance,credit_score,transaction_type,branch_location
+ACC901,Michael Scott,5400.5,750.0,Deposit,Scranton
+ACC902,Jim Halpert,1200.0,680.0,Withdrawal,Scranton
+ACC903,Sanjay Dutt,85000.0,810.0,Transfer,Mumbai
+ACC904,Pam Beesly,950.25,720.0,Deposit,Scranton
+ACC905,Dwight Schrute,45000.0,790.0,Deposit,Scranton
+ACC903,Sanjay Dutt,85000.0,810.0,Transfer,मुंबई
+ACC906,Michael Scott,5400.5,750.0,deposit,scranton
+ACC907,Stanley Hudson,-100.0,620.0,Withdrawal,Stamford
+ACC908,Phyllis Vance,3200.0,710.0,Deposit,Scranton
+ACC909,Angela Martin,,9000.0,Transfer,New York

@@ -1,0 +1,11 @@
+patient_id,patient_name,blood_pressure,age,diagnosis,doctor_name,treatment_cost
+PT-100,Robert Fox,120/80,45,Hypertension,Dr. Smith,150.0
+PT-101,Eleanor Pena,,62,Diabetes,Dr. Jones,200.5
+PT-102,Arun Kumar,110/70,28,Fever,Dr. Gupta,50.0
+PT-103,Theresa Webb,140/90,75,Arthritis,Dr. Smith,300.0
+PT-100,Robert Fox,120/80,45,Hypertension,dr. smith,150.0
+PT-104,अरुण कुमार,110/70,28,बुखार,Dr. Gupta,50.0
+PT-105,Guy Hawkins,,33,Migraine,Dr. Lee,120.0
+PT-106,Savannah Nguyen,160/100,250,Asthma,Dr. Patel,450.0
+PT-107,Bessie Cooper,115/75,51,Diabetes,Dr. Jones,210.0
+PT-108,Ralph Edwards,130/85,-5,COVID-19,Dr. Lee,80000.0

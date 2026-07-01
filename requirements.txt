@@ -1,0 +1,9 @@
+streamlit
+pandas
+pyarrow
+rapidfuzz
+recordlinkage
+pydantic
+openpyxl
+requests
+numpy
