@@ -14,8 +14,8 @@ Raw datasets generated from diverse enterprise sources are universally plagued w
 3. **Manual Schema Tagging**: Manually identifying whether a column is a Date, an Entity, or Free Text is tedious. The framework uses local LLMs to dynamically understand the semantic meaning of every column.
 4. **"One-Size-Fits-All" Cleaning Failures**: Standard scripts break because they treat a 'Name' column the same as a 'Review' column. The AI agents solve this by tailoring specific cleaning strategies (e.g., Protect -> Normalize -> Transliterate for Entities).
 5. **Naive Missing Value Imputation**: Filling blanks with `0` or `Unknown` skews models. IntelliClean uses intelligent inference (Medians, Modes, predictive estimation, and context-aware filling).
-6. **Advanced Deduplication Limits**: Standard deduplication only finds exact matches. This system resolves Exact, Partial, Fuzzy (typos), Semantic (`IBM` vs `International Business Machines`), and Cross-Language (`समीप` vs `Sameep`) duplicates dynamically.
-7. **Data Destruction via Translation**: Standard translation pipelines destroy Entities (Names, Addresses, IDs). This engine guarantees Entity Preservation while successfully translating free-text columns.
+6. **Advanced Deduplication Limits**: Standard deduplication only finds exact matches. This system resolves Exact, Partial, Fuzzy (typos), and Semantic (`IBM` vs `International Business Machines`) duplicates dynamically.
+7. **The Translation vs. Transliteration Problem (Cross-Language Duplicates)**: Standard translation pipelines destroy Entities (Names, Addresses, IDs) by literally translating them. This engine guarantees **Entity Preservation** by using *transliteration* for entities (allowing it to detect cross-language duplicates like `समीप` vs `Sameep` without altering meaning), while reserving true *translation* only for free-text descriptive columns.
 8. **Loss of Secondary Data**: When duplicates are deleted, secondary data is often lost. The system solves this by generating a highly-complete "Canonical Record" that merges the best fields from the duplicate cluster.
 9. **The AI "Black Box" Problem**: Users cannot trust automated AI cleaning. The built-in Explainability Module ensures transparency by recording the original value, transformed value, reason for change, and a confidence score for every single modification.
 
@@ -28,9 +28,14 @@ Raw datasets generated from diverse enterprise sources are universally plagued w
 *   **Automatic Dataset Profiling**: Computes total rows/cols, missing values, duplicates, datatypes, and memory usage.
 *   **AI-Based Schema Understanding**: Classifies columns intelligently (Entities, Identifiers, Numeric, Temporal, Free Text, Categorical) to apply context-specific strategies.
 *   **Agent-Based Cleaning Strategy**: AI agents determine the best pipeline (e.g., Protect entity -> Normalize -> Transliterate -> Fuzzy matching).
-*   **O(N) Semantic Deduplication**: Replaces exponential $O(N^2)$ cross-joins with Sorted Neighbourhood Indexing and RapidFuzz.
-*   **Entity Preservation**: Never translates entities. Uses normalization, transliteration, and similarity matching instead.
-*   **Multilingual Translation**: Automatically detects non-ASCII strings and batch-translates descriptive/free-text columns to English.
+*   **O(N) Semantic Deduplication Engine**: Replaces exponential $O(N^2)$ cross-joins with Sorted Neighbourhood Indexing and RapidFuzz to resolve the following duplicate types dynamically:
+    *   **Exact**: Entire row matches.
+    *   **Partial**: Records differing in only a few fields.
+    *   **Fuzzy**: Typo variations (e.g., `Sameep` vs `Samip`).
+    *   **Semantic**: Meaning variations (e.g., `IBM` vs `International Business Machines`).
+    *   **Cross-Language**: Transliteration matches without translation (e.g., `समीप` vs `Sameep`).
+*   **Entity Preservation (Transliteration)**: Never directly translates entities (names, organizations, addresses). Uses normalization and transliteration to resolve cross-language duplicates (e.g., matching `समीप` to `Sameep`).
+*   **Multilingual Translation Engine**: Automatically detects non-ASCII strings and batch-translates descriptive/free-text columns (reviews, comments) to English.
 *   **Intelligent Missing Value Handling**:
     *   *Numeric*: Median or predictive estimation.
     *   *Categorical*: Mode or relationship inference.
