@@ -1,92 +1,178 @@
-# ✦ IntelliClean AI
+# IntelliClean AI: Automated Data Cleaning & Deduplication Tool
 
-IntelliClean AI is a universal, domain-independent data quality framework powered by a local Large Language Model (LLM) and deterministic algorithms. It provides a beautiful, premium glassmorphism Streamlit UI to automate end-to-end data cleaning, handling messy datasets across any industry without sending your sensitive data to the cloud.
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/ashudsvv99/Ai-based-Data-Cleaning-and-deduplications-tool)
+
+Welcome to **IntelliClean AI**, a state-of-the-art framework designed to solve complex data inconsistency challenges in enterprise datasets. Traditional data cleaning scripts struggle with fuzzy deduplication, smart missing value imputation, and context-aware entity handling. IntelliClean AI leverages local Large Language Models (LLMs) and advanced mathematical algorithms to clean, normalize, and deduplicate datasets seamlessly—all while operating completely offline to ensure 100% data privacy.
 
 ---
 
-## 🚀 Key Features
+## 🛑 The Problems It Solves
+Raw datasets generated from diverse enterprise sources are universally plagued with inconsistencies. Based on rigorous functional requirements, IntelliClean AI directly solves the following critical data engineering problems:
 
-* **AI Schema Detection & Planning:** Uses a local LLM to understand your dataset semantics (e.g., classifying columns as `Email`, `Location`, `Categorical`) and automatically plans the best cleaning strategies.
-* **Multilingual Translation & Transliteration:** Automatically detects non-English text (e.g., Hindi, Tamil) and translates categorical values or transliterates human names into English.
-* **Smart Contextual Imputation:** The AI writes contextual rules to fill missing values (e.g., "IF B2B THEN Priority = High") and falls back to advanced statistical imputation (mean, median, mode) with rich distribution tracking.
-* **Fuzzy Graph Deduplication:** Uses `rapidfuzz` and Union-Find graph algorithms to detect exact and partial/fuzzy duplicates (e.g., `John Doe` vs `Jhon Doe`), intelligently consolidating conflicting data into a single master canonical record.
-* **Domain Intelligence:** Automatically detects the industry domain of your dataset (Retail, Healthcare, Finance, etc.) using a hybrid keyword heuristics and AI reasoning approach.
-* **Beautiful Dark-Mode UI:** A 14-phase execution pipeline with a premium, real-time interactive dashboard to visualize all AI decisions and dataset transformations.
+1. **Scattered & Unstructured Ingestion**: Analysts waste hours manually configuring delimiters, encodings, and handling different formats (CSV, XLS, XLSX). This system auto-detects and standardizes ingestion for datasets up to 200MB.
+2. **Blind Data Manipulation**: Lack of visibility into data sparsity. This tool solves this by computing total rows, missing percentages, datatypes, and memory usage instantly.
+3. **Manual Schema Tagging**: Manually identifying whether a column is a Date, an Entity, or Free Text is tedious. The framework uses local LLMs to dynamically understand the semantic meaning of every column.
+4. **"One-Size-Fits-All" Cleaning Failures**: Standard scripts break because they treat a 'Name' column the same as a 'Review' column. The AI agents solve this by tailoring specific cleaning strategies (e.g., Protect -> Normalize -> Transliterate for Entities).
+5. **Naive Missing Value Imputation**: Filling blanks with `0` or `Unknown` skews models. IntelliClean uses intelligent inference (Medians, Modes, predictive estimation, and context-aware filling).
+6. **Advanced Deduplication Limits**: Standard deduplication only finds exact matches. This system resolves Exact, Partial, Fuzzy (typos), Semantic (`IBM` vs `International Business Machines`), and Cross-Language (`समीप` vs `Sameep`) duplicates dynamically.
+7. **Data Destruction via Translation**: Standard translation pipelines destroy Entities (Names, Addresses, IDs). This engine guarantees Entity Preservation while successfully translating free-text columns.
+8. **Loss of Secondary Data**: When duplicates are deleted, secondary data is often lost. The system solves this by generating a highly-complete "Canonical Record" that merges the best fields from the duplicate cluster.
+9. **The AI "Black Box" Problem**: Users cannot trust automated AI cleaning. The built-in Explainability Module ensures transparency by recording the original value, transformed value, reason for change, and a confidence score for every single modification.
+
 ---
-## 🛠️ Tech Stack
-* **Frontend:** Streamlit, HTML/CSS (Custom Glassmorphism design)
-* **Backend:** Python, Pandas, Numpy
-* **Algorithms:** RapidFuzz (fuzzy matching), RecordLinkage (blocking), Union-Find (graphs)
-* **AI Engine:** Local LLM (e.g., Google Gemma 2B or Llama 3) running via [LM Studio](https://lmstudio.ai/) (OpenAI-compatible local server).
+
+## 🌟 What It Can Do (Core Features)
+
+*   **100% Local AI Integration**: Operates completely offline using Local LLMs (via LM Studio), guaranteeing zero data leakage.
+*   **Universal Dataset Loader**: Supports **CSV, XLS, and XLSX** files up to **200 MB**, with auto-detection of delimiters, encodings, sheet names, and column headers.
+*   **Automatic Dataset Profiling**: Computes total rows/cols, missing values, duplicates, datatypes, and memory usage.
+*   **AI-Based Schema Understanding**: Classifies columns intelligently (Entities, Identifiers, Numeric, Temporal, Free Text, Categorical) to apply context-specific strategies.
+*   **Agent-Based Cleaning Strategy**: AI agents determine the best pipeline (e.g., Protect entity -> Normalize -> Transliterate -> Fuzzy matching).
+*   **O(N) Semantic Deduplication**: Replaces exponential $O(N^2)$ cross-joins with Sorted Neighbourhood Indexing and RapidFuzz.
+*   **Entity Preservation**: Never translates entities. Uses normalization, transliteration, and similarity matching instead.
+*   **Multilingual Translation**: Automatically detects non-ASCII strings and batch-translates descriptive/free-text columns to English.
+*   **Intelligent Missing Value Handling**:
+    *   *Numeric*: Median or predictive estimation.
+    *   *Categorical*: Mode or relationship inference.
+    *   *Entity Fields*: Context-aware placeholders.
+*   **Canonical Record Generation**: After clustering duplicates, generates one final representative record.
+*   **Intelligent Outlier Handling**: Clips numerical anomalies using IQR bounds (Winsorization) without dropping valuable rows.
+*   **Real-Time Explainability Module**: Streams Python logs and AI "thoughts" directly to the UI. Records original value, transformed value, reason for change, and confidence score for every modification.
+*   **Export Module**: Outputs Cleaned CSV/Excel, Cleaning Report, Duplicate Report, and Missing Value Report.
+
 ---
-## ⚙️ Setup & Installation
+
+## ⚙️ Complete Workflow Architecture
+
+1. **Ingestion & Profiling**: Reads data via PyArrow; coerces known missing markers to `pd.NA`. Establishes a baseline Quality Score.
+2. **Schema & Domain AI**: Categorizes columns (e.g., Email, Date, Currency) and detects the industry (e.g., Healthcare).
+3. **Aggressive Scrubbing**: Drops useless columns (>90% missing) and rows missing critical identifiers.
+4. **Pre-Cleaning & Formatting**: Handles syntax, unicode invisible characters (Zero-width deletion), and casing.
+5. **Standardization**: Normalizes currencies (`$`, `€`, `£` to `₹`) and translates foreign text to English.
+6. **Deduplication**: Finds exact and fuzzy duplicates. Merges these clusters into complete Golden Records via primary row backfilling.
+7. **Smart Imputation**: Generates dynamic cross-column rules. Executes them, falling back to Skewness-based Means/Medians/Modes.
+8. **Outliers**: Clips anomalies using IQR bounds.
+9. **Validation**: Checks math constraints (e.g., Delivery < Order date). ValidationAgent spot-checks for logic bugs.
+10. **Export**: Translates technical JSON metadata into a human-readable Markdown report alongside the clean CSV.
+
+---
+
+## 📊 Results: Before & After
+
+**Before (Raw Data)**:
+```csv
+Name,Email,City,TotalAmount,OrderDate,DeliveryDate
+"Raj Sharma",RAJ.S@test.com,दिल्ली," $ 100",2023-01-01,2022-12-30
+"Raj Sharma ",NaN,New Delhi,"€90",NaN,NaN
+"Test User",test@test.com,Unknown,-500,NaN,NaN
+```
+
+**After (IntelliCleaned)**:
+```csv
+Name,Email,City,TotalAmount,OrderDate,DeliveryDate
+"Raj Sharma",raj.s@test.com,New Delhi,8300.0,2023-01-01,2023-01-05
+```
+*   `Test User` dropped by QualityFilter. "दिल्ली" translated to "New Delhi".
+*   "Raj Sharma " and "Raj Sharma" fuzzy-matched and merged.
+*   Currency converted and canonically merged. Chronological dates fixed/imputed logically.
+
+---
+
+## 🛠️ Technology Stack & Memory Optimization
+
+*   **Frontend**: `streamlit` (Real-time UI rendering with raw HTML/CSS glassmorphism aesthetics).
+*   **Data Engineering**: `pandas`, `pyarrow` (High-speed C++ ingestion), `numpy`.
+*   **Matching & Deduplication**: `recordlinkage` (Sorted Neighbourhood Indexing), `rapidfuzz` (Levenshtein distance).
+*   **String Processing**: `unidecode`, Python `re`.
+*   **AI Integration**: `requests` (Local REST API via LM Studio), `pydantic`.
+
+**Memory Optimization (For i3 Processor / 12GB RAM):**
+*   **PyArrow Engine**: Bypasses native Pandas memory bottlenecks.
+*   **Aggressive Downcasting**: Converts numeric columns (e.g., float64 to float32) and low-cardinality strings to `category` dtypes.
+*   **O(1) Token Caching**: Extracts `pd.unique()` strings and sends only unique arrays to the LLM to save tokens and VRAM.
+
+---
+
+## 🚀 Setup & Installation Guide
+
 ### 1. Prerequisites
-* **Python 3.9+** installed on your machine.
-* **LM Studio** installed to run the local LLM server.
-### 2. Install Dependencies
-Clone the project and install the required Python packages:
+Ensure you have **Python 3.10 or higher** installed on your system. 
+
+### 2. Clone the Repository
 ```bash
-# Navigate to the project directory
+git clone https://github.com/ashudsvv99/Ai-based-Data-Cleaning-and-deduplications-tool.git
 cd "Ai based Automated Data cleaning and Deduplication"
-# (Optional) Create a virtual environment
-python -m venv venv
-venv\Scripts\activate  # On Windows
-# Install requirements
+```
+
+### 3. Install Dependencies
+```bash
 pip install -r requirements.txt
 ```
-### 3. Setup Local AI (LM Studio)
-Because this app is designed for complete privacy and offline use, it relies on a local LLM.
-1. Download and open **LM Studio**.
-2. Download a fast, lightweight model (e.g., **Google Gemma 2B Instruct** or **Qwen 2.5 1.5B**).
-3. Go to the **Local Server** tab in LM Studio.
-4. Ensure the server port is running on `http://127.0.0.1:1234` (the default).
-5. Click **Start Server**.
-*Note: If your local server is running on a different port, you can update it in the UI sidebar when you run the app.*
+
+### 4. Set Up Local AI Engine (LM Studio)
+1. Download and install [LM Studio](https://lmstudio.ai/).
+2. Download a lightweight Instruct model. Recommended models: **Qwen**, **DeepSeek-R1**, or **Llama 3 8B** in GGUF format (Q4_K_M is recommended for 12GB RAM).
+3. Start the **Local Inference Server** within LM Studio. Ensure it runs on the default port: `http://localhost:1234/v1`.
+
 ---
-## 💻 How to Run
-Once dependencies are installed and LM Studio is running:
-1. Start the Streamlit frontend:
+
+## 💡 Usage Guide
+
+1. **Run the App**: Open your terminal in the root directory and execute:
    ```bash
    streamlit run app.py
    ```
-2. Your browser should automatically open to `http://localhost:8501`.
-3. Drop a `.csv` or `.xlsx` file into the upload zone.
-4. Click **Start AI Cleaning Pipeline**.
+2. **Upload Dataset**: Drag and drop your dirty `.csv` or `.xlsx` file into the Streamlit UI. (Try the `Sample datasets/` folder).
+3. **Monitor Pipeline Logs**: Watch the AI stream its thought process and schema analysis in real-time.
+4. **Review Results**: Navigate the tabs (**Data Quality**, **Imputations**, **Audit Trail**) to inspect AI confidence scores and delta metrics.
+5. **Download**: Export the fully cleaned CSV and the Markdown Summary Report.
+
 ---
-## 🧪 Testing the System
-We have included 5 pre-generated "dirty" datasets covering different domains in the `data/` folder. They contain missing values, extreme numeric outliers, exact duplicates, fuzzy duplicates, and mixed multilingual text (like Hindi/English).
-* `data/1_retail_dirty.csv`
-* `data/2_healthcare_dirty.csv`
-* `data/3_finance_dirty.csv`
-* `data/4_hr_dirty.csv`
-* `data/5_logistics_dirty.csv`
-Try uploading them to see how IntelliClean AI handles different schemas and automatically formulates rules to clean them!
----
+
 ## 📁 Project Structure
+
 ```text
-AI_Data_Cleaner/
-├── app.py                      # Main Streamlit Frontend
-├── config.py                   # Global configurations
-├── requirements.txt            # Python dependencies
-├── backend/
-│   ├── pipeline.py             # Orchestrates the 14-phase cleaning workflow
-│   ├── domain_profiler.py      # Detects dataset industry domain
-│   ├── profiler.py             # Basic dataset profiling
-│   ├── schema_detector.py      # Heuristic column typing
-│   └── validator.py            # Final quality validation checks
-├── agents/
-│   ├── llm_client.py           # Connects to LM Studio / Local AI
-│   ├── planner_agent.py        # Generates imputation rules & maps strategies
-│   ├── schema_agent.py         # AI verification of column types
-│   └── explanation_agent.py    # Generates audit trail explanations
-├── cleaning/
-│   ├── missing_values.py       # Smart rule & statistical imputation (runs first)
-│   ├── outliers.py             # Outlier clipping & domain capping (runs second)
-│   ├── deduplication.py        # Fuzzy graph entity consolidation
-│   ├── currency_converter.py   # Mixed currency detection & conversion to INR (₹)
-│   ├── multilingual.py         # Translation & Transliteration
-│   ├── entity_resolution.py    # Merging translated canonical names
-│   └── standardizer.py         # Casing & regex standardization
-├── data/                       # Contains the generated dirty test datasets
-└── reports/                    # Auto-generated markdown audit reports
+IntelliClean/
+├── app.py                     # Main Streamlit Frontend
+├── config.py                  # Global hyperparameters and API endpoints
+├── requirements.txt           # Dependency list
+├── ARCHITECTURE.md            # System architecture mapping
+├── DEVELOPMENT_GUIDE.md       # Optimization & scaling guide
+├── All Scripts Working Guide/ # Deep-dive documentation for every .py file
+├── agents/                    # The AI Cognitive Engine
+│   ├── llm_client.py          # Unified LM Studio HTTP interface
+│   ├── schema_agent.py        # Semantic column profiling
+│   ├── planner_agent.py       # Imputation rule generation
+│   ├── validation_agent.py    # Post-clean logic auditing
+│   └── explanation_agent.py   # Human-readable markdown generation
+├── backend/                   # Infrastructure & Orchestration
+│   ├── pipeline.py            # Central 12-phase orchestrator
+│   ├── loader.py              # PyArrow ingestion & missing value coercion
+│   ├── domain_profiler.py     # Industry context detection
+│   ├── profiler.py            # Baseline statistical calculation
+│   ├── validator.py           # Hardcoded math/constraint checks
+│   └── exporter.py            # File I/O for reports and CSVs
+└── cleaning/                  # The Core Algorithms
+    ├── quality_filter.py      # >90% sparsity & dummy data dropping
+    ├── multilingual.py        # O(1) Token Caching translation
+    ├── currency_converter.py  # Regex symbol extraction & INR mapping
+    ├── standardizer.py        # Semantic formatting (lowercase emails, etc)
+    ├── string_cleaner.py      # Zero-width char & whitespace removal
+    ├── deduplication.py       # Sorted Neighbourhood fuzzy matching
+    ├── entity_resolution.py   # Cluster merging and primary row backfilling
+    ├── missing_values.py      # AI rule evaluation + Skewness statistical fills
+    └── outliers.py            # IQR calculation and Winsorization (Clipping)
 ```
+
+---
+
+## ⚠️ Limitations
+
+*   **Hardware Bottlenecks**: Processing speed relies entirely on the user's Local GPU/CPU performance.
+*   **Language Extensibility**: Obscure dialects may default to phonetic transliteration (`unidecode`) instead of semantic translation.
+*   **Fuzzy False Positives**: In extremely dense datasets, the default `FUZZY_MATCH_THRESHOLD` (85%) might merge distinct but similarly-named entities (configurable in `config.py`).
+
+---
+
+## 🔒 Privacy & Security
+**Zero Data Leakage:** Because IntelliClean AI uses a local LLM via LM Studio, absolutely no data is sent over the internet. Your sensitive enterprise data remains 100% on your local machine.
