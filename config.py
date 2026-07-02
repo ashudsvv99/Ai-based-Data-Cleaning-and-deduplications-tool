@@ -4,7 +4,7 @@ All tunable parameters are defined here so they can be adjusted
 without modifying any module code.
 """
 import os
-
+import psutil
 
 # ──────────────────────────────────────────────
 # LLM Settings (LM Studio / local model)
@@ -20,13 +20,22 @@ LLM_RETRY_DELAY_SECONDS = 5    # Base delay between retries (doubles each time)
 
 # Chunking: max items to send per LLM call
 # Modern local LLMs can safely process larger chunks.
+# On a 32GB system, you can safely increase this to 50 or 100.
 LLM_CHUNK_SIZE = 25
 
 
 # ──────────────────────────────────────────────
 # Data Loading
 # ──────────────────────────────────────────────
-MAX_FILE_SIZE_MB = 200
+# Dynamically allocate max file size based on system RAM configuration.
+# Rule of thumb: allow 100MB of file size per 1GB of total system RAM, as 
+# Pandas dataframes usually consume 5x to 10x the raw file size in memory.
+try:
+    total_ram_gb = psutil.virtual_memory().total / (1024 ** 3)
+    dynamic_max_size = int(total_ram_gb * 100)
+    MAX_FILE_SIZE_MB = max(200, dynamic_max_size) # Default to at least 200MB, scales to ~3200MB on 32GB RAM
+except Exception:
+    MAX_FILE_SIZE_MB = 200 # Fallback
 SUPPORTED_EXTENSIONS = [".csv", ".xlsx", ".xls"]
 # Strings that should be treated as missing values during load
 MISSING_VALUE_MARKERS = [
