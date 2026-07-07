@@ -19,3 +19,8 @@ Once the `PipelineOrchestrator` finishes, it returns a massive `metadata` JSON d
 - **Action**: `app.py` parses this dictionary to build the UI tabs.
 - For the **Data Quality** tab, it extracts `metadata["quality_score_before"]` and `quality_score_after` and renders visual metric cards using `st.metric(delta=...)`.
 - For the **Imputations** tab, it loops through the `metadata["imputation_stats"]` array, extracts the specific rules (e.g., `Mean`, `Median`, `Skewness`), and dynamically renders raw HTML blocks (`<div style="...">`) via `st.markdown(unsafe_allow_html=True)` to create a beautiful, modern glassmorphism aesthetic.
+
+
+### Recent Problems & Architectural Fixes
+- **Problem**: The application would completely crash if the user forgot to start the LM Studio server, throwing a raw connection traceback.
+- **Fix**: Implemented a graceful `requests.exceptions.ConnectionError` catch block during the API initialization phase. The UI now intercepts the crash and renders a beautiful `st.error` warning the user to start their local server, preventing the Streamlit thread from dying.

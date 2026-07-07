@@ -24,3 +24,8 @@ The `DeduplicationEngine` solves this using advanced Record Linkage algorithms.
 - What if Row A is a duplicate of Row B, and Row B is a duplicate of Row C? 
 - We use the mathematical Graph Theory library `networkx`. We treat every row as a "Node" and every duplicate match as an "Edge". 
 - We call `nx.connected_components(G)`, which instantly groups A, B, and C into a single massive cluster, ready to be merged by the `EntityResolution` script!
+
+
+### Recent Problems & Architectural Fixes
+- **Problem (Numeric Filtering)**: When generating the Golden Record, the system evaluated `0` or `-1` as "missing/invalid" data, which caused the backfill cascade to overwrite valid zero values (e.g., a valid bank balance of $0).
+- **Fix**: Updated the boolean masking logic. The system now strictly checks for `pd.isna()` or empty strings `""`, ensuring that valid numeric integers (like `0`) are preserved as legitimate data points during the Entity Resolution phase.

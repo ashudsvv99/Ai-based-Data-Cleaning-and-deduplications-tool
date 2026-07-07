@@ -236,6 +236,11 @@ class SmartImputer:
     # ─────────────────────────────────────────────────────────────
     @staticmethod
     def _numeric_stats(non_null: pd.Series) -> dict:
+        if non_null.empty:
+            return {
+                "mean": None, "median": None, "std": None,
+                "skewness": None, "min": None, "max": None
+            }
         return {
             "mean":     round(float(non_null.mean()), 4),
             "median":   round(float(non_null.median()), 4),

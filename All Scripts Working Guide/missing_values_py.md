@@ -24,3 +24,8 @@ If no AI rules apply, the script moves to statistical math.
 
 ### 4. Tracking
 Every time `df[col].fillna()` is executed, the script updates a central dictionary tracking exactly how many rows were filled, what method was used (`fill_median`, `fill_mode`), and what the statistical properties (Mean, Max, Min) of the column were. This dictionary is exported to the UI so the user can verify the math.
+
+
+### Recent Problems & Architectural Fixes
+- **Problem (NaN Propagation)**: If a column was completely empty (100% nulls) after the Quality Filter phase, the `_numeric_stats` function would attempt to calculate Skewness on it, resulting in a `NaN` math error that crashed the imputation engine.
+- **Fix**: Implemented a strict guard clause (`if valid_data.empty: return fallback`). If a column lacks enough valid data to compute skewness, it gracefully aborts the calculation and falls back to a safe placeholder, preserving the pipeline's stability.

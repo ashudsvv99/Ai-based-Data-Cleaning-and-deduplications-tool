@@ -7,11 +7,19 @@ Three-pass column classification:
 3. LLM imputation  — LLM inspects each column's actual distribution
                      (missing %, skew, unique ratio) and picks the best
                      imputation method with reasoning.
+
+Intent-Aware Constraints (enforced AFTER LLM runs):
+  Non-Predictive Business:
+    - Critical business columns (Name, Email, Phone, ID_Code, Location, Temporal)
+      MUST use leave_empty — never statistically fabricate business identity data.
+  Predictive:
+    - Target variables MUST use leave_empty — rows with missing targets are dropped.
+    - Time-series numeric columns default to fill_forward before LLM overrides.
 """
 import json
 import pandas as pd
 import numpy as np
-from typing import Dict
+from typing import Dict, List
 from pydantic import BaseModel, Field
 from agents.llm_client import LMStudioClient
 from backend.schema_detector import classify_all_columns
@@ -26,6 +34,8 @@ class ColumnSchema(BaseModel):
     needs_multilingual: bool = Field(default=False)
     non_ascii_ratio: float = Field(default=0.0)
     description: str = Field(default="Heuristic classification")
+    is_critical_business: bool = Field(default=False)  # Non-Predictive: do NOT impute
+    is_target: bool = Field(default=False)              # Predictive: drop row if missing
 
 
 class SchemaAgent:
@@ -42,8 +52,24 @@ class SchemaAgent:
     # ────────────────────────────────────────────
     # Main entry point
     # ────────────────────────────────────────────
-    def classify_columns(self, df: pd.DataFrame, log_callback=print) -> Dict[str, ColumnSchema]:
-        """Full three-pass classification."""
+    def classify_columns(
+        self,
+        df: pd.DataFrame,
+        log_callback=print,
+        dataset_intent: str = "Non-Predictive Business",
+        target_variables: List[str] = None,
+        is_time_series: bool = False,
+    ) -> Dict[str, ColumnSchema]:
+        """
+        Full three-pass classification.
+
+        Parameters
+        ----------
+        dataset_intent   : "Predictive" | "Non-Predictive Business"
+        target_variables : list of column names that are ML targets (Predictive only)
+        is_time_series   : if True, numeric columns default to fill_forward
+        """
+        target_variables = target_variables or []
 
         # ── Pass 1: Heuristic ──
         log_callback("SchemaAgent: Pass 1 — Heuristic classification...")
@@ -52,17 +78,33 @@ class SchemaAgent:
         schema: Dict[str, ColumnSchema] = {}
         ambiguous_cols = []
 
+        # Semantic types that are critical business identity columns
+        _CRITICAL_TYPES = {"Name", "Email", "Phone", "ID_Code", "Location", "Temporal"}
+
         for col, info in heuristic_results.items():
             sem_type   = info["semantic_type"]
             confidence = info["confidence"]
             needs_ml   = info["needs_multilingual"]
 
+            is_critical = dataset_intent == "Non-Predictive Business" and sem_type in _CRITICAL_TYPES
+            is_target   = col in target_variables
+
+            # Default imputation — will be refined by LLM in Pass 3
+            if is_critical or is_target:
+                default_strat = "leave_empty"
+            elif is_time_series and sem_type == "Numeric":
+                default_strat = "fill_forward"
+            else:
+                default_strat = self._default_imputation(sem_type)
+
             schema[col] = ColumnSchema(
                 semantic_type=sem_type,
-                imputation_strategy=self._default_imputation(sem_type),
+                imputation_strategy=default_strat,
                 needs_multilingual=needs_ml,
                 non_ascii_ratio=info["non_ascii_ratio"],
                 description=f"Heuristic ({confidence:.0%} confidence)",
+                is_critical_business=is_critical,
+                is_target=is_target,
             )
             if confidence < 0.80:
                 ambiguous_cols.append(col)
@@ -70,11 +112,16 @@ class SchemaAgent:
         # ── Pass 2: LLM for ambiguous columns ──
         if ambiguous_cols:
             log_callback(f"SchemaAgent: Pass 2 — LLM refinement for {len(ambiguous_cols)} ambiguous columns...")
-            llm_schema = self._llm_classify(df, ambiguous_cols)
+            llm_schema = self._llm_classify(df, ambiguous_cols, dataset_intent)
             for col, llm_info in llm_schema.items():
                 if col in schema and isinstance(llm_info, dict):
                     schema[col].semantic_type = llm_info.get("semantic_type", schema[col].semantic_type)
                     schema[col].description   = "LLM classification"
+                    # Re-evaluate critical flag after semantic type override
+                    schema[col].is_critical_business = (
+                        dataset_intent == "Non-Predictive Business"
+                        and schema[col].semantic_type in _CRITICAL_TYPES
+                    )
             # Re-check multilingual after override
             for col in ambiguous_cols:
                 if col in schema:
@@ -82,12 +129,31 @@ class SchemaAgent:
 
         # ── Pass 3: LLM-chosen imputation ──
         log_callback("SchemaAgent: Pass 3 — LLM imputation strategy selection...")
-        self._llm_choose_imputation(df, schema)
+        self._llm_choose_imputation(df, schema, dataset_intent, is_time_series)
+
+        # ── Post-LLM: enforce intent constraints ──────────────────
+        log_callback("SchemaAgent: Enforcing intent-aware imputation constraints...")
+        _STATISTICAL = {"fill_mean", "fill_median", "fill_mode", "fill_knn"}
+        for col, s in schema.items():
+            if s.is_critical_business and s.imputation_strategy in _STATISTICAL:
+                s.imputation_strategy  = "leave_empty"
+                s.imputation_reasoning = (
+                    f"[Non-Predictive Business] Critical business column '{col}' ({s.semantic_type}) — "
+                    "statistical fabrication is not allowed. Kept as empty/null."
+                )
+            if s.is_target and s.imputation_strategy in _STATISTICAL:
+                s.imputation_strategy  = "leave_empty"
+                s.imputation_reasoning = (
+                    f"[Predictive] Target variable '{col}' — rows with missing targets "
+                    "will be dropped by the pipeline, not imputed."
+                )
 
         # Print summary
         for col, s in schema.items():
-            ml_flag = " [MULTILINGUAL]" if s.needs_multilingual else ""
-            log_callback(f"  -> {col}: {s.semantic_type} | impute={s.imputation_strategy}{ml_flag}")
+            ml_flag  = " [MULTILINGUAL]" if s.needs_multilingual else ""
+            crit_flag = " [CRITICAL]" if s.is_critical_business else ""
+            tgt_flag  = " [TARGET]"  if s.is_target else ""
+            log_callback(f"  -> {col}: {s.semantic_type} | impute={s.imputation_strategy}{ml_flag}{crit_flag}{tgt_flag}")
             if s.imputation_reasoning:
                 log_callback(f"       Reason: {s.imputation_reasoning}")
 
@@ -96,11 +162,13 @@ class SchemaAgent:
     # ────────────────────────────────────────────
     # Pass 2: LLM semantic type classifier
     # ────────────────────────────────────────────
-    def _llm_classify(self, df: pd.DataFrame, columns: list) -> dict:
+    def _llm_classify(self, df: pd.DataFrame, columns: list, dataset_intent: str = "") -> dict:
         sample_data = df[columns].head(5).to_dict(orient="records")
+        intent_hint = f"\nDataset intent: {dataset_intent}." if dataset_intent else ""
         system_prompt = (
             "You are an expert Data Engineer. Classify each column into ONE semantic type:\n"
             "Name, Email, Phone, Location, ID_Code, Numeric, Temporal, Categorical, Free_Text\n\n"
+            f"{intent_hint}\n"
             "Return ONLY a JSON object where each key is a column name and the value is:\n"
             '{"semantic_type": "<type>"}\n\n'
             "EXAMPLE OUTPUT:\n"
@@ -120,7 +188,11 @@ class SchemaAgent:
     # Pass 3: LLM imputation strategy chooser
     # ────────────────────────────────────────────
     def _llm_choose_imputation(
-        self, df: pd.DataFrame, schema: Dict[str, ColumnSchema]
+        self,
+        df: pd.DataFrame,
+        schema: Dict[str, ColumnSchema],
+        dataset_intent: str = "",
+        is_time_series: bool = False,
     ) -> None:
         """
         For every column that has missing values, build a rich statistical
@@ -174,14 +246,34 @@ class SchemaAgent:
             return
 
         # Build prompt — send all missing columns in one call
+        intent_rules = ""
+        if dataset_intent == "Non-Predictive Business":
+            intent_rules = (
+                "\nCRITICAL RULES for Non-Predictive Business datasets:\n"
+                "  - Name, Email, Phone, ID_Code, Location, Temporal columns → MUST use leave_empty.\n"
+                "  - Never fabricate or statistically infer business identity data.\n"
+            )
+        elif dataset_intent == "Predictive":
+            intent_rules = (
+                "\nCRITICAL RULES for Predictive datasets:\n"
+                "  - Target/label columns → MUST use leave_empty (rows will be dropped).\n"
+            )
+            if is_time_series:
+                intent_rules += (
+                    "  - Time-series numeric columns → prefer fill_forward or fill_backward.\n"
+                )
+
         system_prompt = (
             "You are an expert Data Scientist specializing in missing value imputation.\n"
-            "For each column described below, choose the BEST imputation strategy.\n\n"
+            "For each column described below, choose the BEST imputation strategy.\n"
+            f"{intent_rules}\n"
             "Available strategies:\n"
-            "  fill_mean   — use for normally distributed numeric columns\n"
-            "  fill_median — use for skewed numeric columns or when outliers exist\n"
-            "  fill_mode   — use for categorical, low-cardinality, or heavily repeated values\n"
-            "  leave_empty — use for IDs, names, free text, or when imputation is harmful\n\n"
+            "  fill_mean     — use for normally distributed numeric columns\n"
+            "  fill_median   — use for skewed numeric columns or when outliers exist\n"
+            "  fill_mode     — use for categorical, low-cardinality, or heavily repeated values\n"
+            "  fill_forward  — use for time-series ordered numeric data (propagate last known)\n"
+            "  fill_backward — use for time-series ordered data (propagate next known)\n"
+            "  leave_empty   — use for IDs, names, free text, targets, or when imputation is harmful\n\n"
             "Return ONLY a JSON object where each key is the column name and value is:\n"
             '{"strategy": "<strategy>", "reasoning": "<one sentence>"}\n\n'
             "EXAMPLE:\n"
@@ -205,11 +297,15 @@ class SchemaAgent:
             print("  SchemaAgent: LLM imputation selection returned unexpected format. Keeping defaults.")
             return
 
-        valid_strategies = {"fill_mean", "fill_median", "fill_mode", "leave_empty"}
+        valid_strategies = {"fill_mean", "fill_median", "fill_mode", "fill_forward", "fill_backward", "fill_knn", "leave_empty"}
         for col, info in result.items():
             if col in schema and isinstance(info, dict):
                 strategy  = str(info.get("strategy", "")).strip().lower()
                 reasoning = str(info.get("reasoning", "")).strip()
+                # Do not override leave_empty for critical/target columns
+                if schema[col].is_critical_business or schema[col].is_target:
+                    print(f"  [Imputation] '{col}' → leave_empty (intent constraint — LLM suggestion '{strategy}' ignored)")
+                    continue
                 if strategy in valid_strategies:
                     schema[col].imputation_strategy  = strategy
                     schema[col].imputation_reasoning = reasoning

@@ -13,6 +13,13 @@ class OutlierHandler:
     - IQR (Interquartile Range): robust for skewed distributions
     - Z-Score: best for normally distributed data
     - Domain-aware boundary capping (e.g., age > 0, salary > 0)
+
+    Intent-Aware Behaviour:
+    - Non-Predictive Business datasets: statistical outlier clipping (IQR/Z-score)
+      is SKIPPED for business metric columns (revenue, balance, purchase amounts,
+      customer credit, etc.). These may be genuine high-value customer records.
+      Physical boundary checks (age > 120, negative prices) still apply.
+    - Predictive datasets: full outlier handling runs on all numeric columns.
     """
 
     # Hard domain-aware physical boundaries for common columns
@@ -34,9 +41,20 @@ class OutlierHandler:
         "bmi":               (10, 70),
     }
 
-    def __init__(self, multiplier: float = None, zscore_threshold: float = 3.0):
+    # Business metric columns that must NOT be IQR/Z-score clipped
+    # in Non-Predictive Business mode — high values may be genuine.
+    BUSINESS_METRIC_PATTERNS = [
+        "revenue", "income", "balance", "amount", "turnover", "profit",
+        "sales", "purchase", "payment", "transaction", "value",
+        "credit", "debit", "loan", "asset", "liability", "net_worth",
+        "spend", "budget", "total", "sum", "billing",
+    ]
+
+    def __init__(self, multiplier: float = None, zscore_threshold: float = 3.0,
+                 dataset_intent: str = ""):
         self.multiplier       = multiplier or config.OUTLIER_IQR_MULTIPLIER
         self.zscore_threshold = zscore_threshold
+        self.dataset_intent   = dataset_intent
         # {column: {"method": str, "outliers_found": int, "lower": float, "upper": float, "action": str}}
         self.stats = {}
 
@@ -199,10 +217,33 @@ class OutlierHandler:
         """
         Auto-select the best outlier handling method per column
         and apply it across all specified numeric columns.
+
+        In Non-Predictive Business mode:
+          - Business metric columns (revenue, balance, etc.) skip statistical
+            clipping but still get physical boundary capping.
         """
+        is_business = self.dataset_intent == "Non-Predictive Business"
+
         for col in columns:
             if col not in df.columns or not pd.api.types.is_numeric_dtype(df[col]):
                 continue
+
+            col_lower = col.lower()
+
+            # Check if this is a business metric column
+            is_business_metric = is_business and any(
+                pat in col_lower for pat in self.BUSINESS_METRIC_PATTERNS
+            )
+
+            # Always apply physical domain boundary checks
+            has_domain_bound = any(key in col_lower for key in self.DOMAIN_BOUNDS)
+
+            if is_business_metric and not has_domain_bound:
+                # Skip statistical clipping — high values may be genuine
+                print(f"  [Outlier-Skip] '{col}': business metric column — statistical clipping skipped (Non-Predictive Business mode)")
+                self.stats[col] = {"method": "Skipped", "action": "business_metric_preserved"}
+                continue
+
             method = self._choose_method(df[col], col)
             if method == "domain_cap":
                 df = self.cap_domain_bounds(df, col)

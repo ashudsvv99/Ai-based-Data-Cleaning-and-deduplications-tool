@@ -177,6 +177,59 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
     line-height: 1.7; white-space: pre-wrap;
 }
 
+/* ── Spinner animation ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.phase-spinner {
+    display: inline-block;
+    animation: spin 0.8s linear infinite;
+    font-style: normal;
+}
+
+/* ── Live phase tracker ── */
+.live-phase-track {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 1rem 1.4rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+}
+.lp-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 80px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.lp-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+    flex-shrink: 0;
+}
+.lp-dot.lp-done   { background: rgba(74,222,128,0.15); border: 2px solid #4ade80; color: #4ade80; }
+.lp-dot.lp-active { background: rgba(139,92,246,0.25); border: 2px solid #a78bfa; color: #a78bfa; box-shadow: 0 0 12px rgba(139,92,246,0.4); }
+.lp-dot.lp-wait   { background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1); color: #374151; }
+.lp-label { font-size: 0.62rem; font-weight: 500; line-height: 1.3; max-width: 72px; }
+.lp-label.lp-done   { color: #4ade80; }
+.lp-label.lp-active { color: #a78bfa; font-weight: 700; }
+.lp-label.lp-wait   { color: #374151; }
+.lp-connector {
+    width: 28px; height: 2px;
+    flex-shrink: 0;
+    margin-bottom: 18px;
+}
+.lp-connector.lp-done { background: #4ade80; }
+.lp-connector.lp-active { background: linear-gradient(90deg, #4ade80, #a78bfa); }
+.lp-connector.lp-wait  { background: rgba(255,255,255,0.07); }
+
 /* ── Download button overrides ── */
 .stDownloadButton > button {
     background: linear-gradient(135deg, #7c3aed, #a855f7) !important;
@@ -240,6 +293,7 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 """, unsafe_allow_html=True)
 
 
+
 # ─────────────────────────────────────────────────────────────
 #  SIDEBAR
 # ─────────────────────────────────────────────────────────────
@@ -261,6 +315,12 @@ with st.sidebar:
         autocomplete="url"
     )
     os.environ["LM_STUDIO_URL"] = lm_url
+
+    st.markdown("---")
+    st.markdown("### 🗄️ Database Tools")
+    st.page_link("pages/Live_Database.py", label="Live Database Studio", icon="🗄️")
+    
+    st.markdown("---")
 
     # Ping LLM to check connection for floating top-right indicator
     import requests
@@ -343,24 +403,54 @@ st.markdown("""
 
 
 # ─────────────────────────────────────────────────────────────
-#  FILE UPLOAD
+#  DATA INGESTION
 # ─────────────────────────────────────────────────────────────
-st.markdown('<div class="section-header">📂 <span>Upload Dataset</span></div>', unsafe_allow_html=True)
+st.markdown('<div class="section-header">📥 <span>Data Ingestion</span></div>', unsafe_allow_html=True)
 
-uploaded_file = st.file_uploader(
-    "Drop your CSV or Excel file here",
-    type=["csv", "xlsx", "xls"]
+ingest_method = st.radio(
+    "Choose Data Source", 
+    ["📄 Local File (CSV / Excel)", "🗄️ Live Database Connection"],
+    horizontal=True,
+    label_visibility="collapsed"
 )
 
-if uploaded_file is None:
-    st.markdown("""
-    <div class="upload-zone">
-      <div style="font-size:2.5rem;margin-bottom:0.7rem">📊</div>
-      <div style="font-size:1rem;font-weight:600;color:#94a3b8;margin-bottom:0.3rem">Drag & drop your dataset here</div>
-      <div style="font-size:0.8rem;color:#475569">Supports CSV, XLSX, XLS · Up to 200 MB</div>
-    </div>
-    """, unsafe_allow_html=True)
+uploaded_file = None
 
+if ingest_method == "📄 Local File (CSV / Excel)":
+    uploaded_file = st.file_uploader(
+        "Drop your CSV or Excel file here",
+        type=["csv", "xlsx", "xls"]
+    )
+
+    if uploaded_file is None:
+        st.markdown("""
+        <div class="upload-zone">
+          <div style="font-size:2.5rem;margin-bottom:0.7rem">📊</div>
+          <div style="font-size:1rem;font-weight:600;color:#94a3b8;margin-bottom:0.3rem">Drag & drop your dataset here</div>
+          <div style="font-size:0.8rem;color:#475569">Supports CSV, XLSX, XLS · Up to 200 MB</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+else:
+    st.markdown("""
+    <div style="background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.3);border-radius:12px;padding:2.5rem;text-align:center;margin-bottom:1rem;">
+      <div style="font-size:3rem;margin-bottom:1rem">🗄️</div>
+      <div style="font-size:1.4rem;font-weight:700;color:#e2e8f0;margin-bottom:0.5rem">Connect to a Live Database</div>
+      <div style="font-size:0.9rem;color:#94a3b8;margin-bottom:1.5rem">
+        Query, clean, and write back directly to PostgreSQL, MySQL, SQL Server, Oracle, and DB2.
+      </div>
+    """, unsafe_allow_html=True)
+    
+    # Render button to open modal or switch page
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        if st.button("Launch Database Studio 🚀", type="primary", use_container_width=True):
+            st.switch_page("pages/Live_Database.py")
+            
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+if uploaded_file is None:
     st.markdown("""
     <div class="metric-grid" style="margin-top:1.5rem">
       <div class="metric-card purple">
@@ -459,52 +549,115 @@ else:
         run_clicked = st.button("🚀  Start AI Cleaning Pipeline", type="primary", use_container_width=True)
 
     if run_clicked:
-        # ── Progress & Logs ──
+        # ── Section header ──
         st.markdown('<div class="section-header">⚡ <span>Pipeline Execution</span></div>', unsafe_allow_html=True)
 
-        progress_bar = st.progress(0)
-        status_box = st.empty()
+        # ── Phase names and their keywords that trigger them ──
+        PHASE_DEFS = [
+            ("Phase 1",  "Load & Profile",       "Phase 1"),
+            ("Phase 2",  "AI Schema",            "Phase 2"),
+            ("Phase 3",  "Strategy Plan",        "Phase 3"),
+            ("Phase 4",  "Pre-Cleaning",         "Phase 4"),
+            ("Phase 5",  "Translation",          "Phase 5"),
+            ("Phase 6",  "Entity Resolution",    "Phase 6"),
+            ("Phase 7",  "Domain Rules",         "Phase 7"),
+            ("Phase 8",  "Deduplication",        "Phase 8"),
+            ("Phase 9",  "Imputation",           "Phase 9"),
+            ("Phase 10", "Outliers",             "Phase 10"),
+            ("Phase 11", "Validation",           "Phase 11"),
+            ("Phase 12", "Audit Trail",          "Phase 12"),
+        ]
+        PHASE_PROGRESS = {f"Phase {i+1}": int(((i+1)/12)*100) for i in range(12)}
+        PHASE_PROGRESS["Completed"] = 100
+
+        phase_tracker = st.empty()   # live horizontal phase tracker
+        progress_bar  = st.progress(0)
+        st.markdown(
+            '<div style="font-size:0.78rem;font-weight:600;color:#64748b;'
+            'letter-spacing:0.06em;text-transform:uppercase;margin:1rem 0 0.4rem">'
+            '⚙️ Pipeline Execution Logs</div>',
+            unsafe_allow_html=True
+        )
         log_placeholder = st.empty()
 
         logs = []
-        phase_map = {
-            "Phase 1": 8,  "Phase 2": 15, "Phase 3": 22,
-            "Phase 4": 30, "Phase 5": 50, "Phase 6": 60,
-            "Phase 7": 65, "Phase 8": 75, "Phase 9": 82,
-            "Phase 10": 88,"Phase 11": 93,"Phase 12": 97,
-            "Completed": 100,
-        }
+        current_phase_idx = [0]   # mutable reference so closure can update it
+
+        def _render_phase_tracker(active_idx: int, done: bool = False):
+            """Render the horizontal live phase tracker strip."""
+            html = '<div class="live-phase-track">'
+            for i, (pid, label, _) in enumerate(PHASE_DEFS):
+                if done or i < active_idx:
+                    dot_cls   = "lp-done"
+                    dot_inner = "✓"
+                    lbl_cls   = "lp-done"
+                    conn_cls  = "lp-done"
+                elif i == active_idx:
+                    dot_cls   = "lp-active"
+                    dot_inner = '<i class="phase-spinner">⟳</i>'
+                    lbl_cls   = "lp-active"
+                    conn_cls  = "lp-active"
+                else:
+                    dot_cls   = "lp-wait"
+                    dot_inner = str(i + 1)
+                    lbl_cls   = "lp-wait"
+                    conn_cls  = "lp-wait"
+
+                html += (
+                    f'<div class="lp-item">'
+                    f'  <div class="lp-dot {dot_cls}">{dot_inner}</div>'
+                    f'  <div class="lp-label {lbl_cls}">{label}</div>'
+                    f'</div>'
+                )
+                if i < len(PHASE_DEFS) - 1:
+                    html += f'<div class="lp-connector {conn_cls}"></div>'
+            html += '</div>'
+            phase_tracker.markdown(html, unsafe_allow_html=True)
+
+        # Initial render — all waiting
+        _render_phase_tracker(0)
 
         def log_callback(msg: str):
             logs.append(msg)
-            # Update progress
-            for key, val in phase_map.items():
-                if key in msg:
-                    progress_bar.progress(val)
+
+            # Detect which phase we're in and advance tracker
+            for i, (pid, label, keyword) in enumerate(PHASE_DEFS):
+                if keyword in msg and i >= current_phase_idx[0]:
+                    current_phase_idx[0] = i
+                    _render_phase_tracker(i)
+                    pct = PHASE_PROGRESS.get(pid, int((i+1)/12*100))
+                    progress_bar.progress(pct)
                     break
-            # Status chip
-            icon = "⚙️"
-            if "Completed" in msg:
-                icon = "✅"
-            elif "Error" in msg or "Failed" in msg:
-                icon = "❌"
-            status_box.markdown(f"""
-            <div class="glass-panel" style="display:flex;align-items:center;gap:10px;padding:0.8rem 1.2rem">
-              <span style="font-size:1.1rem">{icon}</span>
-              <span style="font-size:0.85rem;color:#94a3b8">{msg}</span>
-            </div>
-            """, unsafe_allow_html=True)
-            # Log box
+
+            # Log box — last 40 lines, coloured keywords
+            display_logs = []
+            for line in logs[-40:]:
+                if "Error" in line or "Failed" in line:
+                    display_logs.append(f'<span style="color:#f87171">{line}</span>')
+                elif "Phase" in line and ":" in line:
+                    display_logs.append(f'<span style="color:#a78bfa;font-weight:600">{line}</span>')
+                elif "Completed" in line or "✓" in line or "Done" in line:
+                    display_logs.append(f'<span style="color:#4ade80">{line}</span>')
+                elif "[Pass" in line or "[Dedup" in line or "[Domain" in line:
+                    display_logs.append(f'<span style="color:#22d3ee">{line}</span>')
+                else:
+                    display_logs.append(line)
+
             log_placeholder.markdown(
-                f'<div class="log-box">' + "\n".join(logs[-30:]) + "</div>",
+                '<div class="log-box">' + "<br>".join(display_logs) + '</div>',
                 unsafe_allow_html=True
             )
 
         # ── Execute ──
         try:
-            orchestrator = PipelineOrchestrator(filepath=temp_path, log_callback=log_callback)
+            from backend.loader import UniversalLoader
+            loader = UniversalLoader.from_file(temp_path)
+            df_raw = loader.load_and_optimize()
+            orchestrator = PipelineOrchestrator(df=df_raw, log_callback=log_callback)
             cleaned_df, metadata = orchestrator.execute()
             progress_bar.progress(100)
+            _render_phase_tracker(0, done=True)  # all phases → green ✓
+
 
             # ── SUCCESS BANNER ──
             st.markdown(f"""
@@ -979,7 +1132,7 @@ else:
                 log_text = "\n".join(logs)
                 st.markdown(f'<div class="log-box">{log_text}</div>', unsafe_allow_html=True)
 
-        except ConnectionError:
+        except (ConnectionError, __import__('requests').exceptions.ConnectionError):
             st.markdown("""
             <div class="glass-panel error">
               <div style="font-weight:700;color:#f87171;margin-bottom:6px">🔌 LM Studio Not Connected</div>

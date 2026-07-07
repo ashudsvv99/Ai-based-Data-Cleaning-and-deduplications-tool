@@ -63,21 +63,57 @@ class QualityFilter:
             self.stats["dropped_missing_critical"] = initial_len - len(df_clean)
 
         # 4. Explicit Test/Dummy Data Filter
-        # Drop rows that are explicitly marked as "test" or "unknown" across critical text fields.
-        # Check string columns for dummy phrases.
-        str_cols = df_clean.select_dtypes(include=['object', 'string']).columns
-        if not str_cols.empty:
-            # Pattern looking for obvious dummy rows: "test user", "test@test", "unknown customer"
-            dummy_pattern = r'^(test\s*user|test@|unknown\s*customer|dummy\s*data)$'
-            
-            # We flag a row as dummy if any of its string columns match the exact dummy pattern
-            mask = pd.Series(False, index=df_clean.index)
-            for col in str_cols:
-                mask |= df_clean[col].astype(str).str.strip().str.lower().str.match(dummy_pattern, na=False)
-            
-            initial_len = len(df_clean)
-            df_clean = df_clean[~mask]
-            self.stats["dropped_dummy"] = initial_len - len(df_clean)
+        # Drop rows whose IDENTIFIER columns (Email, Name, ID) contain known
+        # test/placeholder values. Uses the schema to find which columns to
+        # check -- no column names hardcoded.
+        #
+        # The pattern is broad enough to cover real-world sentinel values
+        # like 'nomail', 'test@test.com', 'unknown customer', 'N/A', etc.
+        IDENTIFIER_TYPES = {"email", "name", "id_code", "phone"}
+        identifier_cols = [
+            col for col, sch in self.schema.items()
+            if sch.semantic_type.lower() in IDENTIFIER_TYPES and col in df_clean.columns
+        ]
+        # Fall back to all string columns if schema has no identifiers
+        if not identifier_cols:
+            identifier_cols = list(df_clean.select_dtypes(include=['object', 'string']).columns)
+
+        dummy_pattern = (
+            r'^('
+            r'test\s*user|test@|unknown\s*customer|dummy\s*data|'
+            r'nomail|noemail|no\s*mail|no\s*email|'
+            r'n/a|na|none|null|unknown|'
+            r'0{7,}|9{7,}|'       # e.g. 0000000000 or 9999999999
+            r'xxx+|aaa+|zzz+|'   # repeated filler chars
+            r'-999|-9999|-1'      # sentinel numerics in string fields
+            r')$'
+        )
+
+        # A row is dummy only if ALL its identifier columns match dummy pattern
+        # (avoids false drops where just one optional field is blank)
+        if identifier_cols:
+            dummy_mask = pd.Series(True, index=df_clean.index)
+            for col in identifier_cols:
+                col_matches = df_clean[col].astype(str).str.strip().str.lower().str.match(
+                    dummy_pattern, na=False
+                )
+                dummy_mask &= col_matches | df_clean[col].isna()
+
+            # Only drop if MORE than one identifier is a dummy value
+            # (one missing field is normal; all missing = clearly fake row)
+            dummy_score = pd.DataFrame({
+                col: df_clean[col].astype(str).str.strip().str.lower().str.match(
+                    dummy_pattern, na=False
+                )
+                for col in identifier_cols
+            }).sum(axis=1)
+            row_is_dummy = dummy_score >= max(2, len(identifier_cols) // 2)
+        else:
+            row_is_dummy = pd.Series(False, index=df_clean.index)
+
+        initial_len = len(df_clean)
+        df_clean = df_clean[~row_is_dummy]
+        self.stats["dropped_dummy"] = initial_len - len(df_clean)
 
         return df_clean
 

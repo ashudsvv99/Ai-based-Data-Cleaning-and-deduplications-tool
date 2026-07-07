@@ -122,3 +122,27 @@ class Exporter:
             json.dump(metadata, f, indent=2, default=make_serializable, ensure_ascii=False)
         print(f"  [Export] Saved audit trail to {filepath}")
         return filepath
+
+    def write_to_database(
+        self,
+        df: pd.DataFrame,
+        connector,
+        table_name: str,
+        if_exists: str = "replace",
+    ) -> tuple[bool, str]:
+        """Write cleaned DataFrame back to database table."""
+        return connector.write_dataframe(df, table_name, if_exists=if_exists)
+
+    def create_db_backup(
+        self,
+        connector,
+        table_name: str,
+        backup_dir: str = ".",
+    ) -> dict:
+        """Create both a table-copy backup AND a CSV backup. Returns info dict."""
+        ok_t, backup_table = connector.create_backup(table_name)
+        ok_c, csv_path     = connector.create_backup_csv(table_name, backup_dir)
+        return {
+            "backup_table": backup_table if ok_t else None,
+            "backup_csv":   csv_path     if ok_c else None,
+        }

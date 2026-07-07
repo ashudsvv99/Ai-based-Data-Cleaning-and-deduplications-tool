@@ -14,7 +14,7 @@ LLM_MODEL_NAME = "local-model"
 LLM_TEMPERATURE = 0.1          # Low temperature for deterministic JSON outputs
 LLM_MAX_TOKENS_DEFAULT = 4096  # Default max tokens per response 
 LLM_MAX_TOKENS_CEILING = 16384 # Upper limit for dynamic token calculation 
-LLM_TIMEOUT_SECONDS = 600      # 10 minutes 
+LLM_TIMEOUT_SECONDS = 60       # 60 seconds (prevents UI lock-ups) 
 LLM_MAX_RETRIES = 3            # Number of retries on failure
 LLM_RETRY_DELAY_SECONDS = 5    # Base delay between retries (doubles each time)
 

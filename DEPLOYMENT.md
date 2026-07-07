@@ -127,7 +127,15 @@ nohup streamlit run app.py > streamlit.log 2>&1 &
 ```
 
 #### Option B: Running via systemd Service
-Create a service file at `/etc/systemd/system/intelliclean.service`:
+
+Running as a systemd service is the most robust way to manage the lifecycle of your application in production. It ensures the application starts automatically when the server boots, restarts on crash, and permits standard logging.
+
+##### 1. Create the Service Configuration File
+Open your text editor as root to create the configuration file:
+```bash
+sudo nano /etc/systemd/system/intelliclean.service
+```
+Copy and paste the configuration below, replacing `<your-username>` with your actual system username:
 ```ini
 [Unit]
 Description=IntelliClean AI Web Application
@@ -138,15 +146,47 @@ User=<your-username>
 WorkingDirectory=/home/<your-username>/Ai-based-Data-Cleaning-and-deduplications-tool
 ExecStart=/home/<your-username>/Ai-based-Data-Cleaning-and-deduplications-tool/denv/bin/streamlit run app.py
 Restart=always
+Environment=PYTHONUNBUFFERED=1
 
 [Install]
 WantedBy=multi-user.target
 ```
-Enable and start the service:
+
+##### 2. Enable & Start the Service
+Reload the systemd daemon to register the new configuration, then enable and start the service:
 ```bash
+# Reload configurations
 sudo systemctl daemon-reload
+
+# Enable service to run on boot
 sudo systemctl enable intelliclean.service
+
+# Start the service immediately
 sudo systemctl start intelliclean.service
+```
+
+##### 3. Example Usage & Service Management
+Once the service is active, manage its execution state using standard systemctl commands:
+
+```bash
+# Check the status and confirm the process is running
+sudo systemctl status intelliclean.service
+
+# Restart the application (e.g. after updating source code)
+sudo systemctl restart intelliclean.service
+
+# Stop the application
+sudo systemctl stop intelliclean.service
+```
+
+##### 4. How to Inspect Live App Logs
+To view the output stream, print statements, or debug any runtime errors, use `journalctl` to inspect logs:
+```bash
+# View live-streamed logs (-f follows new logs)
+journalctl -u intelliclean.service -f
+
+# View the last 50 log entries
+journalctl -u intelliclean.service -n 50
 ```
 
 ---

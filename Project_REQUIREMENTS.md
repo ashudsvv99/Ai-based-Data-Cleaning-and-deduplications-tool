@@ -2,24 +2,24 @@
 
 ## Functional Requirements
 
-### 1. Universal Dataset Loader
-*   **Supported Formats**: CSV, XLS, XLSX.
-*   **Capacity**: Maximum supported dataset size is **200 MB**.
+### 1. Universal Dataset Loader & Database Integration
+*   **Supported File Formats**: CSV, XLS, XLSX up to **200 MB**.
 *   **Auto-Detection**: Automatically detect delimiter, encoding, sheet names, and column headers.
+*   **Live Database Connection**: Support connection to major SQL databases (MySQL, PostgreSQL, SQL Server, Oracle, DB2, SQLite).
+*   **Database Sampling (OOM Protection)**: Automatically sample massive databases down to 100,000 rows to prevent Out-Of-Memory (OOM) failures on limited hardware.
 
-### 2. Automatic Dataset Profiling
+### 2. Automatic Dataset & Database Profiling
 The system shall compute:
 *   Total rows and columns.
-*   Missing values and null percentages.
-*   Duplicate rows and columns.
-*   Datatype distribution.
-*   Unique value counts.
+*   Missing values and null percentages (including grid-based visualizations).
+*   Duplicate rows and columns (Exact Duplicates).
+*   Datatype distribution and Unique value counts.
 *   Memory usage.
 
 ### 3. AI-Based Schema Understanding
-The framework shall use the local LLM to determine the semantic meaning of every column, classifying them into:
-*   **Entity Columns**: Person Name, Company, Product, Brand, City, State, Country, Address, etc.
-*   **Identifier Columns**: Customer ID, Email, Phone, PAN, Aadhaar, Order ID, etc.
+The framework shall first use a purely heuristic pre-filter (`schema_detector.py`) to fast-track obvious datatypes without using LLM tokens. Then, it shall use the local LLM to determine the semantic meaning of complex columns, classifying them into:
+*   **Entity Columns**: Person Name, Company, Product, Brand, City, State, Country, Address.
+*   **Identifier Columns**: Customer ID, Email, Phone, PAN, Aadhaar, Order ID.
 *   **Numeric**: Price, Salary, Revenue, Age, Quantity.
 *   **Temporal**: Date, Timestamp, Order Date, Birth Date.
 *   **Free Text**: Reviews, Description, Comments, Feedback.
@@ -40,21 +40,26 @@ An AI agent must determine the best cleaning pipeline per column.
 The system must detect:
 *   **Exact Duplicates**: Entire row matches.
 *   **Partial Duplicates**: Records differing in only a few fields.
-*   **Fuzzy Duplicates**: Typo variations (e.g., `Sameep` vs `Samip`).
+*   **Fuzzy Duplicates**: Typo variations (e.g., `Sameep` vs `Samip`). Must ignore exact matches on IDs (like `transaction_id`) to avoid false positives on transactional data.
 *   **Semantic Duplicates**: Meaning variations (e.g., `IBM` vs `International Business Machines`).
 *   **Cross-Language Duplicates**: Transliteration matches without translation (e.g.,  `समीप` vs `Sameep`).
 
-### 7. Entity Preservation Engine
+### 7. Natural Language to SQL (NL Query Engine)
+*   **AI-Powered Querying**: Convert plain English questions into executable SQL queries against live databases.
+*   **Safe Execution**: Run generated queries dynamically in a read-only context (SELECT queries), preventing accidental database modification.
+*   **Error Recovery**: Automatically capture SQL execution errors and pass them back to the LLM for self-correction.
+
+### 8. Entity Preservation Engine
 *   **Rule**: Never directly translate names, organizations, products, IDs, emails, phone numbers, or addresses.
 *   **Action**: Use normalization, transliteration, canonicalization, and similarity matching instead.
 
-### 8. Translation Engine
+### 9. Translation Engine
 *   Only descriptive/free-text columns (reviews, descriptions, comments) shall be translated.
 
-### 9. Canonical Record Generation
+### 10. Canonical Record Generation
 *   After clustering duplicates, generate one final representative record (e.g., `John`, `John Smith`, `J. Smith` becomes `John Smith`).
 
-### 10. Explainability Module
+### 11. Explainability Module
 Every modification must record:
 *   Original value.
 *   Transformed value.
@@ -62,7 +67,7 @@ Every modification must record:
 *   Confidence score.
 *   Responsible agent.
 
-### 11. Export Module
+### 12. Export Module
 Provide outputs as:
 *   Cleaned CSV / Excel.
 *   Cleaning Report.
@@ -77,7 +82,7 @@ Provide outputs as:
 *   **Performance / Memory**: 
     *   Pandas must use `pyarrow` backend for string types.
     *   Numeric columns must be aggressively downcasted (e.g., float64 to float32).
-    *   Low-cardinality string columns must be converted to `category` dtypes to keep total memory usage of a 200MB dataset well within the 12GB RAM limit during transformations.
+    *   Low-cardinality string columns must be converted to `category` dtypes to keep total memory usage well within the 12GB RAM limit during transformations.
 *   **Local Execution**: Must run locally and entirely offline. No cloud dependency.
 *   **LLM Constraints**: Local inference must use highly quantized models (GGUF Q4_K_M formats). LLM payloads must be severely restricted (metadata + max 3 rows of data) to prevent CPU timeouts.
 *   **Privacy**: Zero data leakage; all inference happens locally.

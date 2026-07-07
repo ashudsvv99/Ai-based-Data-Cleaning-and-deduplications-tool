@@ -9,31 +9,56 @@ import config
 
 class UniversalLoader:
     """
-    Loads CSV / Excel files with safety checks and memory optimization.
-    Unlike the old loader, this does NOT convert strings to category dtype
-    because that causes issues in downstream cleaning modules.
+    Universal dataset loader capable of loading from CSV/Excel files,
+    live database tables, or wrapping an existing DataFrame.
     """
 
-    def __init__(self, filepath: str):
+    def __init__(self, filepath: str = None, df: pd.DataFrame = None):
+        """Internal constructor. Use from_file(), from_dataframe(), or from_database()."""
         self.filepath = filepath
-        self.extension = os.path.splitext(filepath)[1].lower()
+        self.df = df
+        if self.filepath:
+            self.extension = os.path.splitext(self.filepath)[1].lower()
+        else:
+            self.extension = None
+
+    @classmethod
+    def from_file(cls, filepath: str) -> "UniversalLoader":
+        """Load from CSV or Excel file."""
+        return cls(filepath=filepath)
+
+    @classmethod
+    def from_dataframe(cls, df: pd.DataFrame) -> "UniversalLoader":
+        """Wrap an already-loaded DataFrame."""
+        return cls(df=df)
+
+    @classmethod
+    def from_database(cls, connector, table_name: str, limit: int = 100_000) -> "UniversalLoader":
+        """Load a DB table via DatabaseConnector.load_table()."""
+        df = connector.load_table(table_name, limit=limit)
+        return cls(df=df)
 
     def load_and_optimize(self) -> pd.DataFrame:
         """Load a dataset, validate it, clean missing markers, and optimize memory."""
-        self._validate_file()
+        if self.filepath:
+            self._validate_file()
+            print(f"Loading dataset: {self.filepath}...")
 
-        print(f"Loading dataset: {self.filepath}...")
-
-        if self.extension == ".csv":
-            try:
-                df = pd.read_csv(self.filepath, engine="pyarrow")
-            except Exception:
-                # Fallback for encoding issues
-                df = pd.read_csv(self.filepath, encoding="utf-8-sig")
-        elif self.extension in [".xls", ".xlsx"]:
-            df = pd.read_excel(self.filepath, engine="openpyxl")
+            if self.extension == ".csv":
+                try:
+                    df = pd.read_csv(self.filepath, engine="pyarrow")
+                except Exception:
+                    df = pd.read_csv(self.filepath, encoding="utf-8-sig")
+            elif self.extension in [".xls", ".xlsx"]:
+                df = pd.read_excel(self.filepath, engine="openpyxl")
+            else:
+                raise ValueError(f"Unsupported file format: {self.extension}")
+        elif self.df is not None:
+            print("Loading dataset from DataFrame...")
+            # We copy to avoid modifying original
+            df = self.df.copy()
         else:
-            raise ValueError(f"Unsupported file format: {self.extension}")
+            raise ValueError("Neither filepath nor DataFrame was provided.")
 
         # Replace known missing-value markers with pd.NA
         df = df.replace(config.MISSING_VALUE_MARKERS, pd.NA)

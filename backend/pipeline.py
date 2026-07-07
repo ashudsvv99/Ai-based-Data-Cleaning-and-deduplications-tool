@@ -47,8 +47,8 @@ class PipelineOrchestrator:
     Master controller that executes the full cleaning pipeline.
     """
 
-    def __init__(self, filepath: str, log_callback: Callable[[str], None] = print):
-        self.filepath = filepath
+    def __init__(self, df: pd.DataFrame, log_callback: Callable[[str], None] = print):
+        self.df = df
         self.log = log_callback
 
     def execute(self) -> tuple:
@@ -61,8 +61,7 @@ class PipelineOrchestrator:
 
         # ── Phase 1: Load & Profile ──
         self.log("Phase 1: Loading & Profiling")
-        loader = UniversalLoader(self.filepath)
-        df = loader.load_and_optimize()
+        df = self.df
         initial_rows = len(df)
         self.log(f"  Loaded {initial_rows} rows, {len(df.columns)} columns.")
 
@@ -71,14 +70,27 @@ class PipelineOrchestrator:
         self.log(f"  Quality Score: {profile_data['quality_score']}/100")
 
         domain_info = DomainProfiler(llm_client=llm).detect_domain(df, log_callback=self.log)
-        domain = domain_info["domain"]
-        self.log(f"  Domain: {domain} | Confidence: {domain_info['confidence']} | Method: {domain_info['method']}")
+        domain           = domain_info["domain"]
+        dataset_intent   = domain_info.get("intent", "Non-Predictive Business")
+        target_variables = domain_info.get("target_variables", [])
+        is_time_series   = domain_info.get("is_time_series", False)
+        self.log(f"  Domain: {domain} | Intent: {dataset_intent} | Confidence: {domain_info['confidence']} | Method: {domain_info['method']}")
         self.log(f"  Reasoning: {domain_info['reasoning']}")
+        if target_variables:
+            self.log(f"  Target Variables: {target_variables}")
+        if is_time_series:
+            self.log(f"  Time-Series Dataset Detected")
 
         # ── Phase 2: Schema Classification ──
         self.log("Phase 2: AI Schema Analysis")
-        schema_agent = SchemaAgent(llm)
-        schema_mapping = schema_agent.classify_columns(df, log_callback=self.log)
+        schema_agent   = SchemaAgent(llm)
+        schema_mapping = schema_agent.classify_columns(
+            df,
+            log_callback=self.log,
+            dataset_intent=dataset_intent,
+            target_variables=target_variables,
+            is_time_series=is_time_series,
+        )
 
         # ── Phase 3: Plan Cleaning Strategies ──
         self.log("Phase 3: Planning Cleaning Strategies")
@@ -90,6 +102,16 @@ class PipelineOrchestrator:
 
         # Capture pre-cleaning metrics
         missing_before = df.isna().sum().to_dict()
+
+        # ── Phase 3a: Drop rows with missing target variables (Predictive only) ──
+        if dataset_intent == "Predictive" and target_variables:
+            valid_targets = [t for t in target_variables if t in df.columns]
+            if valid_targets:
+                rows_before = len(df)
+                df = df.dropna(subset=valid_targets).reset_index(drop=True)
+                dropped = rows_before - len(df)
+                if dropped > 0:
+                    self.log(f"  [Predictive] Dropped {dropped} rows with missing target variable(s): {valid_targets}")
 
         # ── Phase 3.5: Row-Level Quality Filtering ──
         self.log("Phase 3.5: Row-Level Quality Filtering")
@@ -180,11 +202,16 @@ class PipelineOrchestrator:
         # ── Phase 8: Deduplication & Entity Resolution ──
         self.log("Phase 8: Deduplication & Entity Resolution")
         dedup_strategies = {col: strat.deduplication for col, strat in strategies.items()}
-        
+
         # Transactional domains require keeping all rows to preserve events.
-        # Master Data domains (CRM, HR) can safely collapse rows.
-        is_master_data = domain in ["CRM", "HR"]
-        dedup = DeduplicationEngine(df, dedup_strategies, keep_all_rows=not is_master_data, log_callback=self.log)
+        # Master Data domains (CRM, HR, Non-Predictive Business) safely collapse rows.
+        is_master_data = (dataset_intent == "Non-Predictive Business") or (domain in ["CRM", "HR"])
+        dedup = DeduplicationEngine(
+            df, dedup_strategies,
+            dataset_intent=dataset_intent,
+            keep_all_rows=not is_master_data,
+            log_callback=self.log,
+        )
         df = dedup.execute()
         removed_by_dedup = initial_rows - len(df)
         if removed_by_dedup > 0:
@@ -207,7 +234,7 @@ class PipelineOrchestrator:
 
         # ── Phase 10: Outlier Detection & Treatment ──
         all_numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
-        outlier_handler = OutlierHandler()
+        outlier_handler = OutlierHandler(dataset_intent=dataset_intent)
         if all_numeric_cols:
             self.log("Phase 10: Outlier Detection & Handling")
             df = outlier_handler.handle_all_numeric(df, all_numeric_cols)
@@ -249,10 +276,13 @@ class PipelineOrchestrator:
         self.log(f"  Rows: {initial_rows} -> {final_rows}")
 
         metadata = {
-            "initial_rows": initial_rows,
-            "final_rows": final_rows,
-            "domain": domain,
-            "domain_info": domain_info,
+            "initial_rows":      initial_rows,
+            "final_rows":        final_rows,
+            "domain":            domain,
+            "dataset_intent":    dataset_intent,
+            "target_variables":  target_variables,
+            "is_time_series":    is_time_series,
+            "domain_info":       domain_info,
             "execution_time_sec": round(exec_time, 2),
             "profile": profile_data,
             "schema_mapping": {col: s.dict() for col, s in schema_mapping.items()},

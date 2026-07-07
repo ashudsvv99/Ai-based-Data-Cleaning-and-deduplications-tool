@@ -8,3 +8,11 @@ openpyxl
 requests
 numpy
 psutil
+sqlalchemy
+psycopg2-binary
+pymysql
+pyodbc
+oracledb
+ibm_db_sa
+tabulate
+unidecode

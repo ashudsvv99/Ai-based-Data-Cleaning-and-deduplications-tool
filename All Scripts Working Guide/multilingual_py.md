@@ -2,7 +2,7 @@
 
 In a global dataset, a user might enter their city as "München" or "म्यूनिख" instead of "Munich". If you don't translate these to a standard language (English), the Deduplication engine will fail to recognize them as duplicates, and categorizations will be fractured. 
 
-The `MultilingualEngine` class translates the dataset, but does so with extreme Token caching to avoid crashing the LLM.
+The `MultilingualEngine` class translates the dataset, but does so with extreme token caching to avoid crashing the LLM.
 
 ## Full Working Process & Logic
 
