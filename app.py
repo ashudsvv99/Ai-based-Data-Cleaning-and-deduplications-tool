@@ -11,6 +11,7 @@ import traceback
 
 from backend.pipeline import PipelineOrchestrator
 from backend.exporter import Exporter
+from backend.state_manager import StateManager
 
 # ─────────────────────────────────────────────────────────────
 #  PAGE CONFIG
@@ -419,7 +420,8 @@ uploaded_file = None
 if ingest_method == "📄 Local File (CSV / Excel)":
     uploaded_file = st.file_uploader(
         "Drop your CSV or Excel file here",
-        type=["csv", "xlsx", "xls"]
+        type=["csv", "xlsx", "xls"],
+        on_change=lambda: [st.session_state.pop("pipeline_results_ready", None), StateManager.clear_pipeline_state()]
     )
 
     if uploaded_file is None:
@@ -548,7 +550,20 @@ else:
     with col_run:
         run_clicked = st.button("🚀  Start AI Cleaning Pipeline", type="primary", use_container_width=True)
 
+    # State Management Logic
     if run_clicked:
+        st.session_state["pipeline_results_ready"] = True
+        st.session_state["run_pipeline_now"] = True
+        StateManager.clear_pipeline_state()
+        
+    if not st.session_state.get("pipeline_results_ready"):
+        df_cache, meta_cache = StateManager.load_pipeline_state()
+        if df_cache is not None and meta_cache is not None:
+            st.session_state["pipeline_results_ready"] = True
+            st.session_state["cached_df"] = df_cache
+            st.session_state["cached_meta"] = meta_cache
+
+    if st.session_state.get("pipeline_results_ready"):
         # ── Section header ──
         st.markdown('<div class="section-header">⚡ <span>Pipeline Execution</span></div>', unsafe_allow_html=True)
 
@@ -648,15 +663,27 @@ else:
                 unsafe_allow_html=True
             )
 
-        # ── Execute ──
+        # ── Execute or Load ──
         try:
-            from backend.loader import UniversalLoader
-            loader = UniversalLoader.from_file(temp_path)
-            df_raw = loader.load_and_optimize()
-            orchestrator = PipelineOrchestrator(df=df_raw, log_callback=log_callback)
-            cleaned_df, metadata = orchestrator.execute()
-            progress_bar.progress(100)
-            _render_phase_tracker(0, done=True)  # all phases → green ✓
+            if st.session_state.get("run_pipeline_now"):
+                from backend.loader import UniversalLoader
+                loader = UniversalLoader.from_file(temp_path)
+                df_raw = loader.load_and_optimize()
+                orchestrator = PipelineOrchestrator(df=df_raw, log_callback=log_callback)
+                cleaned_df, metadata = orchestrator.execute()
+                
+                # Save state
+                st.session_state["cached_df"] = cleaned_df
+                st.session_state["cached_meta"] = metadata
+                StateManager.save_pipeline_state(cleaned_df, metadata)
+                st.session_state["run_pipeline_now"] = False
+                
+                if 'progress_bar' in locals():
+                    progress_bar.progress(100)
+                    _render_phase_tracker(0, done=True)
+            else:
+                cleaned_df = st.session_state["cached_df"]
+                metadata = st.session_state["cached_meta"]
 
 
             # ── SUCCESS BANNER ──

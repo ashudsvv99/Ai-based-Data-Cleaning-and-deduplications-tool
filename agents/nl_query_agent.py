@@ -158,8 +158,8 @@ class NLQueryAgent:
     "Your task: Convert the user's data cleaning or natural language query into a syntactically correct, optimized, and safe SQL statement based ONLY on the provided schema.\n\n"
     "CRITICAL RULES:\n"
     "1. SCHEMA ADHERENCE: Only reference tables and columns explicitly defined in the schema above. Do not assume or hallucinate columns. Match column casing exactly as defined.\n"
-    "2. DUPLICATE DETECTION/REMOVAL: Never use 'SELECT *' with GROUP BY. You MUST explicitly SELECT the exact columns you are grouping by along with COUNT(*) to prevent 'only_full_group_by' compilation errors.\n"
-    "   - Example: SELECT col1, col2, COUNT(*) FROM t GROUP BY col1, col2 HAVING COUNT(*) > 1\n"
+    "2. AGGREGATION & GROUPING: When using GROUP BY, you MUST explicitly SELECT the exact columns you are grouping by alongside any aggregate functions (like COUNT). Never select ONLY the aggregate function.\n"
+    "   - Example: SELECT col1, col2, COUNT(*) FROM t GROUP BY col1, col2\n"
     "3. MISSING VALUES & NULLS: Use 'IS NULL' or 'IS NOT NULL' for null validation. Use TRIM(col) = '' or LENGTH(col) = 0 for empty strings if the dialect supports it.\n"
     "4. DESTRUCTIVE OPERATIONS (CLEANING): For UPDATE, DELETE, or DROP operations, you MUST include a highly targeted WHERE clause. Never modify an entire table without strict conditions.\n"
     "5. DATA STANDARDIZATION: For string cleaning (casing, spaces, trimming), use standard functions like TRIM(), LOWER(), or UPPER() based on the dialect rules.\n"
@@ -190,12 +190,24 @@ class NLQueryAgent:
 
         sql            = str(raw.get("sql", "")).strip()
         
-        # Auto-correct ONLY_FULL_GROUP_BY issues if the LLM hallucinates SELECT *
-        if re.search(r'SELECT\s+\*\s+FROM', sql, re.IGNORECASE) and re.search(r'GROUP\s+BY', sql, re.IGNORECASE):
+        # Auto-correct GROUP BY queries missing the grouped columns in SELECT
+        if re.search(r'GROUP\s+BY', sql, re.IGNORECASE):
             group_match = re.search(r'GROUP\s+BY\s+(.+?)(?:\s+HAVING|\s+ORDER|\s+LIMIT|;|$)', sql, re.IGNORECASE)
             if group_match:
                 group_cols = group_match.group(1).strip()
-                sql = re.sub(r'SELECT\s+\*', f'SELECT {group_cols}, COUNT(*) as _count', sql, flags=re.IGNORECASE)
+                # Case 1: LLM hallucinates SELECT *
+                if re.search(r'SELECT\s+\*\s+FROM', sql, re.IGNORECASE):
+                    sql = re.sub(r'SELECT\s+\*', f'SELECT {group_cols}, COUNT(*) as _count', sql, flags=re.IGNORECASE, count=1)
+                # Case 2: LLM or User just selects an aggregate without the grouped columns (e.g. SELECT COUNT(*) FROM x GROUP BY y)
+                else:
+                    select_match = re.search(r'SELECT\s+(.+?)\s+FROM', sql, re.IGNORECASE)
+                    if select_match:
+                        select_str = select_match.group(1).strip()
+                        first_group_col = group_cols.split(',')[0].strip()
+                        # Very simple heuristic: if the first grouped column isn't in the select string at all
+                        if first_group_col.lower() not in select_str.lower():
+                            new_select_str = f"{group_cols}, {select_str}"
+                            sql = re.sub(r'SELECT\s+(.+?)\s+FROM', f'SELECT {new_select_str} FROM', sql, flags=re.IGNORECASE, count=1)
 
         explanation    = str(raw.get("explanation", "")).strip()
         confidence     = str(raw.get("confidence", "Medium")).strip()
