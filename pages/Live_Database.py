@@ -1218,8 +1218,11 @@ with tab5:
                 # Previous cleaning result
                 if st.session_state.cleaning_result and st.session_state.cleaning_result.get("table") == clean_tbl:
                     cr = st.session_state.cleaning_result
-                    from ui_components import render_cleaning_results
-                    render_cleaning_results(st, cr["df"], cr["meta"], cr.get("logs", []))
+                    try:
+                        from components.ui_components import render_cleaning_results
+                        render_cleaning_results(st, cr["df"], cr["meta"], cr.get("logs", []))
+                    except:
+                        pass
                     
                     st.download_button(
                         "📥 Download Cleaned Data",

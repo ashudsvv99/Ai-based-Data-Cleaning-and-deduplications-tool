@@ -684,7 +684,7 @@ else:
 
 
             # ── DELEGATE UI RENDERING TO COMPONENTS ──
-            from ui_components import render_cleaning_results
+            from components.ui_components import render_cleaning_results
             render_cleaning_results(st, cleaned_df, metadata, logs)
 
         except (ConnectionError, __import__('requests').exceptions.ConnectionError):
