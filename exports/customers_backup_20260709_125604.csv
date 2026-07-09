@@ -1,0 +1,74 @@
+customer_id,full_name,email,phone,address,city,state_name,pincode,aadhaar,pan,date_of_birth,gender,source_system,scenario_tag,created_at
+1,Raj Sharma,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,base_exact,2026-07-09 10:48:33
+2,Raj Sharma,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,exact_duplicate,2026-07-09 10:48:33
+3, Raj Sharma ,RAJ@GMAIL.COM,9876543210,12 MG Road ,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,same_entity_whitespace_case,2026-07-09 10:48:33
+4,Raj Sharam,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,fuzzy_name_typo,2026-07-09 10:48:33
+5,Raj Sharrma,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,fuzzy_name_typo_2,2026-07-09 10:48:33
+6,R. Sharma,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,initials_variant,2026-07-09 10:48:33
+7,Raj S.,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,surname_missing_variant,2026-07-09 10:48:33
+8,Raj,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,partial_name_only,2026-07-09 10:48:33
+9,,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,missing_name,2026-07-09 10:48:33
+10,Raj Sharma,,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,missing_email,2026-07-09 10:48:33
+11,Raj Sharma,raj@gmail.com,,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,missing_phone,2026-07-09 10:48:33
+12,Raj Sharma,raj@gmail.com,9876543210,,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,missing_address,2026-07-09 10:48:33
+13,Raj Sharma,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,,,1995-01-15,Male,crm,missing_legal_ids,2026-07-09 10:48:33
+14,Unknown Customer,,,,Jaipur,Rajasthan,302001,,,,,crm,mostly_empty,2026-07-09 10:48:33
+15,,,,,,,,,,,,crm,fully_empty_row,2026-07-09 10:48:33
+16,Raj Sharma,raj.new@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,changed_email,2026-07-09 10:48:33
+17,Raj Sharma,raj@gmail.com,9999999999,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,changed_phone,2026-07-09 10:48:33
+18,Raj Sharma,raj.office@gmail.com,8888888888,44 Park Street,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,changed_phone_email_address,2026-07-09 10:48:33
+19,Raj Sharma,raj@gmail.com,9876543210,44 Park Street,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,changed_address,2026-07-09 10:48:33
+20,Raj Sharma,raj.work@gmail.com,7777777777,Noida Sector 62,Noida,Uttar Pradesh,201301,123412341234,ABCDE1234F,1995-01-15,Male,crm,changed_city_address,2026-07-09 10:48:33
+21,Raj Sharma,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,AAAAA9999Z,1995-01-15,Male,crm,pan_conflict_should_not_auto_merge,2026-07-09 10:48:33
+22,Raj Sharma,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,999988887777,ABCDE1234F,1995-01-15,Male,crm,aadhaar_conflict_should_not_auto_merge,2026-07-09 10:48:33
+23,Rahul Sharma,rahul@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,111122223333,PQRSX1234T,2002-04-20,Male,crm,shared_phone_family,2026-07-09 10:48:33
+24,Priya Sharma,priya@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,555566667777,LMNOP5678R,1998-07-08,Female,crm,shared_phone_family,2026-07-09 10:48:33
+25,Rakesh Sharma,family@gmail.com,9000000001,House 10,Noida,Uttar Pradesh,201301,777788889999,AAAAA1111A,1970-05-12,Male,crm,shared_email_family,2026-07-09 10:48:33
+26,Sunita Sharma,family@gmail.com,9000000002,House 10,Noida,Uttar Pradesh,201301,888899990000,BBBBB2222B,1975-09-09,Female,crm,shared_email_family,2026-07-09 10:48:33
+27,Amit Kumar,amit@gmail.com,8000000001,Flat 401 Green Residency,Mumbai,Maharashtra,400001,333344445555,CCCDE3333C,1992-11-11,Male,crm,shared_address_household,2026-07-09 10:48:33
+28,Neha Kumar,neha@gmail.com,8000000002,Flat 401 Green Residency,Mumbai,Maharashtra,400001,444455556666,DDDDE4444D,1996-03-18,Female,crm,shared_address_household,2026-07-09 10:48:33
+29,Vikas Singh,vikas1@gmail.com,8111111111,Lucknow,Lucknow,Uttar Pradesh,226001,101010101010,ABCDE1111A,1993-01-01,Male,crm,same_name_different_person_1,2026-07-09 10:48:33
+30,Vikas Singh,vikas2@gmail.com,8222222222,Kanpur,Kanpur,Uttar Pradesh,208001,202020202020,FGHIJ2222B,1993-01-01,Male,crm,same_name_different_person_2,2026-07-09 10:48:33
+31,Sameer Khan,sameer.khan@gmail.com,9000111122,Aliganj,Lucknow,Uttar Pradesh,226024,303030303030,KLMNO3333C,1991-06-10,Male,crm,same_name_family_like_contact_1,2026-07-09 10:48:33
+32,Sameer Khan,sameer.khan@gmail.com,9000111122,Aliganj,Lucknow,Uttar Pradesh,226024,303030303031,KLMNO3333D,1991-06-10,Male,crm,same_contact_but_unique_id_conflict,2026-07-09 10:48:33
+33,राज शर्मा,raj@gmail.com,9876543210,१२ एम जी रोड,दिल्ली,दिल्ली,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,multilingual_hindi,2026-07-09 10:48:33
+34,रज शर्मा,raj@gmail.com,9876543210,12 एम जी रोड,दिल्ली,दिल्ली,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,multilingual_transliteration_variant,2026-07-09 10:48:33
+35,Raj Kumar,rajkumar@gmail.com,9000101010,Sector 18,Noida,Uttar Pradesh,201301,121212121212,PQRST4444D,1990-03-05,Male,crm,semantic_linguistic_variant,2026-07-09 10:48:33
+36,Rāj Sharma,raj@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,accent_mark_variant,2026-07-09 10:48:33
+37,Raj Sharrna,raj@gmail.com,9876543210,12 MG R0ad,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,ocr_typo_variant,2026-07-09 10:48:33
+38,Raj Sharma,raj@gmial.com,9876543210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,email_typo_variant,2026-07-09 10:48:33
+39,Raj Sharma,raj@gmail.com,98-7654-3210,12 MG Road,Delhi,Delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,phone_format_variant,2026-07-09 10:48:33
+40,RAJ SHARMA,raj@gmail.com,9876543210,12 mg road,delhi,delhi,110001,123412341234,ABCDE1234F,1995-01-15,Male,crm,case_normalization_variant,2026-07-09 10:48:33
+41,IBM,info@ibm.com,1800123456,1 IBM Campus,Bengaluru,Karnataka,560001,,AAACI1234F,,,erp,semantic_corp_alias,2026-07-09 10:48:33
+42,International Business Machines,info@ibm.com,1800123456,1 IBM Campus,Bengaluru,Karnataka,560001,,AAACI1234F,,,erp,semantic_corp_full_name,2026-07-09 10:48:33
+43,I.B.M.,info@ibm.com,1800123456,1 IBM Campus,Bengaluru,Karnataka,560001,,AAACI1234F,,,erp,semantic_corp_abbrev,2026-07-09 10:48:33
+44,International Bus. Machines,info@ibm.com,1800123456,1 IBM Campus,Bengaluru,Karnataka,560001,,AAACI1234F,,,erp,semantic_corp_abbrev_2,2026-07-09 10:48:33
+45,Microsoft India,contact@microsoft.com,1800112222,Manyata Tech Park,Bengaluru,Karnataka,560045,,AAACM1234X,,,erp,semantic_company,2026-07-09 10:48:33
+46,Microsoft Corporation India,contact@microsoft.com,1800112222,Manyata Tech Park,Bengaluru,Karnataka,560045,,AAACM1234X,,,erp,semantic_company_full,2026-07-09 10:48:33
+47,OpenAI India,hello@openai.com,1800999000,BKC,Mumbai,Maharashtra,400051,,AAACO2024A,,,erp,semantic_alias,2026-07-09 10:48:33
+48,Open AI India,hello@openai.com,1800999000,BKC,Mumbai,Maharashtra,400051,,AAACO2024A,,,erp,semantic_spacing_variant,2026-07-09 10:48:33
+49,Neha Sharma,neha@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,555566667777,LMNOP5678R,1998-07-08,Female,crm,same_family_contact_but_new_name,2026-07-09 10:48:33
+50,Neha Sharm,neha@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,555566667777,LMNOP5678R,1998-07-08,Female,crm,fuzzy_name_plus_same_ids,2026-07-09 10:48:33
+51,N. Sharma,neha@gmail.com,9876543210,12 MG Road,Delhi,Delhi,110001,555566667777,LMNOP5678R,1998-07-08,Female,crm,abbrev_name_variant,2026-07-09 10:48:33
+52,Anita Verma,anita.verma@gmail.com,9123456780,Model Town,Delhi,Delhi,110009,666677778888,QRSTU5555E,1987-09-21,Female,crm,clean_unique,2026-07-09 10:48:33
+53,Anita Verma,anita.verma@gmail.com,9123456781,Model Town,Delhi,Delhi,110009,666677778888,QRSTU5555E,1987-09-21,Female,crm,same_person_phone_changed,2026-07-09 10:48:33
+54,Anita Verma,anita.v@gmail.com,9123456781,Model Town,Delhi,Delhi,110009,666677778888,QRSTU5555E,1987-09-21,Female,crm,same_person_phone_email_changed,2026-07-09 10:48:33
+55,Anita Verma,anita.verma@gmail.com,9123456780,Model Town,Delhi,Delhi,110009,666677778889,QRSTU5555E,1987-09-21,Female,crm,aadhaar_variant_conflict,2026-07-09 10:48:33
+56,Anita Verma,anita.verma@gmail.com,9123456780,Model Town,Delhi,Delhi,110009,666677778888,QRSTU5555F,1987-09-21,Female,crm,pan_variant_conflict,2026-07-09 10:48:33
+57,Customer X,,,,,,,,,,,crm,low_quality_blank_contacts,2026-07-09 10:48:33
+58,Customer Y,y@example.com,,Unknown,Unknown,Unknown,,,,,,crm,partial_unknowns,2026-07-09 10:48:33
+59,Customer Z,z@example.com,9012345678,Sector 7,Chandigarh,Chandigarh,160007,,,2000-12-31,Other,crm,partial_identity,2026-07-09 10:48:33
+60,Aman Gupta,aman@gmail.com,8012345678,CP,Delhi,Delhi,110001,909090909090,ABCDE9090G,1994-04-14,Male,crm,volume_1,2026-07-09 10:48:33
+61,Aman Gupta,aman@gmail.com,8012345678,CP,Delhi,Delhi,110001,909090909090,ABCDE9090G,1994-04-14,Male,crm,volume_exact_dup,2026-07-09 10:48:33
+62,Aman Guptha,aman@gmail.com,8012345678,CP,Delhi,Delhi,110001,909090909090,ABCDE9090G,1994-04-14,Male,crm,volume_fuzzy_name,2026-07-09 10:48:33
+63,Aman Gupta,aman.work@gmail.com,8012345678,Connaught Place,New Delhi,Delhi,110001,909090909090,ABCDE9090G,1994-04-14,Male,crm,volume_address_semantic,2026-07-09 10:48:33
+64,Aman Gupta,aman@gmail.com,8012345679,CP,Delhi,Delhi,110001,909090909090,ABCDE9090G,1994-04-14,Male,crm,volume_phone_changed,2026-07-09 10:48:33
+65,Aman Gupta,aman@gmail.com,8012345678,CP,Delhi,Delhi,110001,909090909091,ABCDE9090G,1994-04-14,Male,crm,volume_id_conflict,2026-07-09 10:48:33
+66,Suresh Yadav,suresh@y.com,7000000001,Sector 10,Gurugram,Haryana,122001,919191919191,PQRST6666H,1985-10-10,Male,crm,volume_2,2026-07-09 10:48:33
+67,Suresh Yadav,suresh@y.com,7000000001,Sector 10,Gurugram,Haryana,122001,919191919191,PQRST6666H,1985-10-10,Male,crm,volume_exact_dup_2,2026-07-09 10:48:33
+68,Suresh Yadav,suresh.kumar@y.com,7000000002,Sector 10,Gurugram,Haryana,122001,919191919191,PQRST6666H,1985-10-10,Male,crm,volume_contact_changed,2026-07-09 10:48:33
+69,Suresh Yadav,suresh@y.com,7000000001,Sector 10,Gurugram,Haryana,122001,919191919192,PQRST6666H,1985-10-10,Male,crm,volume_id_conflict_2,2026-07-09 10:48:33
+70,Meera Iyer,meera@x.com,7070707070,Indiranagar,Bengaluru,Karnataka,560038,919293949596,IJKLM7777I,1991-02-02,Female,crm,volume_3,2026-07-09 10:48:33
+71,Meera Iyer,meera@x.com,7070707070,Indiranagar,Bengaluru,Karnataka,560038,919293949596,IJKLM7777I,1991-02-02,Female,crm,volume_exact_dup_3,2026-07-09 10:48:33
+72,Meera Iyer,meera.iyer@x.com,7070707071,Indiranagar,Bengaluru,Karnataka,560038,919293949596,IJKLM7777I,1991-02-02,Female,crm,volume_contact_change_3,2026-07-09 10:48:33
+73,Meera Iyer,meera@x.com,7070707070,Indiranagar,Bengaluru,Karnataka,560038,919293949597,IJKLM7777I,1991-02-02,Female,crm,volume_id_conflict_3,2026-07-09 10:48:33

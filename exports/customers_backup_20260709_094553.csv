@@ -1,0 +1,151 @@
+customer_id,first_name,last_name,company_name,email,phone,address,city,registration_date
+1,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-01-22
+2,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-01-22
+3,alice,Smith,GLOBAL RETAIL,alice.smith@globalretail.com,(555) -2222,456 Oak Avenue,Boston,2023-06-17
+4,Michael,Scott,Dunder Mifflin,,,1725 Slough Ave,,2023-06-29
+5,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-04-17
+6,alice,Smith,GLOBAL RETAIL,alice.smith@globalretail.com,(555) -2222,456 Oak Avenue,Boston,2023-06-17
+7,Robert,Brown,Finance Inc,,,789 Pine Rd,,2023-08-17
+8,Michil,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-07-18
+9,Robirt,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-02-05
+10,Elon,Musk,SpaceX,elon@spacex.com,555-1234,1 Rocket Rd,Hawthorne,2023-01-25
+11,Robirt,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-05-07
+12,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Rd,Mumbai,2023-04-11
+13,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-01-31
+14,john,Doe,IBM,john.doe@ibm.com,(555) -9999,100 IBM Plaza,Armonk,2023-12-23
+15,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-01-22
+16,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-04-05
+17,Alici,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-09-07
+18,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-09-09
+19,Michael,Scott,Dunder Mifflin,,,1725 Slough Ave,Scranton,2023-07-10
+20,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-08-30
+21,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-04-04
+22,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-12-26
+23,John,Doe,International Business Machines,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-08-23
+24,समीप,शर्मा,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-05-19
+25,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-12-26
+26,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-09-22
+27,John,Doe,IBM,john.doe@ibm.com,,100 IBM Plaza,Armonk,2023-07-01
+28,sarah,Connor,CYBERDYNE,s.connor@cyberdyne.net,(555) -8888,1984 Sky Net Blvd,Los Angeles,2023-05-19
+29,Michil,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-03-12
+30,alice,Smith,GLOBAL RETAIL,alice.smith@globalretail.com,(555) -2222,456 Oak Avenue,Boston,2023-08-23
+31,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-07-27
+32,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-07-16
+33,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-03-29
+34,Alice,Smith,Global Retail,alice.smith@globalretail.com,,456 Oak Avenue,Boston,2023-01-11
+35,John,Doe,IBM,,555-9999,100 IBM Plaza,Armonk,2023-07-23
+36,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-02-21
+37,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-01-22
+38,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-09-28
+39,Elon,Musk,SpaceX,elon@spacex.com,555-1234,1 Rocket Rd,Hawthorne,2023-11-18
+40,alice,Smith,GLOBAL RETAIL,alice.smith@globalretail.com,(555) -2222,456 Oak Avenue,Boston,2023-08-23
+41,Elon,Musk,SpaceX,elon@spacex.com,555-1234,1 Rocket Rd,Hawthorne,2023-05-28
+42,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Rd,Mumbai,2023-12-19
+43,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-02-23
+44,Sameep,Sharma,Tech Corp,sameep.sharma@example.com,,123 Main Street,New York,2023-02-25
+45,sameep,Sharma,TECH CORP,sameep.sharma@example.com,(555) -0101,123 Main Street,New York,2023-10-04
+46,Alici,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-04-23
+47,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-08-22
+48,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-04-25
+49,Sameep,Sharma,Technology Corporation,sameep.sharma@example.com,555-0101,123 Main St.,New York,2023-12-01
+50,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-08-29
+51,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-02-27
+52,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-09-17
+53,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-03-05
+54,Sameep,Sharma,Tech Corp,,555-0101,123 Main Street,,2023-06-01
+55,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-02-28
+56,John,Doe,IBM,john.doe@ibm.com,,100 IBM Plaza,,2023-09-29
+57,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-12-26
+58,Michil,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-12-17
+59,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-03-29
+60,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-01-10
+61,अमित,पटेल,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-12-03
+62,समीप,शर्मा,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-06-10
+63,अमित,पटेल,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-11-30
+64,Elon,Musk,SpaceX,elon@spacex.com,555-1234,1 Rocket Rd,Hawthorne,2023-04-01
+65,समीप,शर्मा,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-03-03
+66,Alice,Smith,Global Retail,,,456 Oak Avenue,Boston,2023-11-21
+67,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-01-08
+68,sarah,Connor,CYBERDYNE,s.connor@cyberdyne.net,(555) -8888,1984 Sky Net Blvd,Los Angeles,2023-11-23
+69,Elon,Musk,SpaceX,elon@spacex.com,555-1234,1 Rocket Rd,Hawthorne,2023-12-08
+70,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-06-10
+71,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Ave,Boston,2023-08-28
+72,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-11-24
+73,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-08-17
+74,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-11-18
+75,Smiip,Sharma,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-01-12
+76,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-06-16
+77,Elon,Musk,SpaceX,elon@spacex.com,,1 Rocket Rd,Hawthorne,2023-11-11
+78,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-06-29
+79,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-02-28
+80,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-06-03
+81,Srh,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-02-15
+82,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-10-15
+83,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-11-24
+84,john,Doe,IBM,john.doe@ibm.com,(555) -9999,100 IBM Plaza,Armonk,2023-08-04
+85,Robert,Brown,Finance Inc,,555-3333,789 Pine Rd,Chicago,2023-09-01
+86,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-08-23
+87,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-01-22
+88,Smiip,Sharma,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-07-22
+89,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-06-26
+90,alice,Smith,GLOBAL RETAIL,alice.smith@globalretail.com,(555) -2222,456 Oak Avenue,Boston,2023-03-19
+91,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,,1984 Sky Net Blvd,Los Angeles,2023-06-10
+92,Alice,Smith,Global Retail,,,456 Oak Avenue,,2023-07-23
+93,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-02-23
+94,michael,Scott,DUNDER MIFFLIN,m.scott@dundermifflin.com,(555) -7777,1725 Slough Ave,Scranton,2023-04-18
+95,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-11-27
+96,Srh,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-02-15
+97,Elon,Musk,SpaceX,elon@spacex.com,555-1234,1 Rocket Rd,Hawthorne,2023-05-13
+98,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-04-16
+99,समीप,शर्मा,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-05-18
+100,amit,Patel,INDIAN TECH,amit.patel@example.in,(987) 6543210,MG Road,Mumbai,2023-05-14
+101,Michael,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-10-16
+102,Smiip,Sharma,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-01-26
+103,Elon,Musk,SpaceX,elon@spacex.com,555-1234,1 Rocket Rd,Hawthorne,2024-01-01
+104,समीप,शर्मा,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-04-03
+105,Michael,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-07-19
+106,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-10-11
+107,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-07-21
+108,Sameep,Sharma,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-09-08
+109,Smiip,Sharma,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-08-11
+110,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-02-21
+111,elon,Musk,SPACEX,elon@spacex.com,(555) -1234,1 Rocket Rd,Hawthorne,2023-05-26
+112,Michael,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-10-12
+113,Smiip,Sharma,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-03-14
+114,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-02-28
+115,Michael,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-10-16
+116,समीप,शर्मा,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-01-01
+117,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Rd,Mumbai,2023-12-25
+118,Amit,Patel,Indian Tech,amit.patel@example.in,,MG Road,Mumbai,2023-11-20
+119,Alici,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-10-05
+120,sameep,Sharma,TECH CORP,sameep.sharma@example.com,(555) -0101,123 Main Street,New York,2023-11-12
+121,John,Doe,IBM,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-02-12
+122,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-01-22
+123,michael,Scott,DUNDER MIFFLIN,m.scott@dundermifflin.com,(555) -7777,1725 Slough Ave,Scranton,2023-01-27
+124,Michil,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-05-21
+125,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-04-25
+126,John,Doe,International Business Machines,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-01-26
+127,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-12-26
+128,john,Doe,IBM,john.doe@ibm.com,(555) -9999,100 IBM Plaza,Armonk,2023-11-05
+129,sarah,Connor,CYBERDYNE,s.connor@cyberdyne.net,(555) -8888,1984 Sky Net Blvd,Los Angeles,2023-05-20
+130,Alice,Smith,Global Retail,alice.smith@globalretail.com,555-2222,456 Oak Avenue,Boston,2023-07-10
+131,Amit,Patel,Indian Tech,amit.patel@example.in,9876543210,MG Rd,Mumbai,2023-07-09
+132,समीप,शर्मा,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-04-03
+133,sameep,Sharma,TECH CORP,sameep.sharma@example.com,(555) -0101,123 Main Street,New York,2023-10-21
+134,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-02-23
+135,Elon,Musk,SpaceX,elon@spacex.com,555-1234,1 Rocket Rd,Hawthorne,2023-10-18
+136,Srh,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-11-28
+137,Michael,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-11-24
+138,Michael,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-10-12
+139,Michael,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-11-24
+140,अमित,पटेल,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-08-15
+141,John,Doe,International Business Machines,john.doe@ibm.com,555-9999,100 IBM Plaza,Armonk,2023-11-27
+142,Robert,Brown,Finance Inc,robert.b@finance.com,555-3333,789 Pine Rd,Chicago,2023-12-22
+143,Elon,Musk,SpaceX,elon@spacex.com,555-1234,1 Rocket Rd,Hawthorne,2023-08-17
+144,robert,Brown,FINANCE INC,robert.b@finance.com,(555) -3333,789 Pine Rd,Chicago,2023-05-19
+145,elon,Musk,SPACEX,elon@spacex.com,(555) -1234,1 Rocket Rd,Hawthorne,2023-07-06
+146,Michael,Scott,Dunder Mifflin,m.scott@dundermifflin.com,555-7777,1725 Slough Ave,Scranton,2023-07-13
+147,Sarah,Connor,Cyberdyne,s.connor@cyberdyne.net,555-8888,1984 Sky Net Blvd,Los Angeles,2023-06-03
+148,अमित,पटेल,Indian Tech,amit.patel@example.in,9876543210,MG Road,Mumbai,2023-05-12
+149,alice,Smith,GLOBAL RETAIL,alice.smith@globalretail.com,(555) -2222,456 Oak Avenue,Boston,2023-11-26
+150,समीप,शर्मा,Tech Corp,sameep.sharma@example.com,555-0101,123 Main Street,New York,2023-05-18
