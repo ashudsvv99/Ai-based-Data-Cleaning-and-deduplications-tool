@@ -72,9 +72,10 @@ class PipelineOrchestrator:
         domain_info = DomainProfiler(llm_client=llm).detect_domain(df, log_callback=self.log)
         domain           = domain_info["domain"]
         dataset_intent   = domain_info.get("intent", "Non-Predictive Business")
+        sub_intent       = domain_info.get("sub_intent", "Master Data")
         target_variables = domain_info.get("target_variables", [])
         is_time_series   = domain_info.get("is_time_series", False)
-        self.log(f"  Domain: {domain} | Intent: {dataset_intent} | Confidence: {domain_info['confidence']} | Method: {domain_info['method']}")
+        self.log(f"  Domain: {domain} | Intent: {dataset_intent} | Sub: {sub_intent} | Confidence: {domain_info['confidence']} | Method: {domain_info['method']}")
         self.log(f"  Reasoning: {domain_info['reasoning']}")
         if target_variables:
             self.log(f"  Target Variables: {target_variables}")
@@ -95,10 +96,16 @@ class PipelineOrchestrator:
         # ── Phase 3: Plan Cleaning Strategies ──
         self.log("Phase 3: Planning Cleaning Strategies")
         planner = PlannerAgent(llm)
-        strategies = planner.plan(schema_mapping, log_callback=self.log)
+        strategies = planner.plan(
+            schema_mapping, log_callback=self.log,
+            domain=domain, dataset_intent=dataset_intent,
+        )
 
-        # Generate smart imputation rules
-        smart_rules = planner.generate_smart_imputation_rules(df, schema_mapping, log_callback=self.log)
+        # Generate smart imputation rules (domain + intent aware)
+        smart_rules = planner.generate_smart_imputation_rules(
+            df, schema_mapping, log_callback=self.log,
+            domain=domain, dataset_intent=dataset_intent,
+        )
 
         # Capture pre-cleaning metrics
         missing_before = df.isna().sum().to_dict()
@@ -186,18 +193,7 @@ class PipelineOrchestrator:
 
         # ── Phase 7: Domain-Specific Rules ──
         self.log("Phase 7: Domain-Specific Rules")
-        if domain == "Retail":
-            if "priority" in df.columns and "customer_type" in df.columns:
-                b2x_mask = df["customer_type"].astype(str).str.upper().str.strip().isin(["B2B", "B2C"])
-                missing_mask = df["priority"].isna() | df["priority"].astype(str).str.strip().isin(["", "nan", "None"])
-                df.loc[b2x_mask & missing_mask, "priority"] = "Medium"
-                filled = (b2x_mask & missing_mask).sum()
-                if filled > 0:
-                    self.log(f"  [Domain] Filled {filled} missing priorities for B2B/B2C customers")
-        elif domain == "Finance":
-            self.log("  (Finance rules: strict outlier handling prioritized)")
-        elif domain == "Healthcare":
-            self.log("  (Healthcare rules: privacy checks prioritized)")
+        df = self._apply_domain_rules(df, domain, dataset_intent)
 
         # ── Phase 8: Deduplication & Entity Resolution ──
         self.log("Phase 8: Deduplication & Entity Resolution")
@@ -205,7 +201,14 @@ class PipelineOrchestrator:
 
         # Transactional domains require keeping all rows to preserve events.
         # Master Data domains (CRM, HR, Non-Predictive Business) safely collapse rows.
-        is_master_data = (dataset_intent == "Non-Predictive Business") or (domain in ["CRM", "HR"])
+        _MASTER_DATA_DOMAINS = {
+            "CRM", "HR", "Healthcare", "Real Estate", "Insurance",
+            "Pharma", "Legal", "Education",
+        }
+        is_master_data = (
+            dataset_intent == "Non-Predictive Business" or
+            domain in _MASTER_DATA_DOMAINS
+        )
         dedup = DeduplicationEngine(
             df, dedup_strategies,
             dataset_intent=dataset_intent,
@@ -280,6 +283,7 @@ class PipelineOrchestrator:
             "final_rows":        final_rows,
             "domain":            domain,
             "dataset_intent":    dataset_intent,
+            "sub_intent":        sub_intent,
             "target_variables":  target_variables,
             "is_time_series":    is_time_series,
             "domain_info":       domain_info,
@@ -303,3 +307,136 @@ class PipelineOrchestrator:
         }
 
         return df, metadata
+
+    # ─────────────────────────────────────────────────────────────
+    # Domain-specific cleaning rules (Phase 7)
+    # ─────────────────────────────────────────────────────────────
+    def _apply_domain_rules(self, df: pd.DataFrame, domain: str, dataset_intent: str) -> pd.DataFrame:
+        """Apply domain-specific data cleaning rules after schema standardization."""
+        import numpy as np
+
+        def _col(name):
+            """Case-insensitive column lookup."""
+            for c in df.columns:
+                if c.lower().replace(" ", "_") == name.lower():
+                    return c
+            return None
+
+        # ── Retail ────────────────────────────────────────────────
+        if domain == "Retail":
+            pri = _col("priority")
+            ctype = _col("customer_type")
+            if pri and ctype:
+                b2x = df[ctype].astype(str).str.upper().str.strip().isin(["B2B", "B2C"])
+                miss = df[pri].isna() | df[pri].astype(str).str.strip().isin(["", "nan", "None"])
+                df.loc[b2x & miss, pri] = "Medium"
+                filled = int((b2x & miss).sum())
+                if filled > 0:
+                    self.log(f"  [Retail] Filled {filled} missing priorities for B2B/B2C customers")
+
+        # ── Finance ───────────────────────────────────────────────
+        elif domain == "Finance":
+            # Clip negative amounts to 0 for non-debit columns
+            for col in df.columns:
+                col_l = col.lower()
+                if any(k in col_l for k in ["amount", "balance", "revenue", "profit"]):
+                    if "debit" not in col_l and "loss" not in col_l:
+                        if df[col].dtype in [np.float64, np.int64]:
+                            neg_count = int((df[col] < 0).sum())
+                            if neg_count > 0:
+                                df[col] = df[col].clip(lower=0)
+                                self.log(f"  [Finance] Clipped {neg_count} negative values in '{col}' to 0")
+            # Fill payment_status if order_status is Delivered
+            pay = _col("payment_status")
+            ord_stat = _col("order_status") or _col("transaction_status")
+            if pay and ord_stat:
+                mask = (df[ord_stat].astype(str).str.lower() == "delivered") & df[pay].isna()
+                if mask.sum() > 0:
+                    df.loc[mask, pay] = "Paid"
+                    self.log(f"  [Finance] Filled {int(mask.sum())} payment_status = 'Paid' where order delivered")
+
+        # ── Healthcare ────────────────────────────────────────────
+        elif domain == "Healthcare":
+            # Validate age range (0-150)
+            age = _col("age")
+            if age and df[age].dtype in [np.float64, np.int64]:
+                invalid = (df[age] < 0) | (df[age] > 150)
+                invalid_count = int(invalid.sum())
+                if invalid_count > 0:
+                    df.loc[invalid, age] = np.nan
+                    self.log(f"  [Healthcare] Nullified {invalid_count} out-of-range age values (0-150)")
+            # Validate BMI (10-70)
+            bmi = _col("bmi")
+            if bmi and df[bmi].dtype in [np.float64, np.int64]:
+                invalid = (df[bmi] < 10) | (df[bmi] > 70)
+                if int(invalid.sum()) > 0:
+                    df.loc[invalid, bmi] = np.nan
+                    self.log(f"  [Healthcare] Nullified {int(invalid.sum())} out-of-range BMI values")
+            # Validate blood_pressure (systolic 60-250)
+            bp = _col("blood_pressure") or _col("systolic")
+            if bp and df[bp].dtype in [np.float64, np.int64]:
+                invalid = (df[bp] < 60) | (df[bp] > 250)
+                if int(invalid.sum()) > 0:
+                    df.loc[invalid, bp] = np.nan
+                    self.log(f"  [Healthcare] Nullified {int(invalid.sum())} out-of-range blood pressure values")
+            self.log("  [Healthcare] Privacy: ID/Name/MRN fields will not be statistically imputed")
+
+        # ── HR ────────────────────────────────────────────────────
+        elif domain == "HR":
+            # Validate salary >= 0
+            sal = _col("salary")
+            if sal and df[sal].dtype in [np.float64, np.int64]:
+                neg = df[sal] < 0
+                if int(neg.sum()) > 0:
+                    df.loc[neg, sal] = np.nan
+                    self.log(f"  [HR] Nullified {int(neg.sum())} negative salary values")
+            self.log("  [HR] Salary and compensation fields will not be statistically imputed")
+
+        # ── E-Commerce ────────────────────────────────────────────
+        elif domain == "E-Commerce":
+            # Clip negative prices
+            price = _col("price") or _col("selling_price") or _col("mrp")
+            if price and df[price].dtype in [np.float64, np.int64]:
+                neg = df[price] < 0
+                if int(neg.sum()) > 0:
+                    df.loc[neg, price] = np.nan
+                    self.log(f"  [E-Commerce] Nullified {int(neg.sum())} negative price values")
+            # Rating must be 1-5 (or 0-10 if max > 5)
+            rating = _col("rating") or _col("review_rating")
+            if rating and df[rating].dtype in [np.float64, np.int64]:
+                max_rating = df[rating].dropna().max()
+                upper = 10 if max_rating > 5 else 5
+                invalid = (df[rating] < 0) | (df[rating] > upper)
+                if int(invalid.sum()) > 0:
+                    df.loc[invalid, rating] = np.nan
+                    self.log(f"  [E-Commerce] Nullified {int(invalid.sum())} out-of-range ratings")
+
+        # ── Logistics ─────────────────────────────────────────────
+        elif domain == "Logistics":
+            # Delivery status: if tracking_id is present, mark as 'In Transit' if missing
+            stat = _col("delivery_status") or _col("status")
+            track = _col("tracking_id") or _col("tracking_number")
+            if stat and track:
+                has_track = df[track].notna() & (df[track].astype(str).str.strip() != "")
+                miss_stat = df[stat].isna() | (df[stat].astype(str).str.strip() == "")
+                mask = has_track & miss_stat
+                if int(mask.sum()) > 0:
+                    df.loc[mask, stat] = "In Transit"
+                    self.log(f"  [Logistics] Filled {int(mask.sum())} delivery_status = 'In Transit' where tracking present")
+
+        # ── Manufacturing ─────────────────────────────────────────
+        elif domain == "Manufacturing":
+            # Yield/quantity must be >= 0
+            for col in df.columns:
+                if any(k in col.lower() for k in ["yield", "quantity", "production", "output"]):
+                    if df[col].dtype in [np.float64, np.int64]:
+                        neg = df[col] < 0
+                        if int(neg.sum()) > 0:
+                            df.loc[neg, col] = np.nan
+                            self.log(f"  [Manufacturing] Nullified {int(neg.sum())} negative values in '{col}'")
+
+        # ── CRM ───────────────────────────────────────────────────
+        elif domain == "CRM":
+            self.log("  [CRM] Lead/contact data: identity fields will not be statistically imputed")
+
+        return df

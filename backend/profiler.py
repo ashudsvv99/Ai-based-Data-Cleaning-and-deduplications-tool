@@ -19,7 +19,10 @@ class DatasetProfiler:
         total_rows = len(self.df)
         total_cols = len(self.df.columns)
 
-        missing_counts = self.df.isnull().sum()
+        import config
+        temp_df = self.df.replace(config.MISSING_VALUE_MARKERS, pd.NA)
+        temp_df = temp_df.replace(r'^\s*$', pd.NA, regex=True)
+        missing_counts = temp_df.isnull().sum()
         missing_pct = (missing_counts / total_rows) * 100
 
         exact_duplicates = self.df.duplicated().sum()

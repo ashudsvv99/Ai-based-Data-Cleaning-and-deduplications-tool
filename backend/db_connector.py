@@ -260,6 +260,14 @@ class DatabaseConnector:
 
             pk = inspector.get_pk_constraint(table_name)
             pk_cols = pk.get("constrained_columns", [])
+            
+            # Fallback: Infer Primary Key if none explicitly defined
+            if not pk_cols:
+                for col in columns:
+                    cname = col["name"].lower()
+                    if cname == "id" or cname == f"{table_name.lower()}_id" or cname == f"{table_name.rstrip('s').lower()}_id":
+                        pk_cols = [col["name"]]
+                        break
 
             from sqlalchemy import select, func, table
             with self.engine.connect() as conn:
@@ -344,7 +352,9 @@ class DatabaseConnector:
             from sqlalchemy import text
             if self.db_type == "SQLite":
                 sql = f'CREATE TABLE "{backup_name}" AS SELECT * FROM "{table_name}"'
-            elif self.db_type in ("PostgreSQL", "MySQL"):
+            elif self.db_type == "MySQL":
+                sql = f'CREATE TABLE `{backup_name}` AS SELECT * FROM `{table_name}`'
+            elif self.db_type == "PostgreSQL":
                 sql = f'CREATE TABLE "{backup_name}" AS SELECT * FROM "{table_name}"'
             elif self.db_type == "SQL Server":
                 sql = f'SELECT * INTO "{backup_name}" FROM "{table_name}"'
@@ -390,7 +400,35 @@ class DatabaseConnector:
         if not self.engine:
             return False, "Not connected."
         try:
-            df.to_sql(table_name, self.engine, if_exists=if_exists, index=index)
+            if if_exists == "replace":
+                from sqlalchemy import inspect, text
+                inspector = inspect(self.engine)
+                if inspector.has_table(table_name):
+                    # Instead of dropping the table (which breaks foreign keys),
+                    # we delete all rows and append within a transaction.
+                    with self.engine.connect() as conn:
+                        if self.db_type == "MySQL":
+                            conn.execute(text("SET FOREIGN_KEY_CHECKS=0"))
+                            conn.commit()
+                        
+                        with conn.begin():
+                            if self.db_type == "MySQL":
+                                conn.execute(text(f"DELETE FROM `{table_name}`"))
+                            elif self.db_type in ["PostgreSQL", "SQL Server", "Oracle DB", "SQLite"]:
+                                conn.execute(text(f'DELETE FROM "{table_name}"'))
+                            else:
+                                conn.execute(text(f"DELETE FROM {table_name}"))
+                            
+                            df.to_sql(table_name, conn, if_exists="append", index=index)
+                            
+                        if self.db_type == "MySQL":
+                            conn.execute(text("SET FOREIGN_KEY_CHECKS=1"))
+                            conn.commit()
+                else:
+                    df.to_sql(table_name, self.engine, if_exists="replace", index=index)
+            else:
+                df.to_sql(table_name, self.engine, if_exists=if_exists, index=index)
+                
             return True, f"Written {len(df)} rows to '{table_name}'."
         except Exception as e:
             return False, str(e)

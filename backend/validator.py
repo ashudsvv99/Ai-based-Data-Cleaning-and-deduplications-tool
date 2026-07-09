@@ -20,7 +20,7 @@ _PHONE_REGEX = re.compile(r'^\+?\d{7,15}$')
 
 # Known placeholder / dummy email values
 _DUMMY_EMAIL_PATTERNS = re.compile(
-    r'^(nomail|noemail|test@test|none|n/a|na|null|invalid|fake|dummy|no_email)',
+    r'^(nomail|noemail|test@test|none|n/a|na|null|invalid|fake|dummy|no_email)(@|$)',
     re.IGNORECASE
 )
 

@@ -9,9 +9,9 @@ import psutil
 # ──────────────────────────────────────────────
 # LLM Settings (LM Studio / local model)
 # ──────────────────────────────────────────────
-LLM_BASE_URL = os.getenv("LM_STUDIO_URL", "http://localhost:1234/v1")
-LLM_MODEL_NAME = "local-model"
-LLM_TEMPERATURE = 0.1          # Low temperature for deterministic JSON outputs
+LLM_BASE_URL = os.getenv("LM_STUDIO_URL", "http://localhost:1234/v1") 
+LLM_MODEL_NAME = "local-model" 
+LLM_TEMPERATURE = 0.15 # Low temperature for deterministic JSON outputs
 LLM_MAX_TOKENS_DEFAULT = 4096  # Default max tokens per response 
 LLM_MAX_TOKENS_CEILING = 16384 # Upper limit for dynamic token calculation 
 LLM_TIMEOUT_SECONDS = 60       # 60 seconds (prevents UI lock-ups) 
@@ -21,7 +21,7 @@ LLM_RETRY_DELAY_SECONDS = 5    # Base delay between retries (doubles each time)
 # Chunking: max items to send per LLM call
 # Modern local LLMs can safely process larger chunks.
 # On a 32GB system, you can safely increase this to 50 or 100.
-LLM_CHUNK_SIZE = 25
+LLM_CHUNK_SIZE = 25 
 
 
 # ──────────────────────────────────────────────
@@ -56,8 +56,8 @@ CATEGORICAL_MAX_UNIQUE = 50       # Or if unique count < 50
 # ──────────────────────────────────────────────
 # Cleaning Thresholds
 # ──────────────────────────────────────────────
-FUZZY_MATCH_THRESHOLD = 80         # Minimum fuzz ratio to consider two names the same
-OUTLIER_IQR_MULTIPLIER = 1.5      # Standard IQR multiplier for outlier clipping
+FUZZY_MATCH_THRESHOLD = 80 # Minimum fuzz ratio to consider two names the same
+OUTLIER_IQR_MULTIPLIER = 1.5 # Standard IQR multiplier for outlier clipping
 MIN_NON_ASCII_RATIO = 0.01        # If > 1% of column values are non-ASCII, flag for translation
 
 

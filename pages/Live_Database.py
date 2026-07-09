@@ -1,322 +1,554 @@
 """
-pages/Live_Database.py  — Universal Database Connector & NL Query Console
+pages/Live_Database.py — IntelliClean AI · Live Database Studio v3
 
-Features:
-  - DB type selector with visual cards (PostgreSQL, MySQL, SQLite, SQL Server, Oracle, IBM DB2)
-  - Connection form with host / port / database / username / password / SSL / pool settings
-  - Live connection test indicator
-  - Table browser with schema explorer, row-count, preview
-  - AI Cleaning Pipeline: run the full 12-phase pipeline on any live table
-  - NL Query Console: type in plain English → LLM generates SQL → confirms destructive ops → executes
-  - Automatic backup (table-copy + CSV) before any destructive action
-  - Query history / audit log panel
+5-Tab professional UI:
+  Tab 1: 🔌 Connect        — DB type selector + connection form
+  Tab 2: 🗺️ Database Map   — Table relationships graph + schema cards
+  Tab 3: 💬 AI Query Studio — NLP chat console with auto-execute
+  Tab 4: 🧹 AI Cleaning    — Full pipeline on live table + write-back
+  Tab 5: 📋 Audit Log      — Full query history + backup registry
 """
 import os
 import json
+import time
+import datetime
 import pandas as pd
 import streamlit as st
 
-# ─────────────────────────────────────────────────────────────
-# Page config
-# ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="IntelliClean · DB Connector",
+    page_title="IntelliClean · DB Studio",
     page_icon="🗄️",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 # ─────────────────────────────────────────────────────────────
-# CSS — same dark-glassmorphism theme as main app
+#  CSS — Premium dark glassmorphism + chat UI
 # ─────────────────────────────────────────────────────────────
+if 'theme' not in st.session_state:
+    st.session_state.theme = 'dark'
+
+theme_css = ""
+if st.session_state.theme == 'light':
+    theme_css = """
+/* Light Mode Overrides */
+.stApp { background: #fafafa !important; color: #0f172a !important; }
+.db-hero { background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 50%, #fafafa 100%) !important; border-color: rgba(139, 92, 246, 0.2) !important; }
+.db-hero h1 { background: linear-gradient(135deg, #3b82f6 30%, #8b5cf6 100%) !important; -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+.db-hero p { color: #475569 !important; }
+.db-hero-badge { color: #7c3aed !important; }
+.metric-card, .gpanel, .db-card, .chat-container, .upload-zone, .log-container, .rel-graph, .sql-box, .tbl-card, .mini-m, .perm-modal { background: #ffffff !important; border-color: #e2e8f0 !important; color: #1e293b !important; box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important; }
+.metric-value, .db-name, .mv { color: #0f172a !important; }
+.metric-sub, .metric-label, .db-desc, .ml { color: #64748b !important; }
+.sec-hdr, .section-header, h1, h2, h3, h4, h5 { color: #0f172a !important; border-color: #e2e8f0 !important; }
+.chat-bubble-user { background: #f3e8ff !important; border-color: #d8b4fe !important; color: #581c87 !important; }
+.chat-bubble-ai { background: #fafafa !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
+.sql-box { color: #334155 !important; }
+.chip { background: #ecfeff !important; border-color: #a5f3fc !important; color: #0e7490 !important; }
+.chip:hover { background: #cffafe !important; }
+.sec-badge { background: #f3e8ff !important; border-color: #d8b4fe !important; color: #7c3aed !important; }
+.tbl-card.active { border-color: #8b5cf6 !important; background: #f5f3ff !important; }
+.stTabs [data-baseweb="tab-list"] { background: #e2e8f0 !important; border: 1px solid #cbd5e1 !important; }
+.stTabs [data-baseweb="tab"] { color: #475569 !important; }
+.stTabs [data-baseweb="tab"]:hover { color: #0f172a !important; background: rgba(0,0,0,0.05) !important; }
+.stTabs [aria-selected="true"] { background: #ffffff !important; color: #7c3aed !important; box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important; }
+/* Override inline styles */
+div[style*="color:#94a3b8"], div[style*="color: #94a3b8"] { color: #64748b !important; }
+div[style*="color:#e2e8f0"], div[style*="color: #e2e8f0"] { color: #0f172a !important; }
+div[style*="color:#475569"], div[style*="color: #475569"] { color: #475569 !important; }
+div[style*="color:#cbd5e1"], div[style*="color: #cbd5e1"] { color: #64748b !important; }
+div[style*="color:#a78bfa"], div[style*="color: #a78bfa"] { color: #7c3aed !important; }
+div[style*="color:#4ade80"], div[style*="color: #4ade80"] { color: #16a34a !important; }
+/* Fix Native Streamlit Widgets in Light Mode */
+.stButton > button { background-color: #ffffff !important; color: #0f172a !important; border: 1px solid #cbd5e1 !important; }
+.stButton > button:hover { border-color: #8b5cf6 !important; color: #8b5cf6 !important; background-color: #f8fafc !important; }
+.stButton > button[kind="primary"] { background: linear-gradient(135deg, #7c3aed, #9333ea) !important; color: #ffffff !important; border: none !important; }
+div[data-baseweb="input"] > div, div[data-baseweb="base-input"], div[data-baseweb="select"] > div { background-color: #ffffff !important; border-color: #cbd5e1 !important; }
+div[data-baseweb="input"] input, div[data-baseweb="select"] div { color: #0f172a !important; background-color: transparent !important; }
+input::placeholder { color: #94a3b8 !important; }
+"""
+
+st.markdown(f"<style>{theme_css}</style>", unsafe_allow_html=True)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
-.stApp { background: #0b0d17; color: #e2e8f0; }
+.stApp { background: #080b14; color: #e2e8f0; }
 #MainMenu, footer, header { visibility: hidden; }
-.block-container { padding: 2rem 3rem 4rem; max-width: 1500px; }
+.block-container { padding: 1.5rem 2.5rem 4rem; max-width: 1600px; }
 
-/* DB type cards */
+/* ── DB Hero ── */
+.db-hero {
+    background: linear-gradient(135deg, #1a1040 0%, #0f172a 50%, #0d1a30 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px;
+    padding: 2rem 2.5rem; margin-bottom: 1.5rem; position: relative; overflow: hidden;
+}
+.db-hero h1 {
+    font-size: 2rem; font-weight: 800; margin: 0.5rem 0;
+    background: linear-gradient(135deg, #e2e8f0 30%, #a78bfa 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.db-hero p {
+    font-size: 0.9rem; color: #94a3b8; margin-top: 0.4rem; max-width: 700px; line-height: 1.5;
+}
+.db-hero-badge {
+    font-size: 0.72rem; font-weight: 600; color: #a78bfa; letter-spacing: 0.06em; margin-bottom: 0.5rem;
+}
+
+/* ── DB type cards ── */
 .db-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px; padding: 1.2rem 1.4rem;
-    cursor: pointer; transition: all 0.2s;
-    display: flex; flex-direction: column; gap: 6px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 1rem 1.2rem; cursor: pointer;
+    transition: all 0.2s; display: flex; flex-direction: column; gap: 5px;
+    text-align: center;
 }
-.db-card:hover { border-color: rgba(139,92,246,0.5); background: rgba(139,92,246,0.06); transform: translateY(-2px); }
-.db-card.selected { border-color: #a78bfa; background: rgba(139,92,246,0.12); box-shadow: 0 0 20px rgba(139,92,246,0.2); }
+.db-card:hover { border-color: rgba(139,92,246,0.5); background: rgba(139,92,246,0.07); transform: translateY(-2px); }
+.db-card.selected { border-color: #a78bfa; background: rgba(139,92,246,0.14); box-shadow: 0 0 24px rgba(139,92,246,0.22); }
 .db-icon { font-size: 1.8rem; }
-.db-name { font-size: 0.92rem; font-weight: 700; color: #e2e8f0; }
-.db-desc { font-size: 0.72rem; color: #64748b; }
-.db-port { font-size: 0.68rem; color: #475569; }
+.db-name { font-size: 0.88rem; font-weight: 700; color: #e2e8f0; }
+.db-desc { font-size: 0.7rem; color: #64748b; }
 
-/* Connected badge */
-.conn-badge-ok  { display:inline-flex;align-items:center;gap:5px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);border-radius:20px;padding:3px 12px;font-size:0.75rem;font-weight:600;color:#4ade80; }
-.conn-badge-err { display:inline-flex;align-items:center;gap:5px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:20px;padding:3px 12px;font-size:0.75rem;font-weight:600;color:#f87171; }
+/* ── Connection badges ── */
+.conn-ok  { display:inline-flex;align-items:center;gap:5px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);border-radius:20px;padding:3px 12px;font-size:0.74rem;font-weight:600;color:#4ade80; }
+.conn-err { display:inline-flex;align-items:center;gap:5px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:20px;padding:3px 12px;font-size:0.74rem;font-weight:600;color:#f87171; }
 
-/* Section headers */
-.section-header {
+/* ── Glass panels ── */
+.gpanel {
+    background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px; padding: 1.3rem 1.5rem; margin-bottom: 0.9rem;
+}
+.gpanel.ok  { border-color:rgba(74,222,128,0.25); background:rgba(74,222,128,0.04); }
+.gpanel.warn { border-color:rgba(251,191,36,0.28); background:rgba(251,191,36,0.05); }
+.gpanel.err { border-color:rgba(248,113,113,0.25); background:rgba(248,113,113,0.04); }
+.gpanel.info { border-color:rgba(34,211,238,0.25); background:rgba(34,211,238,0.04); }
+.gpanel.purple { border-color:rgba(139,92,246,0.3); background:rgba(139,92,246,0.06); }
+
+/* ── Section headers ── */
+.sec-hdr {
     display:flex;align-items:center;gap:10px;
-    font-size:1rem;font-weight:700;color:#e2e8f0;
+    font-size:0.95rem;font-weight:700;color:#e2e8f0;
     border-bottom:1px solid rgba(255,255,255,0.07);
-    padding-bottom:0.6rem;margin:1.8rem 0 1rem;
+    padding-bottom:0.55rem;margin:1.6rem 0 0.9rem;
 }
-.section-badge {
+.sec-badge {
     background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);
-    border-radius:6px;padding:2px 8px;font-size:0.7rem;font-weight:700;color:#a78bfa;
+    border-radius:6px;padding:2px 8px;font-size:0.68rem;font-weight:700;color:#a78bfa;
 }
 
-/* Glass panel */
-.glass-panel {
-    background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
-    border-radius:14px;padding:1.4rem 1.6rem;margin-bottom:1rem;
-}
-.glass-panel.success { border-color:rgba(74,222,128,0.25);background:rgba(74,222,128,0.04); }
-.glass-panel.warning { border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.04); }
-.glass-panel.error   { border-color:rgba(248,113,113,0.25);background:rgba(248,113,113,0.04); }
-.glass-panel.info    { border-color:rgba(34,211,238,0.25);background:rgba(34,211,238,0.04); }
-
-/* Table card */
-.table-card {
-    background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
-    border-radius:10px;padding:0.8rem 1.1rem;margin-bottom:0.5rem;
-    cursor:pointer;transition:border-color 0.15s;
-    display:flex;align-items:center;justify-content:space-between;
-}
-.table-card:hover { border-color:rgba(139,92,246,0.4); }
-.table-card.active { border-color:#a78bfa;background:rgba(139,92,246,0.08); }
-
-/* NL Query box */
-.query-console {
-    background:rgba(6,8,16,0.95);border:1px solid rgba(139,92,246,0.25);
-    border-radius:14px;padding:1.2rem 1.4rem;margin:1rem 0;
-}
-.sql-preview {
-    background:#060810;border:1px solid rgba(255,255,255,0.07);
-    border-left:3px solid #a78bfa;border-radius:10px;
-    padding:1rem 1.2rem;font-family:'Courier New',monospace;
-    font-size:0.82rem;color:#a5f3fc;white-space:pre-wrap;
-    overflow-x:auto;margin:0.5rem 0;
+/* ── Relationship graph container ── */
+.rel-graph {
+    background: rgba(6,8,16,0.9); border: 1px solid rgba(139,92,246,0.2);
+    border-radius: 16px; overflow: hidden; min-height: 400px;
 }
 
-/* Backup badge */
-.backup-badge {
+/* ── Metric cards ── */
+.metric-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin: 1.5rem 0; }
+.metric-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 1.4rem 1.6rem;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.metric-card:hover { border-color: rgba(139,92,246,0.5); transform: translateY(-2px); }
+.metric-label { font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; }
+.metric-value { font-size: 2rem; font-weight: 700; color: #e2e8f0; line-height: 1; }
+.metric-sub { font-size: 0.8rem; color: #94a3b8; }
+.metric-card.purple .metric-value { color: #a78bfa; }
+.metric-card.pink   .metric-value { color: #f472b6; }
+.metric-card.cyan   .metric-value { color: #22d3ee; }
+.metric-card.green  .metric-value { color: #4ade80; }
+
+/* ── Chat UI ── */
+.chat-container {
+    display: flex; flex-direction: column; gap: 12px;
+    max-height: 500px; overflow-y: auto;
+    padding: 1rem; background: rgba(6,8,16,0.7);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; margin-bottom: 1rem;
+}
+.chat-bubble-user {
+    align-self: flex-end; max-width: 75%;
+    background: linear-gradient(135deg, rgba(124,58,237,0.35), rgba(139,92,246,0.25));
+    border: 1px solid rgba(139,92,246,0.4); border-radius: 18px 18px 4px 18px;
+    padding: 0.7rem 1rem; font-size: 0.88rem; color: #e2e8f0;
+}
+.chat-bubble-ai {
+    align-self: flex-start; max-width: 85%;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px 18px 18px 4px; padding: 0.7rem 1rem;
+    font-size: 0.88rem; color: #cbd5e1;
+}
+.chat-meta {
+    font-size: 0.68rem; color: #475569; margin-top: 3px;
+}
+.chat-conf-high { color: #4ade80; }
+.chat-conf-med  { color: #fbbf24; }
+.chat-conf-low  { color: #f87171; }
+
+/* ── SQL preview ── */
+.sql-box {
+    background: #060810; border: 1px solid rgba(255,255,255,0.07);
+    border-left: 3px solid #a78bfa; border-radius: 10px;
+    padding: 0.9rem 1.1rem; font-family: 'Courier New', monospace;
+    font-size: 0.82rem; color: #a5f3fc; white-space: pre-wrap;
+    overflow-x: auto; margin: 0.4rem 0;
+}
+
+/* ── Suggestion chips ── */
+.chip {
     display:inline-flex;align-items:center;gap:5px;
-    background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);
-    border-radius:8px;padding:4px 10px;font-size:0.75rem;font-weight:600;color:#fbbf24;
-    margin:2px;
-}
-
-/* Query history item */
-.hist-item {
-    background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);
-    border-radius:8px;padding:0.7rem 1rem;margin-bottom:0.4rem;font-size:0.82rem;
-}
-
-/* Stagger animation */
-@keyframes fadeInUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-.anim-in { animation: fadeInUp 0.3s ease forwards; }
-
-/* Suggestion chip */
-.suggest-chip {
-    display:inline-flex;align-items:center;gap:5px;
-    background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);
-    border-radius:20px;padding:4px 12px;font-size:0.74rem;font-weight:500;color:#22d3ee;
+    background:rgba(34,211,238,0.07);border:1px solid rgba(34,211,238,0.22);
+    border-radius:20px;padding:4px 12px;font-size:0.73rem;font-weight:500;color:#22d3ee;
     cursor:pointer;margin:3px;white-space:nowrap;transition:background 0.15s;
 }
-.suggest-chip:hover { background:rgba(34,211,238,0.16); }
+.chip:hover { background:rgba(34,211,238,0.18); }
 
-/* Primary btn */
-.stButton > button[kind="primary"] {
-    background:linear-gradient(135deg,#7c3aed 0%,#9333ea 100%) !important;
-    border:none !important;border-radius:12px !important;font-weight:700 !important;
-    color:white !important;box-shadow:0 4px 24px rgba(124,58,237,0.4) !important;
+/* ── Permission modal ── */
+.perm-modal {
+    background: rgba(251,191,36,0.05); border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 16px; padding: 1.5rem; margin: 0.8rem 0;
 }
-/* Sidebar */
-[data-testid="stSidebar"] { background:#0d1117 !important; border-right:1px solid rgba(255,255,255,0.06) !important; }
+.perm-title { font-size: 1rem; font-weight: 700; color: #fbbf24; margin-bottom: 0.5rem; }
+.perm-detail { font-size: 0.85rem; color: #94a3b8; line-height: 1.7; }
+
+/* ── Table cards ── */
+.tbl-card {
+    background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);
+    border-radius:10px;padding:0.7rem 1rem;margin-bottom:0.45rem;
+    display:flex;align-items:center;justify-content:space-between;
+    transition:border-color 0.15s;cursor:pointer;
+}
+.tbl-card:hover  { border-color:rgba(139,92,246,0.4); }
+.tbl-card.active { border-color:#a78bfa;background:rgba(139,92,246,0.09); }
+
+/* ── Metric mini-cards ── */
+.mini-metrics { display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin:0.7rem 0; }
+.mini-m {
+    background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+    border-radius:10px;padding:0.7rem 1rem;text-align:center;
+}
+.mini-m .mv { font-size:1.5rem;font-weight:700; }
+.mini-m .ml { font-size:0.68rem;color:#64748b;text-transform:uppercase;letter-spacing:0.06em; }
+
+/* ── Backup badge ── */
+.bkp { display:inline-flex;align-items:center;gap:5px;background:rgba(251,191,36,0.09);border:1px solid rgba(251,191,36,0.28);border-radius:8px;padding:3px 9px;font-size:0.72rem;font-weight:600;color:#fbbf24;margin:2px; }
+
+/* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
-    background: rgba(255, 255, 255, 0.02) !important;
-    border-radius: 12px !important;
-    padding: 6px !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    gap: 8px !important;
+    background:rgba(255,255,255,0.02) !important; border-radius:12px !important;
+    padding:6px !important; border:1px solid rgba(255,255,255,0.05) !important; gap:6px !important;
 }
 .stTabs [data-baseweb="tab"] {
-    border-radius: 8px !important;
-    padding: 10px 20px !important;
-    color: #94a3b8 !important;
-    font-weight: 600 !important;
-    border: none !important;
-    background: transparent !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius:8px !important; padding:9px 18px !important; color:#94a3b8 !important;
+    font-weight:600 !important; border:none !important; background:transparent !important;
+    transition:all 0.25s !important;
 }
-.stTabs [data-baseweb="tab"]:hover {
-    color: #e2e8f0 !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-}
+.stTabs [data-baseweb="tab"]:hover { color:#e2e8f0 !important; background:rgba(255,255,255,0.05) !important; }
 .stTabs [aria-selected="true"] {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.35) 100%) !important;
-    color: #c4b5fd !important;
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15) !important;
+    background:linear-gradient(135deg,rgba(139,92,246,0.22),rgba(139,92,246,0.38)) !important;
+    color:#c4b5fd !important; box-shadow:0 4px 15px rgba(139,92,246,0.18) !important;
 }
-[data-testid="stDataFrame"] { border-radius:12px;overflow:hidden; }
+/* Sidebar - Hide entirely */
+[data-testid="stSidebar"] { display: none !important; }
+[data-testid="collapsedControl"] { display: none !important; }
+section[data-testid="stSidebar"] { display: none !important; }
+button[kind="header"] { display: none !important; }
+/* Buttons */
+.stButton > button { border-radius:10px !important; font-weight:600 !important; }
+.stButton > button[kind="primary"] {
+    background:linear-gradient(135deg,#7c3aed,#9333ea) !important;
+    border:none !important; color:#fff !important; box-shadow:0 4px 20px rgba(124,58,237,0.38) !important;
+}
+[data-testid="stDataFrame"] { border-radius:12px; overflow:hidden; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.anim { animation:fadeUp 0.3s ease forwards; }
 </style>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────
-# Imports (deferred to avoid slowing the page on first load)
+# Imports
 # ─────────────────────────────────────────────────────────────
 from backend.db_connector import DatabaseConnector, DB_TYPES
 from agents.nl_query_agent import NLQueryAgent
 from agents.llm_client import LMStudioClient
 
+from backend.state_manager import StateManager
+
 # ─────────────────────────────────────────────────────────────
-# Session state init
+# Session state
 # ─────────────────────────────────────────────────────────────
-def _init_state():
+def _init():
     defaults = {
-        "db_connector":    None,
-        "db_type_sel":     "PostgreSQL",
-        "db_params":       {},
-        "db_tables":       [],
-        "active_table":    None,
-        "table_schema":    {},
-        "table_df":        None,
-        "nl_query_result": None,
-        "pending_sql":     None,
-        "query_history":   [],
-        "suggest_queries": [],
-        "nl_agent":        None,
-        "cleaning_result": None,
+        "db_connector":      None,
+        "db_type_sel":       "PostgreSQL",
+        "db_params":         {},
+        "db_tables":         [],
+        "all_schemas":       [],       # [{table, columns, row_count, pk_columns}]
+        "relationships":     [],       # discovered FK + inferred links
+        "db_overview":       "",
+        "active_table":      None,
+        "table_schema":      {},
+        "table_df":          None,
+        "nl_agent":          None,
+        "chat_messages":     [],       # [{role, content, sql, result_df, meta}]
+        "pending_action":    None,     # destructive query awaiting confirmation
+        "cleaning_result":   None,
+        "audit_log":         [],
+        "suggest_queries":   [],
+        "followup_chips":    [],
     }
+    
+    # Auto-load cached db credentials if starting fresh
+    if "db_params" not in st.session_state:
+        cached_creds = StateManager.load_db_credentials()
+        if cached_creds:
+            defaults["db_params"] = cached_creds
+            defaults["db_type_sel"] = cached_creds.get("db_type", "PostgreSQL")
+            
+            # Auto-reconnect!
+            connector = DatabaseConnector(cached_creds.get("db_type", "PostgreSQL"), cached_creds)
+            ok, msg = connector.connect()
+            if ok:
+                defaults["db_connector"] = connector
+                defaults["nl_agent"] = NLQueryAgent(LMStudioClient())
+            
+    # Auto-load cached pipeline state if starting fresh
+    if "cleaning_result" not in st.session_state:
+        df, meta, table, logs = StateManager.load_pipeline_state()
+        if df is not None:
+            defaults["cleaning_result"] = {"df": df, "meta": meta, "table": table, "logs": logs}
+            
     for k, v in defaults.items():
         if k not in st.session_state:
             st.session_state[k] = v
 
-_init_state()
+_init()
+
+if st.session_state.db_connector and st.session_state.db_connector.is_connected:
+    if not st.session_state.db_tables:
+        def _temp_refresh():
+            conn = st.session_state.db_connector
+            tables = [t for t in conn.list_tables() if not t.endswith("_backup") and "backup_" not in t]
+            st.session_state.db_tables = tables
+            schemas = []
+            for t in tables:
+                info = conn.get_table_info(t)
+                if info and "columns" in info:
+                    schemas.append(info)
+            st.session_state.all_schemas = schemas
+            agent = st.session_state.nl_agent
+            st.session_state.relationships = agent.discover_relationships(schemas) if hasattr(agent, 'discover_relationships') else []
+        _temp_refresh()
+
+def _refresh_schema():
+    conn = st.session_state.db_connector
+    if not conn or not conn.is_connected:
+        return
+    tables = [t for t in conn.list_tables() if not t.endswith("_backup") and "backup_" not in t]
+    st.session_state.db_tables = tables
+    schemas = []
+    for t in tables:
+        info = conn.get_table_info(t)
+        if info and "columns" in info:
+            schemas.append(info)
+    st.session_state.all_schemas = schemas
+    # Discover relationships
+    agent = st.session_state.nl_agent
+    if not agent or not hasattr(agent, 'discover_relationships'):
+        agent = NLQueryAgent(LMStudioClient())
+        st.session_state.nl_agent = agent
+    
+    st.session_state.relationships = agent.discover_relationships(conn, schemas)
+    # Auto-select first table
+    if tables and not st.session_state.active_table:
+        st.session_state.active_table = tables[0]
+        st.session_state.table_schema = schemas[0] if schemas else {}
+
+def _handle_exec_result(exec_res: dict, query_meta: dict):
+    """Process execution result: update chat, audit log, follow-ups."""
+    if exec_res.get("success"):
+        rdf   = exec_res.get("result_df")
+        nrows = len(rdf) if rdf is not None else exec_res.get("rows_affected", 0)
+        msg   = query_meta.get("explanation", "Query executed successfully.")
+        if rdf is None:
+            msg += f"\n✅ {nrows} rows affected."
+        st.session_state.last_result = exec_res
+        st.session_state.chat_messages.append({
+            "role": "assistant",
+            "content": msg,
+            "confidence": query_meta.get("confidence", "Medium"),
+        })
+        # Backups info
+        for bk in exec_res.get("backups", []):
+            st.session_state.chat_messages.append({
+                "role": "assistant",
+                "content": f"🔒 Backup created: `{bk.get('backup_table','?')}` · CSV: `{bk.get('csv_path','?')}`",
+                "confidence": "High",
+            })
+        # Follow-up suggestions
+        if rdf is not None:
+            summary = f"{nrows} rows" if nrows > 0 else "No results"
+            try:
+                chips = st.session_state.nl_agent.suggest_followup_queries(
+                    query_meta.get("user_query", ""),
+                    summary,
+                    query_meta.get("affected_tables", [st.session_state.active_table])[0]
+                    if query_meta.get("affected_tables") else (st.session_state.active_table or ""),
+                )
+                st.session_state.followup_chips = chips
+            except Exception:
+                st.session_state.followup_chips = []
+    else:
+        err = exec_res.get("error", "Unknown error")
+        st.session_state.last_result = exec_res
+        st.session_state.chat_messages.append({
+            "role": "assistant",
+            "content": f"❌ Execution failed: {err}",
+            "confidence": "Low",
+        })
+
+    # Add to audit log
+    st.session_state.audit_log.append({
+        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "table":     st.session_state.active_table,
+        "query":     query_meta.get("explanation", "")[:80],
+        "sql":       query_meta.get("sql", ""),
+        "success":   exec_res.get("success"),
+        "rows":      exec_res.get("rows_affected", 0),
+        "backups":   exec_res.get("backups", []),
+    })
 
 # ─────────────────────────────────────────────────────────────
-# Sidebar — LLM config + breadcrumb
+# Theme & Top Toolbar
 # ─────────────────────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("""
-    <div style="padding:1rem 0 0.5rem;text-align:center">
-      <div style="font-size:2rem">✦</div>
-      <div style="font-size:1rem;font-weight:700;color:#a78bfa">IntelliClean AI</div>
-      <div style="font-size:0.72rem;color:#475569;margin-top:2px">DB Connector · v2.0</div>
+lm_url = os.environ.get("LM_STUDIO_URL", "http://localhost:1234/v1")
+os.environ["LM_STUDIO_URL"] = lm_url
+
+import requests
+@st.cache_data(ttl=5, show_spinner=False)
+def check_llm_status(url: str) -> bool:
+    try:
+        res = requests.get(f"{url}/models", timeout=0.5)
+        return res.status_code == 200
+    except Exception:
+        return False
+
+# Build inline LLM status HTML (no fixed position)
+if check_llm_status(lm_url):
+    indicator_html = """
+    <div style='display: flex; align-items: center; gap: 6px; font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.3);'>
+        <div style='width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981'></div>
+        <span style='color:#10b981; font-weight: 600;'>LLM Online</span>
     </div>
-    """, unsafe_allow_html=True)
-    st.markdown("---")
-    st.markdown("### ⚙️ LLM Configuration")
-    lm_url = st.text_input("LM Studio URL", value="http://localhost:1234/v1")
-    os.environ["LM_STUDIO_URL"] = lm_url
-    st.markdown("---")
-    st.markdown("### 🗄️ Navigation")
-    st.page_link("app.py", label="← File Upload (CSV/Excel)", icon="📂")
-    st.markdown("---")
+    """
+else:
+    indicator_html = """
+    <div style='display: flex; align-items: center; gap: 6px; font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(239, 68, 68, 0.3);'>
+        <div style='width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px #ef4444'></div>
+        <span style='color:#ef4444; font-weight: 600;'>LLM Offline</span>
+    </div>
+    """
 
-    # Show active connection summary
-    if st.session_state.db_connector and st.session_state.db_connector.is_connected:
-        c = st.session_state.db_connector.get_connection_summary()
-        st.markdown(f"""
-        <div class="glass-panel success" style="font-size:0.8rem;padding:0.8rem 1rem">
-          <div style="font-weight:700;color:#4ade80;margin-bottom:4px">● Connected</div>
-          <div style="color:#94a3b8">{c['db_type']} · {c['host'] or c['database']}</div>
-          <div style="color:#64748b;font-size:0.72rem">DB: {c['database']}</div>
-        </div>
-        """, unsafe_allow_html=True)
+col_theme, col_config, col_spacer, col_status = st.columns([1, 1.5, 6.5, 1.5])
+with col_theme:
+    if st.button("☀️ Light" if st.session_state.theme == 'dark' else "🌙 Dark", key="btn_theme_live_db", use_container_width=True):
+        st.session_state.theme = 'light' if st.session_state.theme == 'dark' else 'dark'
+        st.rerun()
 
-        if st.button("🔌 Disconnect", use_container_width=True):
-            st.session_state.db_connector.disconnect()
-            st.session_state.db_connector = None
-            st.session_state.db_tables = []
-            st.session_state.active_table = None
-            st.rerun()
+with col_config:
+    if st.button("⚙️ Global Config", use_container_width=True, key="settings_btn_live"):
+        from components.settings_modal import render_settings_modal
+        render_settings_modal()
+
+with col_status:
+    st.markdown(f"<div style='display:flex; justify-content:flex-end; padding-top:2px'>{indicator_html}</div>", unsafe_allow_html=True)
+
+st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────
 # Header
 # ─────────────────────────────────────────────────────────────
+is_conn = bool(st.session_state.db_connector and st.session_state.db_connector.is_connected)
+
 st.markdown("""
-<div style="background:linear-gradient(135deg,#1e1b4b 0%,#0f172a 50%,#0d1a2d 100%);
-     border:1px solid rgba(139,92,246,0.3);border-radius:20px;padding:2.5rem 3rem;
-     margin-bottom:2rem;position:relative;overflow:hidden">
-  <div style="font-size:0.75rem;font-weight:600;color:#a78bfa;letter-spacing:0.05em;
-       margin-bottom:0.7rem">🗄️ UNIVERSAL DATABASE CONNECTOR</div>
-  <div style="font-size:2.2rem;font-weight:800;
-       background:linear-gradient(135deg,#e2e8f0 30%,#a78bfa 100%);
-       -webkit-background-clip:text;-webkit-text-fill-color:transparent">
-    Live Database Cleaning & Query Studio</div>
-  <div style="font-size:0.95rem;color:#94a3b8;margin-top:0.5rem;max-width:650px">
-    Connect to any SQL database, run AI-powered cleaning on live tables,
-    and query data using plain English — the LLM generates and executes SQL safely.
+<div class="db-hero">
+  <div class="db-hero-badge">
+    🗄️ INTELLICLEAN AI · LIVE DATABASE STUDIO
   </div>
+  <h1>
+    Universal Database Cleaning & Query Studio
+  </h1>
+  <p>
+    Connect to any SQL database • Explore relationships • Query in plain English •
+    AI-powered data cleaning • Full audit trail
+  </p>
 </div>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────
-# Main layout: left panel (connector) + right panel (studio)
+# 5 Main Tabs
 # ─────────────────────────────────────────────────────────────
-is_conn = bool(st.session_state.db_connector and st.session_state.db_connector.is_connected)
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "🔌 Connect",
+    "🗺️ Database Map",
+    "📊 Health Profiler",
+    "💬 AI Query Studio",
+    "🧹 AI Cleaning",
+    "📋 Audit Log",
+])
 
-if is_conn:
-    c = st.session_state.db_connector.get_connection_summary()
-    c1, c2 = st.columns([4, 1])
-    with c1:
-        st.markdown(f'''
-        <div class="glass-panel success" style="font-size:1.1rem;padding:1.5rem;display:flex;justify-content:space-between;align-items:center;border-left:4px solid #4ade80">
+# ═══════════════════════════════════════════════════════════════
+# TAB 1 — CONNECT
+# ═══════════════════════════════════════════════════════════════
+with tab1:
+    if is_conn:
+        c = st.session_state.db_connector.get_connection_summary()
+        st.markdown(f"""
+        <div class="gpanel ok anim" style="padding:1.5rem;display:flex;justify-content:space-between;align-items:center">
           <div>
-            <div style="font-weight:800;color:#4ade80;margin-bottom:4px;font-size:1.4rem">✅ Connected to {c['db_type']}</div>
-            <div style="color:#94a3b8;font-size:1rem">{c['host'] or c['database']}</div>
+            <div style="font-weight:800;color:#4ade80;font-size:1.4rem">✅ Connected to {c['db_type']}</div>
+            <div style="color:#94a3b8;margin-top:4px">{c.get('host','') or ''} · DB: <b>{c['database']}</b></div>
           </div>
           <div style="text-align:right">
-            <div style="color:#64748b;font-size:0.9rem;text-transform:uppercase;letter-spacing:1px">Database</div>
-            <div style="color:#e2e8f0;font-weight:600;font-size:1.1rem">{c['database']}</div>
+            <div style="color:#64748b;font-size:0.8rem;text-transform:uppercase">Tables Found</div>
+            <div style="color:#a78bfa;font-weight:700;font-size:2rem">{len(st.session_state.db_tables)}</div>
           </div>
         </div>
-        ''', unsafe_allow_html=True)
-    with c2:
-        st.markdown("<div style='margin-top:20px'></div>", unsafe_allow_html=True)
-        if st.button("🔌 Disconnect Server", type="primary", use_container_width=True, key="btn_disconnect_top"):
-            st.session_state.db_connector.disconnect()
-            st.session_state.db_connector = None
-            st.session_state.db_tables = []
-            st.session_state.active_table = None
-            st.rerun()
-            
-    st.markdown("<br>", unsafe_allow_html=True)
-    col_left = st.empty()
-    col_right = st.container()
-else:
-    col_left, col_right = st.columns([2, 3], gap="large")
+        """, unsafe_allow_html=True)
 
-# ════════════════════════════════════════════════════════════════
-# LEFT PANEL — Connection setup
-# ════════════════════════════════════════════════════════════════
-with col_left:
-    if not is_conn:
-        st.markdown('<div class="section-header">🔌 <span>Select Database Type</span></div>', unsafe_allow_html=True)
-
-        # DB type cards — 2 per row
+        col_refresh, col_disc = st.columns(2)
+        with col_refresh:
+            if st.button("🔄 Refresh Schema", use_container_width=True):
+                _refresh_schema()
+                st.rerun()
+        with col_disc:
+            if st.button("🔌 Disconnect", type="primary", use_container_width=True):
+                st.session_state.db_connector.disconnect()
+                for k in ["db_connector","db_tables","all_schemas","active_table","table_schema","table_df","relationships","db_overview"]:
+                    st.session_state[k] = [] if isinstance(st.session_state.get(k), list) else None
+                st.rerun()
+    else:
+        # ── DB type selector ──
+        st.markdown('<div class="sec-hdr">🔌 <span>Select Database</span></div>', unsafe_allow_html=True)
         db_names = list(DB_TYPES.keys())
         for row_start in range(0, len(db_names), 3):
-            row_dbs = db_names[row_start: row_start + 3]
+            row_dbs = db_names[row_start:row_start+3]
             cols = st.columns(len(row_dbs))
             for i, db_name in enumerate(row_dbs):
                 meta = DB_TYPES[db_name]
                 is_sel = st.session_state.db_type_sel == db_name
-                card_class = "db-card selected" if is_sel else "db-card"
+                cls = "db-card selected" if is_sel else "db-card"
                 with cols[i]:
                     st.markdown(f"""
-                    <div class="{card_class}">
+                    <div class="{cls}">
                       <div class="db-icon">{meta['icon']}</div>
                       <div class="db-name">{db_name}</div>
                       <div class="db-desc">{meta['description']}</div>
-                      {"<div class='db-port'>Port: " + str(meta['default_port']) + "</div>" if meta['default_port'] else ""}
+                      {"<div style='font-size:0.65rem;color:#334155'>Port "+str(meta['default_port'])+"</div>" if meta['default_port'] else ""}
                     </div>
                     """, unsafe_allow_html=True)
-                    if st.button(f"Select", key=f"sel_{db_name}", use_container_width=True):
+                    if st.button("Select", key=f"sel_{db_name}", use_container_width=True):
                         st.session_state.db_type_sel = db_name
                         st.rerun()
 
@@ -325,10 +557,9 @@ with col_left:
         # ── Connection form ──
         db_type = st.session_state.db_type_sel
         meta    = DB_TYPES[db_type]
-
         st.markdown(
-            f'<div class="section-header">{meta["icon"]} <span>{db_type} Connection</span>'
-            f'<span class="section-badge">CONFIGURE</span></div>',
+            f'<div class="sec-hdr">{meta["icon"]} <span>{db_type} Connection</span>'
+            f'<span class="sec-badge">CONFIGURE</span></div>',
             unsafe_allow_html=True
         )
 
@@ -339,891 +570,720 @@ with col_left:
                 params["filepath"] = st.text_input(
                     "Database File Path",
                     value=st.session_state.db_params.get("filepath", ""),
-                    placeholder="C:/path/to/database.db  or  :memory:",
-                    help="Full path to the SQLite .db file, or :memory: for in-memory"
+                    placeholder="C:/path/to/database.db  or  :memory:"
                 )
             else:
                 c1, c2 = st.columns([3, 1])
                 with c1:
-                    params["host"] = st.text_input(
-                        "Host", value=st.session_state.db_params.get("host", ""),
-                        placeholder="db.example.com  or  localhost"
-                    )
+                    params["host"] = st.text_input("Host",
+                        value=st.session_state.db_params.get("host", ""),
+                        placeholder="db.example.com or localhost")
                 with c2:
-                    params["port"] = st.text_input(
-                        "Port", value=st.session_state.db_params.get("port", str(meta["default_port"] or "")),
-                    )
-                params["database"] = st.text_input(
-                    "Database Name", value=st.session_state.db_params.get("database", ""),
-                    placeholder="my_database"
-                )
-                params["username"] = st.text_input(
-                    "Username", value=st.session_state.db_params.get("username", ""),
-                )
-                params["password"] = st.text_input(
-                    "Password", type="password",
-                    value=st.session_state.db_params.get("password", ""),
-                )
+                    params["port"] = st.text_input("Port",
+                        value=st.session_state.db_params.get("port", str(meta["default_port"] or "")))
+
+                params["database"] = st.text_input("Database Name",
+                    value=st.session_state.db_params.get("database", ""),
+                    placeholder="my_database")
+                params["username"] = st.text_input("Username",
+                    value=st.session_state.db_params.get("username", ""))
+                params["password"] = st.text_input("Password", type="password",
+                    value=st.session_state.db_params.get("password", ""))
 
                 if db_type == "PostgreSQL":
-                    params["ssl_mode"] = st.selectbox(
-                        "SSL Mode",
+                    params["ssl_mode"] = st.selectbox("SSL Mode",
                         ["disable", "require", "verify-ca", "verify-full"],
-                        index=["disable", "require", "verify-ca", "verify-full"].index(
-                            st.session_state.db_params.get("ssl_mode", "disable")
-                        ),
-                    )
-
+                        index=["disable","require","verify-ca","verify-full"].index(
+                            st.session_state.db_params.get("ssl_mode", "disable")))
                 if db_type == "SQL Server":
-                    params["odbc_driver"] = st.text_input(
-                        "ODBC Driver",
-                        value=st.session_state.db_params.get("odbc_driver", "ODBC Driver 17 for SQL Server"),
-                    )
+                    params["odbc_driver"] = st.text_input("ODBC Driver",
+                        value=st.session_state.db_params.get("odbc_driver", "ODBC Driver 17 for SQL Server"))
 
-            # Advanced options expander
             with st.expander("⚙️ Advanced Options"):
-                params["pool_size"]  = st.number_input("Connection Pool Size", min_value=1, max_value=20, value=5)
-                params["timeout"]    = st.number_input("Query Timeout (s)", min_value=5, max_value=600, value=30)
-                params["read_only"]  = st.checkbox("Read-Only Mode (no write-back)", value=False)
+                params["pool_size"] = st.number_input("Connection Pool Size", 1, 20, 5)
+                params["timeout"]   = st.number_input("Query Timeout (s)", 5, 600, 30)
+                params["read_only"] = st.checkbox("Read-Only Mode (no write-back)", value=False)
 
-            col_test, col_save = st.columns(2)
-            with col_test:
+            c_test, c_save = st.columns(2)
+            with c_test:
                 test_btn = st.form_submit_button("⚡ Test Connection", use_container_width=True)
-            with col_save:
-                save_btn = st.form_submit_button("💾 Save & Connect", type="primary", use_container_width=True)
+            with c_save:
+                save_btn = st.form_submit_button("💾 Connect", type="primary", use_container_width=True)
 
-        # Handle form submission
         if test_btn or save_btn:
             st.session_state.db_params = params
             connector = DatabaseConnector(db_type, params)
             ok, msg = connector.connect()
             if ok:
+                st.session_state.db_connector = connector
+                st.session_state.nl_agent     = NLQueryAgent(LMStudioClient())
+                _refresh_schema()
                 if save_btn:
-                    st.session_state.db_connector = connector
-                    st.session_state.db_tables    = connector.list_tables()
-                    # Init NL agent
-                    try:
-                        llm = LMStudioClient()
-                        st.session_state.nl_agent = NLQueryAgent(llm)
-                    except Exception:
-                        st.session_state.nl_agent = NLQueryAgent()
-                st.success(f"✅ {msg}")
-                if save_btn:
+                    st.success(f"✅ {msg}")
                     st.rerun()
+                else:
+                    st.success(f"✅ {msg} — click **Connect** to proceed.")
             else:
                 st.error(f"❌ {msg}")
-                st.info(f"Make sure the `{meta['pip_package']}` driver is installed: `pip install {meta['pip_package']}`")
 
-# ════════════════════════════════════════════════════════════════
-# RIGHT PANEL — Table browser + Studio
-# ════════════════════════════════════════════════════════════════
-with col_right:
-    if not st.session_state.db_connector or not st.session_state.db_connector.is_connected:
-        st.markdown("""
-        <div class="glass-panel" style="text-align:center;padding:3rem;margin-top:3rem">
-          <div style="font-size:3rem;margin-bottom:1rem">🗄️</div>
-          <div style="font-size:1.1rem;font-weight:600;color:#94a3b8;margin-bottom:0.5rem">
-            No Database Connected
-          </div>
-          <div style="font-size:0.85rem;color:#475569">
-            Select a database type on the left and fill in the connection details to get started.
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
 
+# ═══════════════════════════════════════════════════════════════
+# TAB 2 — DATABASE MAP
+# ═══════════════════════════════════════════════════════════════
+with tab2:
+    if not is_conn:
+        st.info("🔌 Connect to a database first (Tab 1) to see the database map.")
     else:
-        connector = st.session_state.db_connector
-        tables    = st.session_state.db_tables
+        schemas   = st.session_state.all_schemas
+        rels      = st.session_state.relationships
 
-        # ── Table browser ──
-        st.markdown('<div class="section-header">📋 <span>Tables</span>'
-                    f'<span class="section-badge">{len(tables)} found</span></div>',
+        st.markdown('<div class="sec-hdr">🗺️ <span>Database Overview</span>'
+                    f'<span class="sec-badge">{len(schemas)} TABLES · {len(rels)} RELATIONSHIPS</span></div>',
                     unsafe_allow_html=True)
 
-        if not tables:
-            st.info("No tables found in this database. Check permissions or database name.")
-        else:
-            # Refresh tables button
-            if st.button("🔄 Refresh Tables", key="refresh_tables"):
-                st.session_state.db_tables = connector.list_tables()
-                st.rerun()
+        # ── Relationship graph removed as requested ──────────────────────
+        # ── Relationship list ────────────────────────────────────
+        if rels:
+            st.markdown('<div class="sec-hdr">🔗 <span>Relationships Dictionary</span></div>', unsafe_allow_html=True)
+            
+            # Format relationships for a structured view
+            rel_data = []
+            for rel in rels:
+                rel_data.append({
+                    "Type": "🔑 Foreign Key" if rel["type"] == "FK" else "🔍 Inferred",
+                    "Source Table": rel["from_table"],
+                    "Source Column": rel["from_col"],
+                    "Target Table": rel["to_table"],
+                    "Target Column": rel["to_col"]
+                })
+            
+            st.dataframe(
+                pd.DataFrame(rel_data),
+                use_container_width=True,
+                hide_index=True,
+            )
+            st.markdown("<br>", unsafe_allow_html=True)
+        elif schemas:
+            st.info("No FK relationships detected. Naming heuristics found no matching columns.")
 
-            # Table list
-            for tbl in tables[:30]:  # show max 30
-                active_class = "active" if st.session_state.active_table == tbl else ""
-                col_tbl, col_sel = st.columns([4, 1])
-                with col_tbl:
-                    try:
-                        info = connector.get_table_info(tbl)
-                        rc = info.get("row_count", "?")
-                        nc = len(info.get("columns", []))
-                    except Exception:
-                        rc, nc = "?", "?"
-                        
-                    rc_str = f"{rc:,}" if isinstance(rc, int) else str(rc)
-                    
+        # ── Table summary cards ──────────────────────────────────
+        st.markdown('<div class="sec-hdr">📋 <span>Table Summaries</span></div>', unsafe_allow_html=True)
+        conn = st.session_state.db_connector
+        for i in range(0, len(schemas), 3):
+            row_schemas = schemas[i:i+3]
+            cols = st.columns(len(row_schemas))
+            for j, schema in enumerate(row_schemas):
+                with cols[j]:
+                    tname  = schema["table"]
+                    ncols  = len(schema.get("columns", []))
+                    nrows  = schema.get("row_count", "?")
+                    pk     = ", ".join(schema.get("pk_columns", [])) or "none"
                     st.markdown(f"""
-                    <div class="table-card {active_class}">
-                      <div>
-                        <span style="font-weight:600;color:#e2e8f0">📊 {tbl}</span>
-                        <span style="font-size:0.72rem;color:#64748b;margin-left:8px">{rc_str} rows · {nc} cols</span>
+                    <div class="gpanel purple" style="min-height:130px; margin-bottom:2px; border-bottom-left-radius:4px; border-bottom-right-radius:4px;">
+                      <div style="font-weight:700;color:#a78bfa;font-size:1rem;margin-bottom:6px">📋 {tname}</div>
+                      <div style="font-size:0.78rem;color:#94a3b8;display:grid;gap:3px">
+                        <span>Rows: <b style="color:#e2e8f0">{nrows}</b></span>
+                        <span>Columns: <b style="color:#e2e8f0">{ncols}</b></span>
+                        <span>PK: <b style="color:#22d3ee">{pk}</b></span>
                       </div>
                     </div>
                     """, unsafe_allow_html=True)
-                with col_sel:
-                    if st.button("Open →", key=f"open_{tbl}"):
-                        st.session_state.active_table  = tbl
-                        st.session_state.table_schema  = connector.get_table_info(tbl)
-                        st.session_state.table_df      = None  # lazy load
-                        st.session_state.nl_query_result = None
-                        st.session_state.pending_sql   = None
-                        st.session_state.suggest_queries = []
+                    if st.button("🔍 Explore", key=f"exp_{tname}", use_container_width=True):
+                        st.session_state.active_table  = tname
+                        st.session_state.table_schema  = schema
+                        try:
+                            st.session_state.table_df = conn.load_table(tname, limit=500)
+                        except Exception:
+                            st.session_state.table_df = None
                         st.rerun()
 
-        # ── Table studio (when a table is selected) ──
-        if st.session_state.active_table:
-            tbl    = st.session_state.active_table
-            schema = st.session_state.table_schema
+        # ── Selected table preview ───────────────────────────────
+        if st.session_state.active_table and st.session_state.table_df is not None:
+            st.markdown(f'<div class="sec-hdr">🔎 <span>Preview: {st.session_state.active_table}</span></div>',
+                        unsafe_allow_html=True)
+            tdf = st.session_state.table_df
+            mc1, mc2, mc3 = st.columns(3)
+            with mc1:
+                st.markdown(f'<div class="mini-m"><div class="mv" style="color:#a78bfa">{len(tdf)}</div><div class="ml">Rows Loaded</div></div>', unsafe_allow_html=True)
+            with mc2:
+                null_pct = round(tdf.isna().mean().mean() * 100, 1)
+                col = "#f87171" if null_pct > 10 else "#4ade80"
+                st.markdown(f'<div class="mini-m"><div class="mv" style="color:{col}">{null_pct}%</div><div class="ml">Null Rate</div></div>', unsafe_allow_html=True)
+            with mc3:
+                st.markdown(f'<div class="mini-m"><div class="mv" style="color:#22d3ee">{tdf.duplicated().sum()}</div><div class="ml">Exact Dupes</div></div>', unsafe_allow_html=True)
+            st.dataframe(tdf.head(100), use_container_width=True, height=300)
 
-            schema_rc = schema.get('row_count', '?')
-            schema_rc_str = f"{schema_rc:,}" if isinstance(schema_rc, int) else str(schema_rc)
+
+# ═══════════════════════════════════════════════════════════════
+# TAB 3 — HEALTH PROFILER
+# ═══════════════════════════════════════════════════════════════
+with tab3:
+    if not is_conn:
+        st.info("🔌 Connect to a database first (Tab 1) to run the health profiler.")
+    else:
+        st.markdown('<div class="sec-hdr">📊 <span>Health Profiler</span></div>', unsafe_allow_html=True)
+        
+        if st.session_state.db_tables:
+            hp_tbl = st.selectbox("Select table to profile:",
+                st.session_state.db_tables,
+                index=st.session_state.db_tables.index(st.session_state.active_table)
+                      if st.session_state.active_table in st.session_state.db_tables else 0,
+                key="hp_tbl_sel")
+        else:
+            st.warning("No tables found.")
+            hp_tbl = None
+
+        if hp_tbl:
+            tbl = hp_tbl
+            connector = st.session_state.db_connector
             
-            st.markdown(f"""
-            <div class="glass-panel success" style="display:flex;align-items:center;gap:12px;padding:0.8rem 1.2rem;margin-top:1.5rem">
-              <span style="font-size:1.5rem">📊</span>
-              <div>
-                <div style="font-weight:700;color:#4ade80;font-size:0.95rem">{tbl}</div>
-                <div style="font-size:0.75rem;color:#64748b">
-                  {schema_rc_str} rows · {len(schema.get('columns',[]))} columns · 
-                  PK: {', '.join(schema.get('pk_columns',[])) or 'none'}
-                </div>
-              </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            # Studio tabs
-            tab_preview, tab_profile, tab_clean, tab_query, tab_history = st.tabs([
-                "👁️ Preview & Schema",
-                "📊 Data Health Profiler",
-                "🤖 AI Cleaning",
-                "💬 NL Query Console",
-                "📋 Query History",
-            ])
-
-            # ────────────────────────────────────────
-            # Tab 1: Preview + Schema
-            # ────────────────────────────────────────
-            with tab_preview:
-                c_prev, c_schema_info = st.columns(2)
-                with c_prev:
-                    st.markdown("**Table Schema**")
-                    cols_data = schema.get("columns", [])
-                    if cols_data:
-                        schema_df = pd.DataFrame(cols_data)
-                        st.dataframe(schema_df, use_container_width=True, height=280)
-
-                with c_schema_info:
-                    st.markdown("**Quick Stats**")
-                    rc = schema.get("row_count", 0)
-                    nc = len(schema.get("columns", []))
-                    pk = schema.get("pk_columns", [])
-                    st.metric("Total Rows", f"{rc:,}")
-                    st.metric("Total Columns", nc)
-                    st.metric("Primary Keys", len(pk))
-                    if pk:
-                        st.caption(f"PK columns: {', '.join(pk)}")
-
-                st.markdown("**Data Preview**")
-                n_rows = st.slider("Rows to preview", 5, 200, 20, key="prev_rows")
-                if st.button("Load Preview", key="load_prev"):
-                    with st.spinner("Loading..."):
-                        try:
-                            df = connector.load_table(tbl, limit=n_rows)
-                            st.session_state.table_df = df
-                        except Exception as e:
-                            st.error(f"Error: {e}")
-
-                if st.session_state.table_df is not None:
-                    st.dataframe(st.session_state.table_df, use_container_width=True, height=350)
-
-                    # Missing values quick view
-                    df = st.session_state.table_df
-                    missing = df.isna().sum()
-                    if missing.sum() > 0:
-                        st.markdown("**Missing Values**")
-                        m_df = pd.DataFrame({
-                            "Column":    missing.index,
-                            "Missing":   missing.values,
-                            "Missing %": (missing.values / len(df) * 100).round(1),
-                        }).query("Missing > 0")
-                        st.dataframe(m_df, use_container_width=True)
-
-            # ────────────────────────────────────────
-            # Tab 1.5: Health Profiler
-            # ────────────────────────────────────────
-            with tab_profile:
-                st.markdown("### 📊 Database Health Profiler")
-                st.markdown("Run a comprehensive scan to detect missing values, exact duplicates, and fuzzy inconsistencies.")
-                
-                if st.button("🚀 Run Complete Health Check", key="run_health_check", type="primary"):
-                    with st.spinner("Profiling dataset... (loading up to 10,000 rows for fuzzy logic)"):
-                        from backend.profiler import DatasetProfiler
-                        
-                        try:
-                            # Load max 10k rows for performance
-                            df_sample = connector.load_table(tbl, limit=10000)
-                            
-                            if df_sample.empty:
-                                st.warning("Table is empty.")
-                            else:
-                                # 1. Base Profiling
-                                profiler = DatasetProfiler(df_sample)
-                                profile_stats = profiler.profile()
-                                
-                                st.markdown("#### 📈 Overview Stats (10k sample)")
-                                c1, c2, c3, c4 = st.columns(4)
-                                c1.metric("Total Rows", profile_stats["total_rows"])
-                                c2.metric("Total Columns", profile_stats["total_columns"])
-                                c3.metric("Data Quality Score", f"{profile_stats['quality_score']}/100")
-                                c4.metric("Exact Duplicates", profile_stats["exact_duplicate_rows"])
-                                
-                                st.markdown("#### 🧩 Missing Values per Column")
-                                m_df = pd.DataFrame([
-                                    {"Column": col, "Missing": stats["null_count"], "Missing %": stats["null_percentage"]}
-                                    for col, stats in profile_stats["column_statistics"].items()
-                                    if stats["null_count"] > 0
-                                ])
-                                if not m_df.empty:
-                                    st.dataframe(m_df, use_container_width=True)
-                                else:
-                                    st.success("✅ No missing values found in the sampled data!")
-                                
-                                # 2. Fuzzy Deduplication
-                                st.markdown("#### 👥 Fuzzy Deduplication (Near-Matches)")
-                                from backend.schema_detector import classify_all_columns
-                                from cleaning.deduplication import DeduplicationEngine
-                                
-                                # Auto-detect schema to get baseline strategies for dedup
-                                schema_mapping = classify_all_columns(df_sample)
-                                
-                                dedup_strats = {}
-                                id_cols_to_drop = []
-                                for col, info in schema_mapping.items():
-                                    stype = info.get("semantic_type", "")
-                                    if stype == "ID_Code":
-                                        id_cols_to_drop.append(col)
-                                        dedup_strats[col] = "none"
-                                    elif stype in ("Name", "Free_Text"):
-                                        dedup_strats[col] = "fuzzy_name"
-                                    elif stype in ("Location", "Categorical"):
-                                        dedup_strats[col] = "blocking_key"
-                                    else:
-                                        dedup_strats[col] = "none"
-
-                                # Fallback: if no text column was found for fuzzy matching, promote a categorical
-                                if "fuzzy_name" not in dedup_strats.values():
-                                    for col, strat in dedup_strats.items():
-                                        if strat == "blocking_key":
-                                            dedup_strats[col] = "fuzzy_name"
-                                            break
-                                        
-                                # Drop IDs from sample so Pass 1 doesn't aggressively merge valid transactions
-                                df_eval = df_sample.drop(columns=id_cols_to_drop)
-
-                                # Run engine in Predictive intent to prevent business rules from aggressively merging IDs
-                                dedup = DeduplicationEngine(df_eval, dedup_strats, dataset_intent="Predictive")
-                                dedup.execute() # Executes and populates dedup.cluster_report
-                                
-                                clusters = dedup.cluster_report
-                                changes = dedup.dedup_changes
-                                if clusters and changes:
-                                    fuzzy_count = sum(c["cluster_size"] for c in clusters)
-                                    st.warning(f"⚠️ Found {fuzzy_count} records in {len(clusters)} fuzzy clusters!")
-                                    st.markdown("**Detected Fuzzy Duplicated Values:**")
-                                    
-                                    comp_df = pd.DataFrame(changes).drop_duplicates().reset_index(drop=True)
-                                    st.dataframe(comp_df, use_container_width=True)
-                                elif clusters:
-                                    fuzzy_count = sum(c["cluster_size"] for c in clusters)
-                                    st.warning(f"⚠️ Found {fuzzy_count} records in {len(clusters)} fuzzy clusters, but no text differences detected (likely exact matches).")
-                                else:
-                                    st.success("✅ No fuzzy duplicates detected!")
-                                    
-                        except Exception as e:
-                            st.error(f"Error during profiling: {e}")
-
-            # ────────────────────────────────────────
-            # Tab 2: AI Cleaning Pipeline
-            # ────────────────────────────────────────
-            with tab_clean:
-                st.markdown("""
-                <div class="glass-panel info" style="font-size:0.85rem">
-                  <b style="color:#22d3ee">🤖 AI Cleaning Pipeline</b><br>
-                  Run the full 12-phase IntelliClean pipeline on this database table.
-                  The pipeline will detect domain, classify schema, fix missing values,
-                  remove duplicates, handle outliers, and optionally write the cleaned
-                  data back to a new table in the same database.
-                </div>
-                """, unsafe_allow_html=True)
-
-                c1, c2 = st.columns(2)
-                with c1:
-                    row_limit = st.number_input(
-                        "Row limit (0 = all rows)", min_value=0, max_value=1_000_000, value=0,
-                        help="Limit the number of rows to clean. 0 = entire table."
-                    )
-                with c2:
-                    write_back = st.checkbox("Write cleaned data back to DB", value=False)
-                    if write_back:
-                        write_back_table = st.text_input(
-                            "Write-back table name",
-                            value=f"{tbl}_cleaned"
-                        )
-                        write_mode = st.selectbox("If table exists", ["replace", "append", "fail"])
-
-                if st.button("🚀 Start AI Cleaning on Table", type="primary", use_container_width=True):
-                    import importlib
-                    import backend.loader
-                    import backend.pipeline
-                    import backend.exporter
-                    importlib.reload(backend.loader)
-                    importlib.reload(backend.pipeline)
-                    importlib.reload(backend.exporter)
-                    from backend.loader import UniversalLoader
-                    from backend.pipeline import PipelineOrchestrator
-                    from backend.exporter import Exporter
-                    import tempfile
-
-                    logs_placeholder = st.empty()
-                    logs = []
-
-                    def db_log(msg):
-                        logs.append(msg)
-                        colored = []
-                        for line in logs[-30:]:
-                            if "Error" in line or "FAILED" in line:
-                                colored.append(f'<span style="color:#f87171">{line}</span>')
-                            elif "[DB Pipeline]" in line:
-                                colored.append(f'<span style="color:#22d3ee">{line}</span>')
-                            elif "Phase" in line:
-                                colored.append(f'<span style="color:#a78bfa;font-weight:600">{line}</span>')
-                            else:
-                                colored.append(line)
-                        logs_placeholder.markdown(
-                            '<div style="background:#060810;border:1px solid rgba(255,255,255,0.06);'
-                            'border-radius:10px;padding:1rem;font-family:monospace;font-size:0.78rem;'
-                            'color:#94a3b8;max-height:320px;overflow-y:auto;white-space:pre-wrap">'
-                            + "<br>".join(colored) + "</div>",
-                            unsafe_allow_html=True
-                        )
-
+            st.markdown("Run a comprehensive scan to detect missing values, exact duplicates, and fuzzy inconsistencies.")
+            
+            if st.button("🚀 Run Complete Health Check", key="run_health_check", type="primary"):
+                with st.spinner("Profiling dataset... (loading up to 10,000 rows for fuzzy logic)"):
+                    from backend.profiler import DatasetProfiler
+                    
                     try:
-                        backup_dir = tempfile.mkdtemp()
-                        exporter = Exporter()
-                        backup_info = exporter.create_db_backup(connector, tbl, backup_dir=backup_dir)
-
-                        loader = UniversalLoader.from_database(
-                            connector, 
-                            tbl, 
-                            limit=row_limit if row_limit > 0 else 100_000
-                        )
-                        df_raw = loader.load_and_optimize()
+                        # Load max 10k rows for performance
+                        df_sample = connector.load_table(tbl, limit=10000)
                         
-                        db_orch = PipelineOrchestrator(
-                            df=df_raw,
-                            log_callback=db_log
-                        )
-                        cleaned_df, meta = db_orch.execute()
-                        
-                        if write_back:
-                            wb_table = write_back_table if write_back_table else f"{tbl}_cleaned"
-                            wb_mode = write_mode if write_mode else "replace"
-                            ok, msg = exporter.write_to_database(cleaned_df, connector, wb_table, if_exists=wb_mode)
-                            meta["write_back_status"] = "success" if ok else f"failed: {msg}"
-                        
-                        meta["backup_info"] = backup_info
-                        st.session_state.cleaning_result = {"df": cleaned_df, "meta": meta}
-
-                        # ── METRICS ROW ──
-                        validation = meta.get("validation", {})
-                        missing_before = sum(v for v in meta.get("missing_values_before", {}).values() if isinstance(v, (int, float)))
-                        dedup_count = len(set(c.get("Corrected","") for c in meta.get("dedup_changes", [])))
-                        confidence  = validation.get("overall_confidence", 0)
-                        domain      = meta.get("domain", "Generic")
-                        domain_info = meta.get("domain_info", {})
-                        domain_conf = domain_info.get("confidence", "")
-                        domain_method = domain_info.get("method", "")
-                        domain_reason = domain_info.get("reasoning", "")
-
-                        st.markdown(f"""
-                        <div class="metric-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem">
-                          <div class="glass-panel" style="border-left:4px solid #a855f7;padding:1rem">
-                            <div style="font-size:0.75rem;color:#94a3b8;font-weight:600;text-transform:uppercase">Original Rows</div>
-                            <div style="font-size:1.6rem;font-weight:800;color:#e2e8f0">{meta.get('initial_rows',0):,}</div>
-                          </div>
-                          <div class="glass-panel" style="border-left:4px solid #22d3ee;padding:1rem">
-                            <div style="font-size:0.75rem;color:#94a3b8;font-weight:600;text-transform:uppercase">Cleaned Rows</div>
-                            <div style="font-size:1.6rem;font-weight:800;color:#e2e8f0">{meta.get('final_rows',0):,}</div>
-                          </div>
-                          <div class="glass-panel" style="border-left:4px solid #4ade80;padding:1rem">
-                            <div style="font-size:0.75rem;color:#94a3b8;font-weight:600;text-transform:uppercase">AI Confidence</div>
-                            <div style="font-size:1.6rem;font-weight:800;color:#e2e8f0">{confidence:.0f}%</div>
-                          </div>
-                          <div class="glass-panel" style="border-left:4px solid #ec4899;padding:1rem">
-                            <div style="font-size:0.75rem;color:#94a3b8;font-weight:600;text-transform:uppercase">Domain</div>
-                            <div style="font-size:1.2rem;font-weight:700;color:#e2e8f0">{domain}</div>
-                            <div style="font-size:0.7rem;color:#64748b">{domain_conf}</div>
-                          </div>
-                        </div>
-                        """, unsafe_allow_html=True)
-
-                        if meta.get("backup_info"):
-                            bi = meta["backup_info"]
-                            st.markdown(f"""
-                            <div class="glass-panel warning" style="font-size:0.83rem;margin-bottom:1rem">
-                              <b>🗄️ Backup Created Before Write-Back</b><br>
-                              {"Backup Table: " + str(bi.get('backup_table','')) + "<br>" if bi.get('backup_table') else ""}
-                              {"Backup CSV: " + str(bi.get('backup_csv','')) if bi.get('backup_csv') else ""}
-                            </div>
-                            """, unsafe_allow_html=True)
-
-                        if domain_reason:
-                            st.markdown(f"""
-                            <div class="glass-panel" style="display:flex;align-items:center;gap:10px;padding:0.7rem 1.2rem;margin-bottom:1.5rem">
-                              <span style="font-size:1.2rem">🤖</span>
-                              <span style="font-size:0.85rem;color:#94a3b8"><b style="color:#a78bfa">Domain AI Reasoning:</b> {domain_reason}</span>
-                            </div>
-                            """, unsafe_allow_html=True)
-
-                        # ── TABBED RESULTS ──
-                        t_prev, t_sch, t_ml, t_imp, t_dedup, t_curr, t_aud = st.tabs([
-                            "📊 Cleaned Data", "🧠 Schema", "🌐 Multilingual", "🧩 Imputation", "🔗 Deduplication", "💱 Currency", "📋 Audit"
-                        ])
-
-                        with t_prev:
-                            st.dataframe(cleaned_df.head(100), use_container_width=True, height=420)
-                            csv_bytes = cleaned_df.to_csv(index=False).encode()
-                            st.download_button("📥 Download Cleaned Data (CSV)", data=csv_bytes, file_name=f"{tbl}_cleaned.csv", mime="text/csv")
-                        
-                        with t_sch:
-                            schema_map = meta.get("schema_mapping", {})
-                            strats  = meta.get("strategies", {})
-                            if schema_map:
-                                rows = []
-                                for col, info in schema_map.items():
-                                    strat = strats.get(col, {})
-                                    rows.append({
-                                        "Column": col,
-                                        "Semantic Type": info.get("semantic_type", "?"),
-                                        "Multilingual": "✅ Yes" if info.get("needs_multilingual") else "— No",
-                                        "Imputation": info.get("imputation_strategy", strat.get("imputation", "leave_empty")),
-                                        "AI Reasoning": info.get("imputation_reasoning", ""),
-                                    })
-                                st.dataframe(pd.DataFrame(rows), use_container_width=True)
-                            else:
-                                st.info("No schema information available.")
-
-                        with t_ml:
-                            stats = meta.get("translation_stats", {})
-                            if stats:
-                                for col, data in stats.items():
-                                    st.write(f"**{col}**: ASCII normalized: {data.get('ascii_normalized',0)} | LLM processed: {data.get('llm_translated', data.get('items_processed',0))}")
-                            else:
-                                st.info("No multilingual processing was required.")
-
-                        with t_imp:
-                            rules = meta.get("smart_imputation_rules", [])
-                            stats_log = meta.get("statistical_imputation_log", [])
-                            if rules:
-                                st.write("**Smart AI Contextual Rules:**")
-                                st.json(rules)
-                            if stats_log:
-                                st.write("**Statistical Fallbacks:**")
-                                st.json(stats_log)
-                            if not rules and not stats_log:
-                                st.success("No missing values were found in the dataset.")
-                                
-                        with t_dedup:
-                            removed = meta.get("initial_rows", 0) - meta.get("final_rows", 0)
-                            clusters = meta.get("dedup_cluster_report", [])
-                            changes = meta.get("dedup_changes", [])
-                            
-                            if removed > 0 or clusters:
-                                st.warning(f"⚠️ **Removed {removed} duplicate rows.**")
-                                if changes:
-                                    st.write("**Name/Entity Corrections (Detected Fuzzy Duplicated Values):**")
-                                    st.dataframe(pd.DataFrame(changes).drop_duplicates(), use_container_width=True)
-                            else:
-                                st.success("✅ No duplicates detected.")
-                                
-                        with t_curr:
-                            curr_rep = meta.get("currency_report", [])
-                            if curr_rep:
-                                st.json(curr_rep)
-                            else:
-                                st.success("No currency conversion needed.")
-                                
-                        with t_aud:
-                            exps = meta.get("explanations", [])
-                            if exps:
-                                st.write("**Audit Trail (Top 50 Transformations):**")
-                                st.dataframe(pd.DataFrame(exps[:50]), use_container_width=True)
-                            else:
-                                st.info("No column-level string transformations required audit explanations.")
-                    except Exception as e:
-                        st.error(f"Pipeline error: {e}")
-                        import traceback
-                        st.code(traceback.format_exc())
-
-            # ────────────────────────────────────────
-            # Tab 3: NL Query Console
-            # ────────────────────────────────────────
-            with tab_query:
-                st.markdown("""
-                <div class="glass-panel info" style="font-size:0.85rem;margin-bottom:1rem">
-                  <b style="color:#22d3ee">💬 Natural Language Query Console</b><br>
-                  Type your query in plain English. The AI will generate the SQL, explain it,
-                  and safely execute it — with <b>automatic backup</b> before any write operations.
-                </div>
-                """, unsafe_allow_html=True)
-
-                # Suggested queries
-                if not st.session_state.suggest_queries:
-                    if st.button("✨ Generate AI Query Suggestions", key="gen_suggest"):
-                        nl_agent = st.session_state.nl_agent
-                        if nl_agent:
-                            with st.spinner("Generating smart query suggestions..."):
-                                st.session_state.suggest_queries = nl_agent.suggest_cleaning_queries(
-                                    schema, db_type=connector.db_type
-                                )
-                            st.rerun()
+                        if df_sample.empty:
+                            st.warning("Table is empty.")
                         else:
-                            st.warning("NL Agent not initialized. Check LLM connection.")
-                else:
-                    st.markdown("**💡 Smart Suggestions** (click to use)")
-                    cats = {}
-                    for q in st.session_state.suggest_queries:
-                        cat = q.get("category", "General")
-                        cats.setdefault(cat, []).append(q)
-
-                    for cat, queries in cats.items():
-                        st.markdown(f"<small style='color:#64748b;font-weight:600'>{cat}</small>", unsafe_allow_html=True)
-                        cols_sugg = st.columns(min(len(queries), 3))
-                        for idx, q in enumerate(queries[:3]):
-                            with cols_sugg[idx]:
-                                if st.button(f"📌 {q['label']}", key=f"sugg_{cat}_{idx}", use_container_width=True):
-                                    st.session_state["nl_prefill"] = q["label"]
-                                    st.rerun()
-
-                st.markdown("<br>", unsafe_allow_html=True)
-
-                # NL input
-                nl_input = st.text_area(
-                    "Type your query in plain English",
-                    value=st.session_state.pop("nl_prefill", ""),
-                    placeholder=(
-                        "Examples:\n"
-                        "• Show me all duplicate records by email\n"
-                        "• Find rows where phone number is missing\n"
-                        "• Count records grouped by city\n"
-                        "• Delete rows where both name and email are null\n"
-                        "• Update all lowercase emails to uppercase\n"
-                        "• Show top 10 customers by purchase amount"
-                    ),
-                    height=110,
-                    key="nl_input_area"
-                )
-
-                col_gen, col_raw = st.columns([2, 1])
-                with col_gen:
-                    gen_sql_btn = st.button("🧠 Generate SQL", type="primary", use_container_width=True, key="gen_sql")
-                with col_raw:
-                    raw_sql_mode = st.checkbox("Raw SQL mode", value=False, key="raw_sql_toggle")
-
-                # Raw SQL mode
-                if raw_sql_mode:
-                    raw_sql_input = st.text_area(
-                        "Enter SQL directly",
-                        placeholder=f'SELECT * FROM "{tbl}" WHERE ...',
-                        height=100, key="raw_sql_input"
-                    )
-                    if st.button("▶️ Execute SQL", key="exec_raw"):
-                        if raw_sql_input.strip():
-                            meta_for_raw = {
-                                "sql":            raw_sql_input,
-                                "is_destructive": connector.is_destructive(raw_sql_input),
-                                "affected_tables": [tbl],
-                            }
-                            st.session_state.nl_query_result = meta_for_raw
-                            st.session_state.pending_sql     = raw_sql_input
-                            st.rerun()
-
-                # Generate SQL from NL
-                if gen_sql_btn and nl_input.strip():
-                    nl_agent = st.session_state.nl_agent
-                    if not nl_agent:
-                        try:
-                            llm = LMStudioClient()
-                            st.session_state.nl_agent = NLQueryAgent(llm)
-                            nl_agent = st.session_state.nl_agent
-                        except Exception as e:
-                            st.error(f"LLM client error: {e}")
-                            nl_agent = None
-
-                    if nl_agent:
-                        with st.spinner("🧠 LLM is generating SQL..."):
-                            sample_df = None
-                            try:
-                                sample_df = connector.load_table(tbl, limit=3)
-                            except Exception:
-                                pass
+                            # 1. Base Profiling
+                            profiler = DatasetProfiler(df_sample)
+                            profile_stats = profiler.profile()
                             
-                            sample_data_str = sample_df.to_markdown() if sample_df is not None and not sample_df.empty else ""
-                            all_tables = connector.list_tables()
+                            st.markdown("#### 📈 Overview Stats (10k sample)")
+                            c1, c2, c3, c4 = st.columns(4)
+                            c1.metric("Total Rows", profile_stats["total_rows"])
+                            c2.metric("Total Columns", profile_stats["total_columns"])
+                            c3.metric("Data Quality Score", f"{profile_stats['quality_score']}/100")
+                            c4.metric("Exact Duplicates", profile_stats["exact_duplicate_rows"])
                             
-                            result = nl_agent.generate_sql(
-                                user_query=nl_input.strip(),
-                                table_schema=schema,
-                                db_type=connector.db_type,
-                                sample_data=sample_data_str,
-                                all_tables=all_tables
-                            )
-                        st.session_state.nl_query_result = result
-                        st.session_state.pending_sql     = result["sql"]
+                            st.markdown("#### 🧩 Missing Values per Column")
+                            m_df = pd.DataFrame([
+                                {"Column": col, "Missing": stats["null_count"], "Missing %": stats["null_percentage"]}
+                                for col, stats in profile_stats["column_statistics"].items()
+                                if stats["null_count"] > 0
+                            ])
+                            if not m_df.empty:
+                                st.dataframe(m_df, use_container_width=True)
+                            else:
+                                st.success("✅ No missing values found in the sampled data!")
+                                
+                            # Show Exact Duplicates
+                            st.markdown("#### 👯 Exact Duplicates")
+                            if profile_stats["exact_duplicate_rows"] > 0:
+                                st.warning(f"⚠️ Found {profile_stats['exact_duplicate_rows']} exact duplicate rows!")
+                                exact_dupes_df = df_sample[df_sample.duplicated(keep=False)].sort_values(list(df_sample.columns))
+                                st.dataframe(exact_dupes_df, use_container_width=True)
+                            else:
+                                st.success("✅ No exact duplicates found!")
+                            
+                            # 2. Fuzzy Deduplication
+                            st.markdown("#### 👥 Fuzzy Deduplication (Near-Matches)")
+                            from backend.schema_detector import classify_all_columns
+                            from cleaning.deduplication import DeduplicationEngine
+                            
+                            # Auto-detect schema to get baseline strategies for dedup
+                            schema_mapping = classify_all_columns(df_sample)
+                            
+                            dedup_strats = {}
+                            id_cols_to_drop = []
+                            for col, info in schema_mapping.items():
+                                stype = info.get("semantic_type", "")
+                                if stype == "ID_Code":
+                                    id_cols_to_drop.append(col)
+                                    dedup_strats[col] = "none"
+                                elif stype in ("Name", "Free_Text"):
+                                    dedup_strats[col] = "fuzzy_name"
+                                elif stype in ("Location", "Categorical"):
+                                    dedup_strats[col] = "blocking_key"
+                                else:
+                                    dedup_strats[col] = "none"
+
+                            # Fallback: if no text column was found for fuzzy matching, promote a categorical
+                            if "fuzzy_name" not in dedup_strats.values():
+                                for col, strat in dedup_strats.items():
+                                    if strat == "blocking_key":
+                                        dedup_strats[col] = "fuzzy_name"
+                                        break
+                                    
+                            # Drop IDs from sample so Pass 1 doesn't aggressively merge valid transactions
+                            df_eval = df_sample.drop(columns=id_cols_to_drop)
+
+                            # Run engine in Predictive intent to prevent business rules from aggressively merging IDs
+                            dedup = DeduplicationEngine(df_eval, dedup_strats, dataset_intent="Predictive")
+                            dedup.execute() # Executes and populates dedup.cluster_report
+                            
+                            clusters = dedup.cluster_report
+                            changes = dedup.dedup_changes
+                            if clusters and changes:
+                                fuzzy_count = sum(c["cluster_size"] for c in clusters)
+                                st.warning(f"⚠️ Found {fuzzy_count} records in {len(clusters)} fuzzy clusters!")
+                                st.markdown("**Detected Fuzzy Duplicated Values:**")
+                                
+                                comp_df = pd.DataFrame(changes)
+                                # Convert dicts/lists to strings to prevent 'unhashable type: dict' during drop_duplicates
+                                for c in comp_df.columns:
+                                    comp_df[c] = comp_df[c].apply(lambda x: str(x) if isinstance(x, (dict, list)) else x)
+                                comp_df = comp_df.drop_duplicates().reset_index(drop=True)
+                                st.dataframe(comp_df, use_container_width=True)
+                            elif clusters:
+                                fuzzy_count = sum(c["cluster_size"] for c in clusters)
+                                st.warning(f"⚠️ Found {fuzzy_count} records in {len(clusters)} fuzzy clusters, but no text differences detected (likely exact matches).")
+                            else:
+                                st.success("✅ No fuzzy duplicates detected!")
+                                
+                    except Exception as e:
+                        st.error(f"Error during profiling: {e}")
+
+
+# ═══════════════════════════════════════════════════════════════
+# TAB 4 — AI QUERY STUDIO (NLP Chat Console)
+# ═══════════════════════════════════════════════════════════════
+with tab4:
+    if not is_conn:
+        st.info("🔌 Connect to a database first (Tab 1) to use the AI Query Studio.")
+    else:
+        agent  = st.session_state.nl_agent
+        conn   = st.session_state.db_connector
+        tables = st.session_state.db_tables
+
+        # ── Table selector ───────────────────────────────────────
+        left_col, right_col = st.columns([1, 2], gap="large")
+
+        with left_col:
+            st.markdown('<div class="sec-hdr">📋 <span>Tables</span></div>', unsafe_allow_html=True)
+            for tbl in tables:
+                is_active = st.session_state.active_table == tbl
+                cls = "tbl-card active" if is_active else "tbl-card"
+                st.markdown(f'<div class="{cls}" style="font-size:0.83rem"><span>📋 {tbl}</span></div>',
+                            unsafe_allow_html=True)
+                if st.button("Select", key=f"sel_tbl_{tbl}", use_container_width=True):
+                    st.session_state.active_table = tbl
+                    # Find schema
+                    for s in st.session_state.all_schemas:
+                        if s["table"] == tbl:
+                            st.session_state.table_schema = s
+                            break
+                    try:
+                        st.session_state.table_df = conn.load_table(tbl, limit=500)
+                    except Exception:
+                        st.session_state.table_df = None
+                    agent.clear_conversation()
+                    st.session_state.chat_messages = []
+                    st.session_state.followup_chips = []
+                    st.session_state.pending_action = None
+                    st.rerun()
+
+            st.divider()
+            if st.button("🗑️ Clear Chat", use_container_width=True):
+                agent.clear_conversation()
+                st.session_state.chat_messages = []
+                st.session_state.followup_chips = []
+                st.session_state.pending_action = None
+                st.rerun()
+
+            # Quick suggestions
+            if st.session_state.suggest_queries:
+                st.markdown('<div class="sec-hdr">⚡ <span>Quick Queries</span></div>', unsafe_allow_html=True)
+                for q in st.session_state.suggest_queries[:6]:
+                    lbl = q.get("label", "Query")[:32]
+                    cat = q.get("category", "")
+                    if st.button(f"{'🔁' if cat=='Duplicates' else '⚠️' if cat=='Missing Values' else '📊'} {lbl}",
+                                 key=f"qsug_{lbl}", use_container_width=True):
+                        st.session_state._run_query_nl = lbl
                         st.rerun()
 
-                # Show generated SQL + execution panel
-                result = st.session_state.nl_query_result
-                if result:
-                    st.markdown('<div class="section-header">⚡ <span>Generated Query</span></div>', unsafe_allow_html=True)
+        with right_col:
+            active_tbl    = st.session_state.active_table
+            table_schema  = st.session_state.table_schema
+            db_type       = st.session_state.db_connector.db_type
 
-                    # Confidence badge
-                    conf = result.get("confidence", "Medium")
-                    conf_color = {"High": "#4ade80", "Medium": "#fbbf24", "Low": "#f87171"}.get(conf, "#94a3b8")
-                    st.markdown(
-                        f'<span style="font-size:0.78rem;color:{conf_color};font-weight:600">'
-                        f'AI Confidence: {conf}</span>',
-                        unsafe_allow_html=True
+            if not active_tbl:
+                st.info("← Select a table on the left to start querying.")
+            else:
+                st.markdown(f"""
+                <div style="font-size:0.85rem;color:#64748b;margin-bottom:0.8rem">
+                  Querying: <b style="color:#a78bfa">{active_tbl}</b>
+                  · {table_schema.get('row_count','?')} rows
+                  · {len(table_schema.get('columns',[]))} columns
+                </div>
+                """, unsafe_allow_html=True)
+
+                # ── Chat history ─────────────────────────────────
+                chat_html = '<div class="chat-container" id="chat-box">'
+                if not st.session_state.chat_messages:
+                    chat_html += (
+                        '<div style="text-align:center;color:#475569;padding:2rem;font-size:0.85rem">'
+                        '💬 Ask anything in plain English about your data.<br>'
+                        '<span style="font-size:0.75rem">e.g. "Show me the top 10 customers" · '
+                        '"Find duplicate emails" · "How many nulls in each column?"</span>'
+                        '</div>'
                     )
-
-                    # Explanation
-                    if result.get("explanation"):
-                        st.markdown(
-                            f'<div class="glass-panel" style="font-size:0.85rem;margin:0.5rem 0">'
-                            f'<b>📖 Explanation:</b> {result["explanation"]}</div>',
-                            unsafe_allow_html=True
-                        )
-
-                    # SQL preview (editable)
-                    edited_sql = st.text_area(
-                        "SQL (you can edit before executing)",
-                        value=st.session_state.pending_sql,
-                        height=140,
-                        key="sql_edit"
-                    )
-                    st.session_state.pending_sql = edited_sql
-
-                    # Safety warning for destructive ops
-                    is_dest = connector.is_destructive(edited_sql)
-                    if is_dest:
-                        st.markdown(f"""
-                        <div class="glass-panel warning" style="font-size:0.85rem">
-                          <b>⚠️ Destructive Operation Detected</b><br>
-                          This SQL will modify data. A <b>backup will be created automatically</b>
-                          (table-copy + CSV) before execution.<br>
-                          <small style="color:#94a3b8">Affected table(s): {', '.join(result.get('affected_tables', [tbl]))}</small>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        confirm = st.checkbox("✅ I understand — proceed with backup and execute", key="dest_confirm")
+                for msg in st.session_state.chat_messages:
+                    if msg["role"] == "user":
+                        chat_html += f'<div class="chat-bubble-user">{msg["content"]}</div>'
                     else:
-                        confirm = True
-
-                    col_exec, col_clear = st.columns([2, 1])
-                    with col_exec:
-                        exec_btn = st.button(
-                            "▶️ Execute Query",
-                            type="primary",
-                            disabled=is_dest and not confirm,
-                            use_container_width=True,
-                            key="exec_nl_sql"
+                        conf = msg.get("confidence", "Medium")
+                        conf_cls = "chat-conf-high" if conf=="High" else "chat-conf-med" if conf=="Medium" else "chat-conf-low"
+                        chat_html += (
+                            f'<div class="chat-bubble-ai">'
+                            f'<div>{msg["content"]}</div>'
+                            f'<div class="chat-meta"><span class="{conf_cls}">● {conf}</span></div>'
+                            f'</div>'
                         )
-                    with col_clear:
-                        if st.button("✖️ Clear", key="clear_nl", use_container_width=True):
-                            st.session_state.nl_query_result = None
-                            st.session_state.pending_sql     = None
-                            st.session_state.last_exec_result = None
-                            st.rerun()
+                chat_html += '</div>'
+                st.markdown(chat_html, unsafe_allow_html=True)
 
-                    if exec_btn:
-                        st.session_state.query_run_count = st.session_state.get("query_run_count", 0) + 1
-                        nl_agent = st.session_state.nl_agent
-                        if not nl_agent:
-                            nl_agent = NLQueryAgent()
-                            st.session_state.nl_agent = nl_agent
+                # ── Query result display ─────────────────────────
+                last_result = st.session_state.get("last_result")
+                if last_result:
+                    rdf = last_result.get("result_df")
+                    if rdf is not None and len(rdf) > 0:
+                        st.markdown(f'<div style="font-size:0.75rem;color:#64748b;margin-bottom:4px">'
+                                    f'✓ {len(rdf)} rows returned · {last_result.get("execution_time",0):.2f}s</div>',
+                                    unsafe_allow_html=True)
+                        st.dataframe(rdf, use_container_width=True, height=min(350, 35*len(rdf)+40))
+                    if last_result.get("error"):
+                        st.error(f"❌ {last_result['error']}")
 
-                        import tempfile
-                        backup_dir = tempfile.mkdtemp()
+                # ── SQL toggle ───────────────────────────────────
+                if st.session_state.get("last_sql"):
+                    with st.expander("👁 View Generated SQL"):
+                        st.code(st.session_state.last_sql, language="sql")
 
-                        with st.spinner("Executing..."):
-                            exec_result = nl_agent.execute_with_backup(
-                                connector  = connector,
-                                sql        = edited_sql,
-                                query_meta = result,
-                                backup_dir = backup_dir,
-                                user_query = nl_input,
-                                table_schema = schema
-                            )
-                            st.session_state.last_exec_result = exec_result
+                # ── Follow-up chips ──────────────────────────────
+                if st.session_state.followup_chips:
+                    st.markdown("**Follow-up suggestions:**")
+                    chip_cols = st.columns(len(st.session_state.followup_chips))
+                    for i, chip in enumerate(st.session_state.followup_chips):
+                        with chip_cols[i]:
+                            if st.button(f"💡 {chip[:40]}", key=f"chip_{i}", use_container_width=True):
+                                st.session_state._run_query_nl = chip
+                                st.rerun()
 
-                            if exec_result["success"]:
-                                st.session_state.query_history.append({
-                                    "nl_query":  nl_input,
-                                    "sql":       edited_sql,
-                                    "rows":      exec_result["rows_affected"],
-                                    "time":      exec_result["execution_time"],
-                                    "backups":   exec_result["backups"],
-                                    "status":    "success",
-                                })
-
-                    exec_result = st.session_state.get("last_exec_result")
-                    if exec_result:
-                        if exec_result["success"]:
-                            # Show backups created
-                            if exec_result["backups"]:
-                                for b in exec_result["backups"]:
-                                    bak_msgs = []
-                                    if b.get("backup_table"):
-                                        bak_msgs.append(f"Table copy: `{b['backup_table']}`")
-                                    if b.get("csv_path"):
-                                        bak_msgs.append(f"CSV: `{b['csv_path']}`")
-                                    st.markdown(
-                                        f'<div class="backup-badge">🗄️ Backup: {" · ".join(bak_msgs)}</div>',
-                                        unsafe_allow_html=True
-                                    )
-
-                            if exec_result["result_df"] is not None:
-                                df = exec_result["result_df"]
-                                st.success(
-                                    f"✅ Query returned {len(df)} rows in {exec_result['execution_time']}s"
-                                )
-                                
-                                # Editable dataframe so user can correct values manually
-                                edited_df = st.data_editor(
-                                    df, 
-                                    use_container_width=True, 
-                                    height=360, 
-                                    num_rows="dynamic",
-                                    key=f"sql_data_editor_{st.session_state.get('query_run_count', 0)}"
-                                )
-                                
-                                st.markdown("---")
-                                st.markdown('<div style="font-size:0.9rem;font-weight:600;margin-bottom:10px">💾 Save Corrections to Database</div>', unsafe_allow_html=True)
-                                c_table, c_mode, c_btn = st.columns([2, 1, 1])
-                                with c_table:
-                                    save_tgt = st.text_input("Target Table Name", value=tbl + "_cleaned", key="save_edit_tgt")
-                                with c_mode:
-                                    save_mode = st.selectbox("If exists", ["fail", "append", "replace"], key="save_edit_mode")
-                                
-                                replace_confirmed = True
-                                if save_tgt in st.session_state.db_tables and save_mode == "replace":
-                                    st.error("⚠️ **Destructive Action:** 'Replace' mode will DROP the existing table. This destroys primary keys, constraints, and indexes.")
-                                    replace_confirmed = st.checkbox("I understand. Drop and recreate the table.", key="confirm_replace_writeback")
-
-                                with c_btn:
-                                    st.markdown("<div style='margin-top:28px'></div>", unsafe_allow_html=True)
-                                    apply_disabled = (save_tgt in st.session_state.db_tables and save_mode == "replace" and not replace_confirmed)
-                                    if st.button("Apply Changes", type="primary", use_container_width=True, disabled=apply_disabled):
-                                        with st.spinner("Saving to database..."):
-                                            # Create backup if replacing original table
-                                            if save_tgt == tbl and save_mode == "replace":
-                                                ok_b, b_name = connector.create_backup(tbl)
-                                                if ok_b:
-                                                    st.info(f"🗄️ Backup created before overwrite: `{b_name}`")
-                                            ok_w, msg_w = connector.write_dataframe(edited_df, save_tgt, if_exists=save_mode)
-                                            if ok_w:
-                                                st.success(f"✅ Successfully saved edits to `{save_tgt}`!")
-                                            else:
-                                                st.error(f"❌ Failed to save: {msg_w}")
-
-                                # Download
-                                csv_bytes = df.to_csv(index=False).encode()
-                                st.download_button(
-                                    "📥 Download Results (CSV)",
-                                    data=csv_bytes,
-                                    file_name="query_result.csv",
-                                    mime="text/csv",
-                                )
-                            else:
-                                st.success(
-                                    f"✅ Query executed successfully in {exec_result['execution_time']}s"
-                                )
-                        else:
-                            st.error(f"❌ Execution failed: {exec_result['error']}")
-                            st.session_state.query_history.append({
-                                "nl_query": nl_input,
-                                "sql":      edited_sql,
-                                "status":   "failed",
-                                "error":    exec_result["error"],
-                            })
-
-            # ────────────────────────────────────────
-            # Tab 4: Query History & Audit Log
-            # ────────────────────────────────────────
-            with tab_history:
-                history = st.session_state.query_history
-                if not history:
-                    st.markdown("""
-                    <div class="glass-panel" style="text-align:center;padding:2rem">
-                      <div style="font-size:2rem;margin-bottom:0.5rem">📋</div>
-                      <div style="color:#64748b;font-size:0.9rem">No queries executed yet in this session.</div>
+                # ── Permission modal for destructive queries ──────
+                if st.session_state.pending_action:
+                    pa = st.session_state.pending_action
+                    st.markdown(f"""
+                    <div class="perm-modal">
+                      <div class="perm-title">⚠️ Permission Required — Destructive Operation</div>
+                      <div class="perm-detail">
+                        <b>Operation:</b> {pa.get('intent_type','write').upper()}<br>
+                        <b>Affects tables:</b> {', '.join(pa.get('affected_tables',[]))}<br>
+                        <b>Explanation:</b> {pa.get('explanation','')}<br>
+                        <b>Safety note:</b> {pa.get('safety_warning','')}<br><br>
+                        ✅ A backup will be created automatically before execution.
+                      </div>
                     </div>
                     """, unsafe_allow_html=True)
-                else:
-                    col_h1, col_h2 = st.columns([3, 1])
-                    with col_h1:
-                        st.markdown(f"**{len(history)} queries in this session**")
-                    with col_h2:
-                        if st.button("Clear History", key="clear_hist"):
-                            st.session_state.query_history = []
+
+                    # Show SQL for destructive ops
+                    with st.expander("👁 View SQL to be Executed", expanded=True):
+                        st.code(pa.get("sql", ""), language="sql")
+
+                    conf_col, cancel_col = st.columns(2)
+                    with conf_col:
+                        if st.button("✅ Confirm & Execute", type="primary", use_container_width=True, key="perm_confirm"):
+                            with st.spinner("⚙️ Creating backup and executing..."):
+                                exec_res = agent.execute_with_backup(
+                                    conn, pa["sql"], pa,
+                                    backup_dir=os.path.join(os.getcwd(), "exports"),
+                                    user_query=pa.get("user_query",""),
+                                    table_schema=table_schema,
+                                )
+                            st.session_state.pending_action = None
+                            _handle_exec_result(exec_res, pa)
+                            st.rerun()
+                    with cancel_col:
+                        if st.button("❌ Cancel", use_container_width=True, key="perm_cancel"):
+                            st.session_state.pending_action = None
+                            st.session_state.chat_messages.append({
+                                "role": "assistant",
+                                "content": "❌ Operation cancelled. No changes were made.",
+                                "confidence": "High",
+                            })
                             st.rerun()
 
-                    for i, h in enumerate(reversed(history)):
-                        status_color = "#4ade80" if h.get("status") == "success" else "#f87171"
-                        status_icon  = "✅" if h.get("status") == "success" else "❌"
-                        with st.expander(
-                            f"{status_icon} {h.get('nl_query', h.get('sql', 'Query'))[:60]}...",
-                            expanded=(i == 0)
-                        ):
-                            st.markdown(f"""
-                            <div class="hist-item">
-                              <div style="color:{status_color};font-weight:600;margin-bottom:4px">
-                                {status_icon} {h['status'].upper()}
-                              </div>
-                              {"<div style='color:#94a3b8;font-size:0.8rem;margin-bottom:4px'><b>Query:</b> " + h.get('nl_query','') + "</div>" if h.get('nl_query') else ""}
-                              <div style="font-family:monospace;font-size:0.78rem;color:#a5f3fc;
-                                   background:#060810;padding:8px;border-radius:6px;margin-bottom:4px">
-                                {h.get('sql','').replace(chr(10),'<br>')}
-                              </div>
-                              {"<div style='color:#64748b;font-size:0.76rem'>Rows: " + str(h.get('rows','?')) + " · Time: " + str(h.get('time','?')) + "s</div>" if h.get('rows') is not None else ""}
-                              {"<div style='color:#f87171;font-size:0.76rem'>Error: " + str(h.get('error','')) + "</div>" if h.get('error') else ""}
-                            </div>
-                            """, unsafe_allow_html=True)
+                # ── Input bar ─────────────────────────────────────
+                with st.form("nl_query_form", clear_on_submit=True):
+                    user_input = st.text_input(
+                        "Ask about your data",
+                        placeholder="e.g. Show top 5 customers by order count · Find duplicate emails · Delete rows with no name",
+                        label_visibility="collapsed",
+                    )
+                    submitted = st.form_submit_button("▶ Send", type="primary", use_container_width=False)
 
-                            for b in h.get("backups", []):
-                                if b.get("backup_table") or b.get("csv_path"):
-                                    st.markdown(
-                                        f'<span class="backup-badge">🗄️ Backup: '
-                                        f'{b.get("backup_table","")} · {b.get("csv_path","")}</span>',
-                                        unsafe_allow_html=True
-                                    )
+                if submitted and user_input.strip():
+                    st.session_state._run_query_nl = user_input.strip()
+                    st.rerun()
 
-                    # Export audit log
-                    if st.button("📤 Export Audit Log (JSON)", key="export_audit"):
-                        import json
-                        audit_json = json.dumps(history, indent=2, default=str)
-                        st.download_button(
-                            "Download Audit Log",
-                            data=audit_json.encode(),
-                            file_name="query_audit_log.json",
-                            mime="application/json",
+                # ── Query execution ────────────────────────────────
+                if st.session_state.get("_run_query_nl"):
+                    query_text = st.session_state.pop("_run_query_nl")
+                    st.session_state.chat_messages.append({"role": "user", "content": query_text})
+
+                    with st.spinner("🤖 Generating SQL..."):
+                        sample_str = ""
+                        if st.session_state.table_df is not None:
+                            sample_str = st.session_state.table_df.head(5).to_string(index=False)
+
+                        result = agent.generate_sql(
+                            query_text,
+                            table_schema,
+                            db_type=db_type,
+                            sample_data=sample_str,
+                            all_tables_schemas=st.session_state.all_schemas,
+                            active_table=active_tbl,
                         )
+
+                    st.session_state.last_sql = result.get("sql", "")
+
+                    if result.get("pending_confirmation"):
+                        # Destructive — show modal, do NOT execute yet
+                        result["user_query"] = query_text
+                        st.session_state.pending_action = result
+                        st.session_state.chat_messages.append({
+                            "role": "assistant",
+                            "content": f"⚠️ **Action requires your approval** — {result.get('explanation','')}",
+                            "confidence": result.get("confidence","Medium"),
+                        })
+                        st.session_state.last_result = None
+                        st.rerun()
+                    else:
+                        # READ — auto-execute immediately
+                        with st.spinner("⚡ Executing..."):
+                            exec_res = agent.execute_with_backup(
+                                conn, result["sql"], result,
+                                backup_dir=os.path.join(os.getcwd(), "exports"),
+                                user_query=query_text,
+                                table_schema=table_schema,
+                            )
+                        _handle_exec_result(exec_res, result)
+                        st.rerun()
+
+
+# ═══════════════════════════════════════════════════════════════
+# TAB 5 — AI CLEANING STUDIO
+# ═══════════════════════════════════════════════════════════════
+with tab5:
+    if not is_conn:
+        st.info("🔌 Connect to a database first (Tab 1) to run AI cleaning.")
+    else:
+        conn = st.session_state.db_connector
+
+        st.markdown('<div class="sec-hdr">🧹 <span>AI Cleaning Studio</span>'
+                    '<span class="sec-badge">FULL 12-PHASE PIPELINE</span></div>', unsafe_allow_html=True)
+
+        # Table selector
+        if st.session_state.db_tables:
+            clean_tbl = st.selectbox("Select table to clean:",
+                st.session_state.db_tables,
+                index=st.session_state.db_tables.index(st.session_state.active_table)
+                      if st.session_state.active_table in st.session_state.db_tables else 0,
+                key="clean_tbl_sel")
+        else:
+            st.warning("No tables found.")
+            clean_tbl = None
+
+        if clean_tbl:
+            # Load preview
+            try:
+                preview_df = conn.load_table(clean_tbl, limit=5000)
+            except Exception as e:
+                st.error(f"Failed to load table: {e}")
+                preview_df = None
+
+            if preview_df is not None:
+                # Pre-cleaning profile
+                st.markdown('<div class="sec-hdr">📊 <span>Pre-Cleaning Profile</span></div>', unsafe_allow_html=True)
+                null_counts = preview_df.isna().sum()
+                total_nulls = int(null_counts.sum())
+                dup_count   = int(preview_df.duplicated().sum())
+                null_pct    = round(total_nulls / max(len(preview_df) * len(preview_df.columns), 1) * 100, 1)
+
+                p1, p2, p3, p4 = st.columns(4)
+                with p1:
+                    st.markdown(f'<div class="mini-m"><div class="mv" style="color:#e2e8f0">{len(preview_df)}</div><div class="ml">Rows</div></div>', unsafe_allow_html=True)
+                with p2:
+                    st.markdown(f'<div class="mini-m"><div class="mv" style="color:#e2e8f0">{len(preview_df.columns)}</div><div class="ml">Columns</div></div>', unsafe_allow_html=True)
+                with p3:
+                    nc = "#f87171" if total_nulls > 0 else "#4ade80"
+                    st.markdown(f'<div class="mini-m"><div class="mv" style="color:{nc}">{total_nulls}</div><div class="ml">Nulls ({null_pct}%)</div></div>', unsafe_allow_html=True)
+                with p4:
+                    dc = "#f87171" if dup_count > 0 else "#4ade80"
+                    st.markdown(f'<div class="mini-m"><div class="mv" style="color:{dc}">{dup_count}</div><div class="ml">Duplicates</div></div>', unsafe_allow_html=True)
+
+                # Null heatmap by column
+                if total_nulls > 0:
+                    with st.expander("📊 Null Analysis by Column"):
+                        null_df = null_counts[null_counts > 0].reset_index()
+                        null_df.columns = ["Column", "Null Count"]
+                        null_df["Null %"] = (null_df["Null Count"] / len(preview_df) * 100).round(1)
+                        st.dataframe(null_df, use_container_width=True, hide_index=True)
+
+                # Cleaning options
+                st.markdown('<div class="sec-hdr">⚙️ <span>Cleaning Options</span></div>', unsafe_allow_html=True)
+                c1, c2 = st.columns(2)
+                with c1:
+                    write_back = st.checkbox("Write cleaned data back to database", value=True)
+                    create_backup_opt = st.checkbox("Create backup before cleaning", value=True)
+                with c2:
+                    export_csv = st.checkbox("Export cleaned CSV locally", value=True)
+
+                if st.button("🚀 Run AI Cleaning Pipeline", type="primary", use_container_width=True):
+
+                    with st.spinner("🧹 Running 12-phase cleaning pipeline..."):
+                        log_msgs = []
+                        log_ph   = st.empty()
+
+                        def _log(msg):
+                            log_msgs.append(msg)
+                            display_logs = []
+                            for line in log_msgs[-40:]:
+                                if "Error" in line or "Failed" in line or "❌" in line:
+                                    display_logs.append(f'<span style="color:#f87171">{line}</span>')
+                                elif "Phase" in line and ":" in line:
+                                    display_logs.append(f'<span style="color:#a78bfa;font-weight:600">{line}</span>')
+                                elif "Completed" in line or "✅" in line or "Done" in line:
+                                    display_logs.append(f'<span style="color:#4ade80">{line}</span>')
+                                elif "[Pass" in line or "[Dedup" in line or "[Domain" in line or "[Rule" in line:
+                                    display_logs.append(f'<span style="color:#22d3ee">{line}</span>')
+                                else:
+                                    display_logs.append(line)
+                            log_ph.markdown(
+                                '<div class="log-container" style="background:#0f172a; border-radius:12px; padding:1.2rem; font-family:\'Courier New\', monospace; font-size:0.85rem; color:#e2e8f0; height:350px; overflow-y:auto; border:1px solid #1e293b; box-shadow:inset 0 2px 10px rgba(0,0,0,0.2); white-space: pre-wrap; line-height: 1.6;">' + "\n".join(display_logs) + '</div>',
+                                unsafe_allow_html=True
+                            )
+
+                        # Backup first
+                        if create_backup_opt:
+                            _log("Creating table backups before cleaning...")
+                            ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                            ok, bname = conn.create_backup(clean_tbl, ts)
+                            if ok:
+                                _log(f"  ✅ DB Clone: Created table '{bname}' in database.")
+                                csv_dir = os.path.join(os.getcwd(), "exports")
+                                ok2, csv_p = conn.create_backup_csv(clean_tbl, csv_dir)
+                                if ok2:
+                                    _log(f"  ✅ Local CSV: Saved to {csv_p}")
+                            else:
+                                _log(f"  ⚠️ Backup failed: {bname}")
+
+                        # Load full table for cleaning
+                        _log(f"Loading table '{clean_tbl}'...")
+                        try:
+                            full_df = conn.load_table(clean_tbl)
+                            _log(f"  Loaded {len(full_df)} rows, {len(full_df.columns)} columns")
+                        except Exception as e:
+                            _log(f"  ❌ Load failed: {e}")
+                            full_df = preview_df
+
+                        # Run pipeline
+                        from backend.pipeline import PipelineOrchestrator
+                        orch = PipelineOrchestrator(df=full_df, log_callback=_log)
+                        try:
+                            clean_df, meta = orch.execute()
+                        except Exception as e:
+                            _log(f"  ❌ Pipeline error: {e}")
+                            import traceback
+                            _log(traceback.format_exc())
+                            clean_df = full_df
+                            meta = {}
+
+                        # Results
+                        st.session_state.cleaning_result = {"df": clean_df, "meta": meta, "table": clean_tbl, "logs": log_msgs}
+                        StateManager.save_pipeline_state(clean_df, meta, clean_tbl, log_msgs)
+
+                    # Write-back
+                    if write_back:
+                        with st.spinner("Writing cleaned data back to database..."):
+                            ok, msg = conn.write_dataframe(clean_df, clean_tbl, if_exists="replace")
+                        if ok:
+                            st.success(f"✅ {msg}")
+                        else:
+                            st.error(f"❌ Write-back failed: {msg}")
+
+                    # Export CSV
+                    if export_csv:
+                        os.makedirs("exports", exist_ok=True)
+                        ts      = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                        fp      = os.path.join("exports", f"{clean_tbl}_cleaned_{ts}.csv")
+                        clean_df.to_csv(fp, index=False)
+                        st.info(f"📥 Exported: `{fp}`")
+
+                # Previous cleaning result
+                if st.session_state.cleaning_result and st.session_state.cleaning_result.get("table") == clean_tbl:
+                    cr = st.session_state.cleaning_result
+                    from ui_components import render_cleaning_results
+                    render_cleaning_results(st, cr["df"], cr["meta"], cr.get("logs", []))
+                    
+                    st.download_button(
+                        "📥 Download Cleaned Data",
+                        data=cr["df"].to_csv(index=False).encode("utf-8"),
+                        file_name=f"{clean_tbl}_cleaned.csv",
+                        mime="text/csv",
+                    )
+
+
+# ═══════════════════════════════════════════════════════════════
+# TAB 6 — AUDIT LOG
+# ═══════════════════════════════════════════════════════════════
+with tab6:
+    st.markdown('<div class="sec-hdr">📋 <span>Audit Log</span>'
+                f'<span class="sec-badge">{len(st.session_state.audit_log)} ENTRIES</span></div>',
+                unsafe_allow_html=True)
+
+    log = st.session_state.audit_log
+
+    if not log:
+        st.info("No queries have been executed yet. The audit log will appear here as you use the AI Query Studio.")
+    else:
+        # Summary stats
+        total     = len(log)
+        succeeded = sum(1 for e in log if e.get("success"))
+        backups   = sum(len(e.get("backups",[])) for e in log)
+        al1, al2, al3 = st.columns(3)
+        with al1:
+            st.markdown(f'<div class="mini-m"><div class="mv" style="color:#e2e8f0">{total}</div><div class="ml">Total Queries</div></div>', unsafe_allow_html=True)
+        with al2:
+            sc = "#4ade80" if succeeded == total else "#fbbf24"
+            st.markdown(f'<div class="mini-m"><div class="mv" style="color:{sc}">{succeeded}</div><div class="ml">Succeeded</div></div>', unsafe_allow_html=True)
+        with al3:
+            st.markdown(f'<div class="mini-m"><div class="mv" style="color:#fbbf24">{backups}</div><div class="ml">Backups Created</div></div>', unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        for entry in reversed(log):
+            ok_icon = "✅" if entry.get("success") else "❌"
+            bg      = "rgba(74,222,128,0.04)" if entry.get("success") else "rgba(248,113,113,0.04)"
+            bc      = "rgba(74,222,128,0.25)" if entry.get("success") else "rgba(248,113,113,0.25)"
+            st.markdown(f"""
+            <div style="background:{bg};border:1px solid {bc};border-radius:10px;
+                        padding:0.7rem 1rem;margin-bottom:0.4rem;font-size:0.83rem">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span>{ok_icon} <b style="color:#e2e8f0">{entry.get('table','?')}</b>
+                  — {entry.get('query','')}</span>
+                <span style="color:#475569;font-size:0.72rem">{entry.get('timestamp','')}</span>
+              </div>
+              {" ".join(['<span class="bkp">Backup: ' + str(b.get("backup_table","?")) + '</span>' for b in entry.get('backups',[])])}
+            </div>
+            """, unsafe_allow_html=True)
+            with st.expander(f"👁 View SQL — {entry.get('timestamp','')}"):
+                st.code(entry.get("sql",""), language="sql")
+
+        # Export audit log
+        if st.button("📥 Export Audit Log as JSON"):
+            export_log = [{k: v for k, v in e.items() if k != "result_df"} for e in log]
+            st.download_button(
+                "Download audit_log.json",
+                data=json.dumps(export_log, indent=2, default=str).encode(),
+                file_name="audit_log.json",
+                mime="application/json",
+            )
+        if st.button("🗑️ Clear Audit Log"):
+            st.session_state.audit_log = []
+            st.rerun()

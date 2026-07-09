@@ -111,7 +111,7 @@ class SmartImputer:
             fill_median   — robust for skewed numeric data
             fill_mean     — best for normally distributed numeric data
             fill_mode     — best for categorical / low-cardinality columns
-            fill_knn      — KNN imputation for numeric (uses sklearn)
+            fill_knn      — KNN imputation for numeric
             fill_forward  — propagate last valid value forward
             fill_backward — propagate next valid value backward
             fill_constant — fill with a specific provided constant
@@ -143,7 +143,7 @@ class SmartImputer:
             fill_value_str = f"{median_val:.4g}"
             df[column]     = series.fillna(median_val)
             extra_stats    = self._numeric_stats(non_null)
-            print(f"  [Impute-Median] '{column}': filled {missing_count} → {median_val:.4g}")
+            print(f"  [Impute-Median] '{column}': filled {missing_count} -> {median_val:.4g}")
 
         # ── fill_mean ────────────────────────────────────────────
         elif strategy == "fill_mean" and pd.api.types.is_numeric_dtype(series):
@@ -151,7 +151,7 @@ class SmartImputer:
             fill_value_str = f"{mean_val:.4g}"
             df[column]     = series.fillna(mean_val)
             extra_stats    = self._numeric_stats(non_null)
-            print(f"  [Impute-Mean]   '{column}': filled {missing_count} → {mean_val:.4g}")
+            print(f"  [Impute-Mean]   '{column}': filled {missing_count} -> {mean_val:.4g}")
 
         # ── fill_mode ────────────────────────────────────────────
         elif strategy == "fill_mode":
@@ -161,7 +161,7 @@ class SmartImputer:
                 fill_value_str = str(mode_val)
                 df[column]     = series.fillna(mode_val)
                 extra_stats    = self._categorical_stats(non_null)
-                print(f"  [Impute-Mode]   '{column}': filled {missing_count} → '{mode_val}'")
+                print(f"  [Impute-Mode]   '{column}': filled {missing_count} -> '{mode_val}'")
 
         # ── fill_knn ─────────────────────────────────────────────
         elif strategy == "fill_knn" and pd.api.types.is_numeric_dtype(series):
@@ -185,13 +185,29 @@ class SmartImputer:
             extra_stats    = {"method": "Backward Fill (next valid value)"}
             print(f"  [Impute-Bfill]  '{column}': filled {missing_count} backward")
 
+        # ── fill_interpolate ──────────────────────────────────────
+        # Best for time-series data: computes values between known points
+        # using linear interpolation (more accurate than forward/backward fill).
+        elif strategy == "fill_interpolate":
+            if pd.api.types.is_numeric_dtype(series):
+                df[column]     = series.interpolate(method="linear", limit_direction="both")
+                fill_value_str = "linear-interpolate"
+                extra_stats    = {"method": "Linear Interpolation (time-series)"}
+                print(f"  [Impute-Interp] '{column}': interpolated {missing_count} values")
+            else:
+                # Non-numeric: fall back to forward fill
+                df[column]     = series.ffill()
+                fill_value_str = "forward-fill (interpolate fallback)"
+                extra_stats    = {"method": "Forward Fill (non-numeric interpolate fallback)"}
+                print(f"  [Impute-Ffill]  '{column}': interpolate fallback → forward-filled {missing_count}")
+
         # ── fill_constant ────────────────────────────────────────
         elif strategy == "fill_constant":
             val = constant_value if constant_value is not None else "Unknown"
             df[column]     = series.fillna(val)
             fill_value_str = str(val)
             extra_stats    = {"method": "Constant Fill", "constant": val}
-            print(f"  [Impute-Const]  '{column}': filled {missing_count} → '{val}'")
+            print(f"  [Impute-Const]  '{column}': filled {missing_count} -> '{val}'")
 
         # ── Record audit log ─────────────────────────────────────
         if fill_value_str is not None:

@@ -1,0 +1,201 @@
+﻿customer_id,customer_name,company_name,email,phone
+CUST1001,Gagan Sami,Balan Inc,gagan@balan.com,7896233790
+CUST1155,अंजलि गुप्ता,,anjali@nigam-rao.com,9422119408
+CUST1024,Ekapad Walia,Dave Ltd,ekapad@dave.com,7507943839
+CUST1031,Xavier Solanki,Gupta-Chandra,xavier@gupta-chandra.com,7692749116
+CUST1050,Anita Manda,"Kade, Oza and Jani","anita@kade,.com",7275452091
+CUST1048,Nakul Sarma,"Mittal, Wadhwa and Anand","nakul@mittal,.com",9283758720
+CUST1088,Avi Ramesh,"Bala, Chacko and Sangha","avi@bala,.com",9465260635
+CUST1025,Noah Lanka,"Sampath, Kakar and Zacharia","noah@sampath,.com",7485451171
+CUST1134,Odika Bhagat,Vasa LLC,odika@vasa.com,7652070932
+CUST1047,Kevin Palla,Konda LLC,kevin@konda.com,7754049436
+CUST1071,Tanay Vaidya,Gara-Chad,personal_tanay@gara-chad.com,8488690725
+CUST1156,Vikas Singh,"Buch, Narasimhan and Walla","vikas@buch,.com",8439492674
+CUST1030,Arya Sunder,Zacharia and Sons,arya@zacharia.com,7506448196
+CUST1103,Warda Nair,Shan PLC,warda@sura.com,8120912992
+CUST1151,अमित दास,"Narula, Chaudhry and Sarraf","amit@narula,.com",9869005091
+CUST1156,विकास सिंह,"Buch, Narasimhan and Walla","vikas@buch,.com",8439492674
+CUST1007,Janaki Handa,"Boase, Bath and Kari","janaki@boase,.com",9553035110
+CUST1024,Ekapad Walia,Dave Ltd,ekapad@dave.com,7507943839
+CUST1110,Qasim Handa,Sule LLC,qasim@sule.com,7916690353
+CUST1146,Ranbir Khare,L&T,ranbir@lt.com,9188029013
+CUST1048,Nakul Sarma,Rajagopal and Sons,"nakul@mittal,.com",9283758720
+CUST1012,Deeya Rattan,Bhatti-Kakar,diya@bhatti-kakar.com,9313500298
+CUST1059,Balvan Singhal,Iyengar Group,balvan@iyengar.com,8171069472
+CUST1121,Nilima Seshadri,"Singhal, Manne and Bali","nilima@singhal,.com",9797801251
+CUST1122,Bhawya Mandal,"Setty, Bobal and Kaur","bhavya@setty,.com",8570406376
+CUST1135,Reeya Behl,Loke PLC,riya@loke.com,7399012686
+CUST1131,Henry Dyal,Sabharwal-Tandon,henry@sabharwal-tandon.com,9163215224
+CUST1016,Champak Choudhary,Dutta Ltd,champak@dutta.com,8732719211
+CUST1150,Rahul Sharma,Bansal-Date,rahul@bansal-date.com,8319321646
+CUST1021,Michael Prakash,Zacharia PLC,michael@zacharia.com,8266944844
+CUST1079,Vaishnavi Sengupta,Kota-Malhotra,vaishnavi@kota-malhotra.com,9168212356
+CUST1000,Aryan Maharaj,Kapoor and Sons,,9219540831
+CUST1153,नेहा रेड्डी,Dhawan Group,neha@dhawan.com,8524971817
+CUST1073,Umang Issac,Bakshi Inc,personal_umang@bakshi.com,9629908599
+CUST1128,Veer Bail,"Luthra, Baria and Gill",,7731832764
+CUST1140,Ekaraj Majumdar,TCS,ekaraj@tcs.com,7738914080
+CUST1140,Ekaraj Majumdar,Tata Consultancy Services,ekaraj@tcs.com,7738914080
+CUST1138,Ishaan Shenoy,Dube Group,ishaan@dube.com,7876693898
+CUST1144,Veda Pai,SBI,veda@sbi.com,7721609600
+CUST1103,Warda Nair,Sura and Sons,warda@sura.com,8120912992
+CUST1158,रवि वर्मा,"Banik, Biswas and Keer","ravi@banik,.com",
+CUST1118,Lajita Seshadri,Mishra-Sanghvi,lajita@mishra-sanghvi.com,9840739735
+CUST1036,Chandresh Zachariah,Chander and Sons,chandresh@chander.com,7149203558
+CUST1116,Vyanjana Borah,"Bera, Doshi and Dixit","vyanjana@bera,.com",9554340903
+CUST1015,Janakee Kanda,Upadhyay Group,janaki@upadhyay.com,8336696312
+CUST1043,Yatin Baral,"Bumb, Saini and Virk","yatin@bumb,.com",8481469012
+CUST1127,Balveer Sankaran,"Naidu, Krishna and Bal","balveer@naidu,.com",9694768704
+CUST1061,Mohini Narasimhan,Boase-Mallick,mohini@boase-mallick.com,9437882805
+CUST1056,Zaid Chauhan,Ray-Dubey,zaid@ray-dubey.com,7345938494
+CUST1012,Diya Rattan,Bhatti-Kakar,diya@bhatti-kakar.com,9313500298
+CUST1071,Tanay Vaidya,Gara-Chad,tanay@gara-chad.com,8488690725
+CUST1102,Shravya Kohli,Raghavan-Nayar,shravya@raghavan-nayar.com,9448059918
+CUST1159,स्नेहा देसाई,"Mani, Karan and Chana","sneha@mani,.com",9207354053
+CUST1124,Amaira Dhar,Bhasin and Sons,amaira@bhasin.com,7366186631
+CUST1143,Vrishti Dixit,Hindustan Unilever,vrishti@hul.com,7711684318
+CUST1020,Xiti Gokhale,"Cherian, Misra and Tripathi","xiti@cherian,.com",8465341213
+CUST1147,Vivaan Roy,,vivaan@hdfc.com,8805849060
+CUST1080,William Maharaj,Brahmbhatt-Mangal,william@brahmbhatt-mangal.com,8509760584
+CUST1123,Rudra Sandal,Kar Ltd,rudra@kar.com,9584779555
+CUST1075,Warda Ratta,Divan Ltd,warda@divan.com,7217734861
+CUST1063,Advika Gokhale,"Lanka, Barad and Chopra","advika@lanka,.com",8967607278
+CUST1057,Nicholas Goel,Bakshi-Gola,,7964411347
+CUST1080,Weelliam Maharaj,,william@brahmbhatt-mangal.com,8509760584
+CUST1015,Janaki Kanda,Upadhyay Group,janaki@upadhyay.com,8336696312
+CUST1083,Oeshi Reddy,Shukla-Sagar,oeshi@shukla-sagar.com,9112327652
+CUST1095,Ishwar Gade,Chokshi-Bal,ishwar@chokshi-bal.com,7771410971
+CUST1120,Naksh Khatri,,naksh@borde.com,8528414718
+CUST1081,Anita Nayak,Zachariah-Buch,anita@zachariah-buch.com,9602564736
+CUST1046,Tara Chaudhry,Yogi and Sons,tara@yogi.com,9795822698
+CUST1121,Nilima Seshadri,"Singhal, Manne and Bali","nilima@singhal,.com",9797801251
+CUST1096,Keya Ranganathan,"Issac, Borra and Kibe","keya@issac,.com",8786066793
+CUST1066,Januja Sankar,Narayanan PLC,januja@narayanan.com,7364814270
+CUST1138,eeshaan Shenoy,Dube Group,ishaan@dube.com,7876693898
+CUST1100,Patrick Vig,"Madan, Yohannan and Sule","patrick@madan,.com",7679153816
+CUST1005,George Rai,Parmer LLC,george@parmer.com,9895285932
+CUST1119,Darpan Chaudhary,Kakar LLC,darpan@kakar.com,7865523129
+CUST1047,Keveen Palla,Konda LLC,kevin@konda.com,7754049436
+CUST1073,Umang Issac,Bakshi Inc,umang@bakshi.com,9629908599
+CUST1049,Hemang Desai,D’Alia-Chhabra,hemang@d’alia-chhabra.com,9882893941
+CUST1090,Siddharth Sha,Nazareth-Raghavan,siddharth@nazareth-raghavan.com,8269820594
+CUST1099,Hitesh Sant,Sharaf-Dua,hitesh@sharaf-dua.com,8918739736
+CUST1152,Priya Patel,Vora Group,,8356287095
+CUST1133,Ekiya D’Alia,Varkey-Agarwal,ekiya@varkey-agarwal.com,7454794895
+CUST1014,Leeam Koshy,"Yohannan, Lall and Sangha","liam@yohannan,.com",9685126461
+CUST1114,Bhavani Singh,Sastry-Oak,bhavani@sastry-oak.com,9277303722
+CUST1055,Benjamin Morar,Baral-Parmar,benjamin@baral-parmar.com,8924970419
+CUST1148,Eesha Solanki,Bharat Heavy Electricals Limited,eesha@bhel.com,9706907788
+CUST1128,Vir Bail,"Luthra, Baria and Gill","veer@luthra,.com",7731832764
+CUST1152,प्रिया पटेल,Vora Group,priya@vora.com,8356287095
+CUST1092,Inaya Kapur,"Biswas, Baria and Balasubramanian","inaya@biswas,.com",9872751234
+CUST1074,Vaishnavi Bora,Sachdeva-Hayer,vaishnavi@sachdeva-hayer.com,7911514914
+CUST1022,Ekiya Suresh,Choudhury LLC,ekiya@choudhury.com,7919795579
+CUST1149,Libni Doshi,Oil and Natural Gas Corporation,libni@ongc.com,9439699535
+CUST1014,Liam Koshy,"Yohannan, Lall and Sangha","liam@yohannan,.com",9685126461
+CUST1013,Simon Tata,Shanker-Dhar,simon@shanker-dhar.com,9797808098
+CUST1106,Vritti Sem,Chander LLC,vritti@chander.com,7358633898
+CUST1130,Gavin Singhal,Rege-Nath,gavin@rege-nath.com,7860038427
+CUST1086,Vinaya Kanda,Sarin-Sunder,vinaya@sarin-sunder.com,9906248900
+CUST1107,Nidhi Kohli,Pillay-Solanki,nidhi@pillay-solanki.com,9184564737
+CUST1065,Ranveer Kumar,Sarin Inc,ranveer@sarin.com,7384412919
+CUST1082,Matthew Kashyap,Dua-Kala,matthew@dua-kala.com,9369953851
+CUST1119,Darpan Chaudhary,Kakar LLC,darpan@kakar.com,7865523129
+CUST1115,Charan Krishnan,Comar-Bhattacharyya,charan@comar-bhattacharyya.com,8666585408
+CUST1098,Kamala Biswas,"Om, Arora and Salvi","kamala@om,.com",7264109919
+CUST1008,Fariq Kaul,Rai LLC,fariq@rai.com,7131994523
+CUST1035,Arya Shere,Borra Group,arya@borra.com,7856528252
+CUST1042,Quincy Biswas,"Bir, Keer and Raval","quincy@bir,.com",8274648506
+CUST1051,Yashasvi Suresh,Behl-Chanda,yashasvi@behl-chanda.com,8507437181
+CUST1024,Ekapad Walia,Dave Ltd,ekapad@dave.com,7507943839
+CUST1084,Samuel Salvi,Bahri-Rai,samuel@bahri-rai.com,9873869166
+CUST1003,Saumya Mall,Dutta Ltd,saumya@dutta.com,7249827706
+CUST1122,Bhavya Mandal,"Setty, Bobal and Kaur","bhavya@setty,.com",8570406376
+CUST1145,Krishna Shah,,krishna@ntpc.com,9142672287
+CUST1126,Neha Magar,"Zacharia, Tak and Sarma","neha@zacharia,.com",8122585366
+CUST1101,Rajata Loyal,Korpal-Chadha,rajata@korpal-chadha.com,9100614068
+CUST1132,Nandini Bansal,Chakrabarti-Murty,nandini@chakrabarti-murty.com,7172370545
+CUST1121,Nilima Seshadri,"Singhal, Manne and Bali","nilima@singhal,.com",9797801251
+CUST1044,Advika Jayaraman,"Murthy, Khare and Lanka","advika@murthy,.com",7819595113
+CUST1058,Nisha Kothari,,nisha@dutta-chokshi.com,8530747414
+CUST1117,Frederick Kothari,Saha PLC,frederick@saha.com,7679064766
+CUST1142,Aarnav Mandal,Reliance Industries Limited,aarnav@ril.com,7533550699
+CUST1025,Noah Lanka,"Sampath, Kakar and Zacharia",,7485451171
+CUST1025,Noah Lanka,"Sampath, Kakar and Zacharia","noah@sampath,.com",9680451872
+CUST1114,Bhavani Singh,Sastry-Oak,bhavani@sastry-oak.com,8297018781
+CUST1123,Rudra Sandal,Kar Ltd,rudra@kar.com,
+CUST1004,Harini Mall,Kale LLC,harini@kale.com,9210053353
+CUST1111,Harish Hari,Karan-Patel,,9922308461
+CUST1097,Charvi Dara,"Barman, Palan and Walia","charvi@barman,.com",9753876785
+CUST1145,Krishna Shah,National Thermal Power Corporation,krishna@ntpc.com,9142672287
+CUST1154,Suresh Kumar,"Dubey, Borde and Singh",,7821221887
+CUST1068,Chakrika Datta,Salvi Ltd,chakrika@salvi.com,9382116655
+CUST1048,Nakul Sarma,"Mittal, Wadhwa and Anand","nakul@mittal,.com",9283758720
+CUST1136,Bhavna Sarma,"Sundaram, Dara and Balakrishnan","bhavna@sundaram,.com",9621209849
+CUST1014,Leeam Koshy,"Yohannan, Lall and Sangha","liam@yohannan,.com",9685126461
+CUST1159,Sneha Desai,"Mani, Karan and Chana","sneha@mani,.com",9207354053
+CUST1006,Caleb Sharaf,"Dash, Radhakrishnan and Brar","caleb@dash,.com",9193349856
+CUST1105,Frederick Khurana,"Ray, Suresh and Khosla","frederick@ray,.com",8357109965
+CUST1045,Karan Mital,Mutti-Bora,karan@mutti-bora.com,8853573823
+CUST1151,Amit Das,"Narula, Chaudhry and Sarraf","amit@narula,.com",9869005091
+CUST1060,Dalaja Kari,Bajwa Ltd,dalaja@bajwa.com,7709004943
+CUST1143,Vrishti Dixit,HUL,,7711684318
+CUST1104,Aarna Oak,Majumdar-Anne,aarna@majumdar-anne.com,7489747629
+CUST1090,Siddharth Sha,,siddharth@nazareth-raghavan.com,8269820594
+CUST1147,Vivaan Roy,Housing Development Finance Corporation,vivaan@hdfc.com,
+CUST1063,Advika Gokhale,"Lanka, Barad and Chopra","advika@lanka,.com",8524806516
+CUST1141,Harini Tripathi,IBM,harini@ibm.com,7825003955
+CUST1091,Oviya Krishnan,Singhal Inc,oviya@singhal.com,8103484630
+CUST1105,Frederick Khurana,"Ray, Suresh and Khosla","frederick@ray,.com",8357109965
+CUST1093,Ryan Bahri,"Dua, Khare and Date","ryan@dua,.com",8637500247
+CUST1078,Edhitha Savant,"Thaman, Sandhu and Sehgal","edhitha@thaman,.com",9553290810
+CUST1010,Ekbal Garg,"Konda, Gade and Shere","ekbal@konda,.com",7642621108
+CUST1032,Raagini Pandya,Roy-Sibal,raagini@roy-sibal.com,8990566476
+CUST1110,Qasim Handa,Sule LLC,qasim@sule.com,7916690353
+CUST1037,Niharika Sunder,Kala-Rattan,niharika@kala-rattan.com,9344703907
+CUST1042,Quincy Biswas,"Bir, Keer and Raval","personal_quincy@bir,.com",8274648506
+CUST1108,Pavani Narayanan,Setty-Madan,pavani@setty-madan.com,7885879795
+CUST1155,Anjali Gupta,Nigam-Rao,anjali@nigam-rao.com,
+CUST1009,Janya Gaba,Pant-Kadakia,janya@pant-kadakia.com,7334760738
+CUST1153,Neha Reddy,Dhawan Group,neha@dhawan.com,8524971817
+CUST1038,Nitesh Raghavan,Ramakrishnan LLC,nitesh@ramakrishnan.com,8185675980
+CUST1019,Chaaya Saran,Setty Inc,chaaya@setty.com,7849621470
+CUST1028,Victor Kannan,Bobal Ltd,victor@bobal.com,7883543540
+CUST1149,Libni Doshi,ONGC,libni@ongc.com,9439699535
+CUST1104,Aarna Oak,Majumdar-Anne,,7489747629
+CUST1109,Zayan Kashyap,Hans LLC,zayan@hans.com,8976198296
+CUST1144,Veda Pai,State Bank of India,veda@sbi.com,7721609600
+CUST1113,Chatura Master,"Date, Swaminathan and Chauhan","chatura@date,.com",9610330567
+CUST1041,Vansha Thakkar,"Dugar, Bhandari and Trivedi","vansha@dugar,.com",
+CUST1130,Gaveen Singhal,Rege-Nath,gavin@rege-nath.com,7860038427
+CUST1104,Aarna Oak,Majumdar-Anne,personal_aarna@majumdar-anne.com,7489747629
+CUST1157,Kavita Joshi,Nadig-Sura,kavita@nadig-sura.com,
+CUST1085,Abeer Pandey,Ramakrishnan-Saini,abeer@ramakrishnan-saini.com,7831980933
+CUST1000,Aryan Maharaj,Kapoor and Sons,aryan@kapoor.com,9219540831
+CUST1011,Anamika Kanda,"Nair, Bhalla and Karnik","anamika@nair,.com",9128492780
+CUST1070,Shivansh Sani,"Nagy, Shroff and Sathe","shivansh@nagy,.com",8726563708
+CUST1108,Pavani Narayanan,Setty-Madan,pavani@setty-madan.com,7885879795
+CUST1141,Harini Tripathi,International Business Machines,harini@ibm.com,7825003955
+CUST1023,Wriddhish Bhardwaj,Brar Inc,wriddhish@brar.com,8209747451
+CUST1013,Simon Tata,Shanker-Dhar,simon@shanker-dhar.com,
+CUST1064,Hemani Murthy,Vaidya-D’Alia,hemani@vaidya-d’alia.com,9592688426
+CUST1125,Bhavya Sarna,Sidhu Ltd,bhavya@sidhu.com,7168747287
+CUST1158,Ravi Verma,"Banik, Biswas and Keer","ravi@banik,.com",8766964667
+CUST1146,Ranbir Khare,Larsen & Toubro,,9188029013
+CUST1003,Saumya Mall,Dutta Ltd,saumya@dutta.com,7278575192
+CUST1014,Leeam Koshy,"Yohannan, Lall and Sangha","liam@yohannan,.com",9685126461
+CUST1052,Aradhana Basu,Nath and Sons,aradhana@nath.com,8787194506
+CUST1087,Lopa Nayar,"Ravel, Gandhi and Sibal","lopa@ravel,.com",8925276600
+CUST1020,Xeeti Gokhale,"Cherian, Misra and Tripathi","xiti@cherian,.com",8465341213
+CUST1053,Neel Sathe,"Sane, Andra and Choudhury","neel@sane,.com",9698020238
+CUST1015,Janaki Kanda,Upadhyay Group,janaki@upadhyay.com,8336696312
+CUST1154,सुरेश कुमार,"Dubey, Borde and Singh","suresh@dubey,.com",7821221887
+CUST1069,Owen Mitra,Acharya-Modi,owen@acharya-modi.com,9727694430
+CUST1039,Bhavika Sampath,"Sur, Dubey and Gupta","bhavika@sur,.com",7208449460
+CUST1148,Eesha Solanki,BHEL,eesha@bhel.com,9706907788
+CUST1142,Aarnav Mandal,RIL,aarnav@ril.com,7533550699
+CUST1027,Jai Kota,Bhatt LLC,jai@bhatt.com,8966647391
+CUST1029,Veer Bir,Narayanan Inc,veer@narayanan.com,
+CUST1157,कविता जोशी,Nadig-Sura,kavita@nadig-sura.com,7110002396
+CUST1034,Rehaan Gupta,"Sen, Dey and Sami","rehaan@sen,.com",8719927151
+CUST1026,Devika Rastogi,"Prakash, Sarma and Varughese",,8748245888

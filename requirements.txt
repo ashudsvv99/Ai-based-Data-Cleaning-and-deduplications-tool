@@ -16,3 +16,4 @@ oracledb
 ibm_db_sa
 tabulate
 unidecode
+plotly

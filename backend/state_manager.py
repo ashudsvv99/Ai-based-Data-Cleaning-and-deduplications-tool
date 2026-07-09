@@ -19,11 +19,11 @@ class StateManager:
             os.makedirs(cls.CACHE_DIR, exist_ok=True)
 
     @classmethod
-    def save_pipeline_state(cls, cleaned_df: pd.DataFrame, metadata: dict):
+    def save_pipeline_state(cls, cleaned_df: pd.DataFrame, metadata: dict, table_name: str, logs: list):
         cls._ensure_dir()
         try:
             with open(cls.PIPELINE_CACHE_FILE, "wb") as f:
-                pickle.dump({"df": cleaned_df, "meta": metadata}, f)
+                pickle.dump({"df": cleaned_df, "meta": metadata, "table": table_name, "logs": logs}, f)
         except Exception as e:
             print(f"Failed to save pipeline state: {e}")
 
@@ -33,10 +33,10 @@ class StateManager:
             try:
                 with open(cls.PIPELINE_CACHE_FILE, "rb") as f:
                     data = pickle.load(f)
-                    return data.get("df"), data.get("meta")
+                    return data.get("df"), data.get("meta"), data.get("table"), data.get("logs", [])
             except Exception as e:
                 print(f"Failed to load pipeline state: {e}")
-        return None, None
+        return None, None, None, []
 
     @classmethod
     def clear_pipeline_state(cls):

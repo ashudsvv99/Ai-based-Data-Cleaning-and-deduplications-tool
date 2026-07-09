@@ -143,7 +143,7 @@ class MultilingualEngine:
         if not has_non_ascii(term):
             return term.title()
 
-        print(f"      [Fallback] Translating '{term}'...")
+        print(f"      [Fallback] Translating {ascii(term)}...")
         system_prompt = (
             f"Translate this value from the column '{column_name}' to English.\n"
             f"Return ONLY the English translation. No quotes, no explanation.\n"
@@ -237,7 +237,7 @@ class MultilingualEngine:
         if not has_non_ascii(name):
             return name.title()
 
-        print(f"      [Fallback] Transliterating '{name}'...")
+        print(f"      [Fallback] Transliterating {ascii(name)}...")
         system_prompt = (
             "Transliterate this name phonetically to Latin English script.\n"
             "Do NOT translate meaning. Return ONLY the transliterated name.\n"

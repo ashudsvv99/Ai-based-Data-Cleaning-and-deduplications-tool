@@ -27,7 +27,10 @@ from backend.schema_detector import classify_all_columns
 
 class ColumnSchema(BaseModel):
     semantic_type: str = Field(
-        description="One of: Name, Email, Phone, Location, ID_Code, Numeric, Temporal, Categorical, Free_Text"
+        description=(
+            "One of: Name, Email, Phone, Location, ID_Code, Numeric, Temporal, "
+            "Categorical, Free_Text, Binary_Flag, Score_Rating, Percentage, URL, JSON_Field"
+        )
     )
     imputation_strategy: str = Field(default="leave_empty")
     imputation_reasoning: str = Field(default="")
@@ -78,8 +81,10 @@ class SchemaAgent:
         schema: Dict[str, ColumnSchema] = {}
         ambiguous_cols = []
 
-        # Semantic types that are critical business identity columns
-        _CRITICAL_TYPES = {"Name", "Email", "Phone", "ID_Code", "Location", "Temporal"}
+        # Semantic types that are critical business identity columns.
+        # For Non-Predictive Business, Categorical status/tier/type should also
+        # use leave_empty rather than mode-filling (status = 'Active' is not safe to assume).
+        _CRITICAL_TYPES = {"Name", "Email", "Phone", "ID_Code", "Location", "Temporal", "URL", "JSON_Field"}
 
         for col, info in heuristic_results.items():
             sem_type   = info["semantic_type"]
@@ -162,17 +167,41 @@ class SchemaAgent:
     # ────────────────────────────────────────────
     # Pass 2: LLM semantic type classifier
     # ────────────────────────────────────────────
-    def _llm_classify(self, df: pd.DataFrame, columns: list, dataset_intent: str = "") -> dict:
+    def _llm_classify(
+        self,
+        df: pd.DataFrame,
+        columns: list,
+        dataset_intent: str = "",
+        domain: str = "Generic",
+    ) -> dict:
         sample_data = df[columns].head(5).to_dict(orient="records")
-        intent_hint = f"\nDataset intent: {dataset_intent}." if dataset_intent else ""
+        intent_hint = f"Dataset intent: {dataset_intent}. Domain: {domain}." if dataset_intent else ""
         system_prompt = (
-            "You are an expert Data Engineer. Classify each column into ONE semantic type:\n"
-            "Name, Email, Phone, Location, ID_Code, Numeric, Temporal, Categorical, Free_Text\n\n"
-            f"{intent_hint}\n"
+            "You are an expert Data Engineer. Classify each column into EXACTLY ONE semantic type.\n\n"
+            "Available types:\n"
+            "  Name         — Person or company name\n"
+            "  Email        — Email address\n"
+            "  Phone        — Phone / mobile number\n"
+            "  Location     — City, state, country, address, pincode\n"
+            "  ID_Code      — Unique identifier, account number, reference code\n"
+            "  Numeric      — Continuous number (age, salary, amount, price, quantity)\n"
+            "  Temporal     — Date, time, timestamp, datetime\n"
+            "  Categorical  — Limited set of distinct categories (status, type, gender, priority)\n"
+            "  Binary_Flag  — Binary 0/1, True/False, Yes/No columns (churn, fraud, is_active)\n"
+            "  Score_Rating — Numeric score or rating (credit_score, nps, review_rating, risk_score)\n"
+            "  Percentage   — Values representing percentages (discount_pct, completion_rate)\n"
+            "  URL          — Web URLs or links\n"
+            "  JSON_Field   — JSON/dict stored as string\n"
+            "  Free_Text    — Open-ended text (comments, notes, description)\n\n"
+            f"{intent_hint}\n\n"
             "Return ONLY a JSON object where each key is a column name and the value is:\n"
             '{"semantic_type": "<type>"}\n\n'
-            "EXAMPLE OUTPUT:\n"
-            '{"full_name": {"semantic_type": "Name"}, "order_status": {"semantic_type": "Categorical"}}'
+            "EXAMPLES:\n"
+            '{"full_name": {"semantic_type": "Name"}, '
+            '"order_status": {"semantic_type": "Categorical"}, '
+            '"churn": {"semantic_type": "Binary_Flag"}, '
+            '"credit_score": {"semantic_type": "Score_Rating"}, '
+            '"discount_pct": {"semantic_type": "Percentage"}}'
         )
         user_prompt = (
             f"Columns: {json.dumps(columns)}\n"
@@ -268,17 +297,27 @@ class SchemaAgent:
             "For each column described below, choose the BEST imputation strategy.\n"
             f"{intent_rules}\n"
             "Available strategies:\n"
-            "  fill_mean     — use for normally distributed numeric columns\n"
-            "  fill_median   — use for skewed numeric columns or when outliers exist\n"
-            "  fill_mode     — use for categorical, low-cardinality, or heavily repeated values\n"
-            "  fill_forward  — use for time-series ordered numeric data (propagate last known)\n"
-            "  fill_backward — use for time-series ordered data (propagate next known)\n"
-            "  leave_empty   — use for IDs, names, free text, targets, or when imputation is harmful\n\n"
+            "  fill_mean        — normally distributed numeric columns\n"
+            "  fill_median      — skewed numeric columns or when outliers exist (PREFERRED for financial/medical data)\n"
+            "  fill_mode        — categorical, low-cardinality, or heavily repeated values\n"
+            "  fill_forward     — time-series ordered numeric data (propagate last known value forward)\n"
+            "  fill_backward    — time-series ordered data (propagate next known value backward)\n"
+            "  fill_interpolate — time-series continuous data (linear interpolation between known points)\n"
+            "  fill_knn         — numeric columns where neighboring records give context (small-medium datasets)\n"
+            "  leave_empty      — IDs, names, URLs, free text, targets, or when imputation would be fabrication\n\n"
+            "DOMAIN-SPECIFIC GUIDANCE:\n"
+            "  Healthcare: age/vitals → fill_median; diagnosis/MRN → leave_empty\n"
+            "  Finance: amount/balance → fill_median; risk_score/account_id → leave_empty\n"
+            "  HR: department → fill_mode; salary → leave_empty; attendance_pct → fill_median\n"
+            "  Retail: priority/status → fill_mode; price → fill_median; customer_id → leave_empty\n"
+            "  IoT/Time-series: sensor readings → fill_interpolate; device_id → leave_empty\n\n"
             "Return ONLY a JSON object where each key is the column name and value is:\n"
             '{"strategy": "<strategy>", "reasoning": "<one sentence>"}\n\n'
-            "EXAMPLE:\n"
-            '{"age": {"strategy": "fill_median", "reasoning": "Age is slightly right-skewed; median is more robust than mean."},\n'
-            ' "customer_type": {"strategy": "fill_mode", "reasoning": "Low-cardinality categorical; mode fills the most common segment."}}'
+            "EXAMPLES:\n"
+            '{"age": {"strategy": "fill_median", "reasoning": "Age is right-skewed in patient data; median avoids outlier bias."},\n'
+            ' "order_status": {"strategy": "fill_mode", "reasoning": "Low-cardinality status field; mode fills the most common operational state."},\n'
+            ' "temperature": {"strategy": "fill_interpolate", "reasoning": "Sensor data is time-ordered; interpolation is more accurate than propagation."},\n'
+            ' "churn": {"strategy": "leave_empty", "reasoning": "Target variable — rows with missing targets will be dropped by the pipeline."}}'
         )
 
         user_prompt = (
@@ -297,7 +336,11 @@ class SchemaAgent:
             print("  SchemaAgent: LLM imputation selection returned unexpected format. Keeping defaults.")
             return
 
-        valid_strategies = {"fill_mean", "fill_median", "fill_mode", "fill_forward", "fill_backward", "fill_knn", "leave_empty"}
+        valid_strategies = {
+            "fill_mean", "fill_median", "fill_mode",
+            "fill_forward", "fill_backward", "fill_knn",
+            "fill_interpolate", "leave_empty",
+        }
         for col, info in result.items():
             if col in schema and isinstance(info, dict):
                 strategy  = str(info.get("strategy", "")).strip().lower()
@@ -318,14 +361,19 @@ class SchemaAgent:
     def _default_imputation(semantic_type: str) -> str:
         """Rule-based fallback imputation before LLM runs."""
         defaults = {
-            "Numeric":    "fill_median",
-            "Categorical":"fill_mode",
-            "Name":       "leave_empty",
-            "Email":      "leave_empty",
-            "Phone":      "leave_empty",
-            "Location":   "fill_mode",
-            "ID_Code":    "leave_empty",
-            "Temporal":   "leave_empty",
-            "Free_Text":  "leave_empty",
+            "Numeric":      "fill_median",
+            "Categorical":  "fill_mode",
+            "Name":         "leave_empty",
+            "Email":        "leave_empty",
+            "Phone":        "leave_empty",
+            "Location":     "fill_mode",
+            "ID_Code":      "leave_empty",
+            "Temporal":     "leave_empty",
+            "Free_Text":    "leave_empty",
+            "Binary_Flag":  "fill_mode",
+            "Score_Rating": "fill_median",
+            "Percentage":   "fill_median",
+            "URL":          "leave_empty",
+            "JSON_Field":   "leave_empty",
         }
         return defaults.get(semantic_type, "leave_empty")
