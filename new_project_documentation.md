@@ -40,7 +40,7 @@ When a file is uploaded, the following sequence occurs:
 8. The `PipelineOrchestrator` begins sequential execution.
 
 ### 1.5 Backend Scripts Used
-* `pages/CSV_Excel_Mode.py` (Frontend UI)
+* `app.py` (Frontend UI & Orchestrator)
 * `backend/loader.py` (Ingestion)
 * `backend/profiler.py` (Statistical analysis)
 * `agents/schema_agent.py` (LLM intent detection)
@@ -200,7 +200,7 @@ The 12-phase pipeline is the core engine of IntelliClean AI. It combines determi
 ### 5.3 Backend Scripts Used
 * `backend/pipeline.py` (The Orchestrator)
 * `cleaning/deduplication.py`
-* `cleaning/imputation.py`
+* `cleaning/missing_values.py`
 * `cleaning/multilingual.py`
 * `cleaning/string_cleaner.py`
 

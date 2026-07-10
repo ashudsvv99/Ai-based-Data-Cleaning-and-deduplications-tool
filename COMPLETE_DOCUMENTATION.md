@@ -59,14 +59,14 @@ IntelliClean AI is a state-of-the-art framework designed to solve complex data i
 
 ```text
 IntelliClean/
-├── app.py                     # Main Streamlit Frontend
+├── app.py                     # Main Streamlit Frontend & CSV/Excel Orchestrator
 ├── pages/
 │   └── Live_Database.py       # Live DB Connection & NL Query Console UI
 ├── config.py                  # Global hyperparameters and API endpoints
 ├── requirements.txt           # Dependency list
 ├── agents/                    # The AI Cognitive Engine
 │   ├── llm_client.py          # Unified LM Studio HTTP interface
-│   ├── schema_agent.py        # Semantic column profiling
+│   ├── schema_agent.py        # Semantic column profiling & tier identification
 │   ├── planner_agent.py       # Imputation rule generation
 │   ├── nl_query_agent.py      # Natural language to SQL query generation
 │   ├── validation_agent.py    # Post-clean logic auditing
@@ -79,18 +79,24 @@ IntelliClean/
 │   ├── domain_profiler.py     # Industry context detection
 │   ├── profiler.py            # Baseline statistical calculation
 │   ├── validator.py           # Hardcoded math/constraint checks
-│   └── exporter.py            # File I/O for reports and CSVs
-└── cleaning/                  # The Core Algorithms
-    ├── quality_filter.py      # >90% sparsity & dummy data dropping
-    ├── datatype_cleaner.py    # Mixed-type normalization and boolean mapping
-    ├── multilingual.py        # O(1) Token Caching translation
-    ├── currency_converter.py  # Regex symbol extraction & INR mapping
-    ├── standardizer.py        # Semantic formatting (lowercase emails, etc)
-    ├── string_cleaner.py      # Zero-width char & whitespace removal
-    ├── deduplication.py       # Sorted Neighbourhood fuzzy matching
-    ├── entity_resolution.py   # Cluster merging and primary row backfilling
-    ├── missing_values.py      # AI rule evaluation + Skewness statistical fills
-    └── outliers.py            # IQR calculation and Winsorization (Clipping)
+│   ├── exporter.py            # File I/O for reports and CSVs
+│   ├── config_updater.py      # Modifies config settings programmatically
+│   └── state_manager.py       # Connection persistence & session state handling
+├── cleaning/                  # The Core Algorithms
+│   ├── quality_filter.py      # >90% sparsity & dummy data dropping
+│   ├── datatype_cleaner.py    # Mixed-type normalization and boolean mapping
+│   ├── multilingual.py        # O(1) Token Caching translation & transliteration
+│   ├── currency_converter.py  # Regex symbol extraction & INR mapping
+│   ├── standardizer.py        # Semantic formatting (lowercase emails, etc)
+│   ├── string_cleaner.py      # Zero-width char & whitespace removal
+│   ├── deduplication.py       # Sorted Neighbourhood fuzzy matching (16 rules)
+│   ├── entity_resolution.py   # Cluster merging and primary row backfilling
+│   ├── missing_values.py      # AI rule evaluation + Skewness statistical fills (fill_none)
+│   └── outliers.py            # IQR calculation and Winsorization (Clipping)
+├── components/                # Streamlit Custom UI Components
+│   ├── settings_modal.py      # Pop-up modal for global configs (LLM, levels)
+│   └── ui_components.py        # Premium UI cards, metrics, and log rendering
+└── All Scripts Working Guide/ # Comprehensive script-by-script markdown guides
 ```
 
 ---
@@ -791,5 +797,61 @@ The validator checks thousands of rows in milliseconds using boolean masks.
 
 ### 3. Aggregation and Logging
 Every time a mask returns `> 0` violations, the script appends a formatted string to an `issues` list. This list is injected directly into the final `metadata` dictionary and rendered in the UI with a red warning box, alerting the analyst to manually review those specific mathematical breaks.
+
+
+# `backend/config_updater.py` - Dynamic Configuration Writer
+
+Configuring hyperparameters dynamically from a graphical web interface requires updating backend python settings files in-place without corrupting existing values or comments. The `config_updater` solves this through safe file-stream operations and regex replacement.
+
+## Full Working Process & Logic
+
+### 1. In-place Replacement
+- **Action**: It opens `config.py` in read mode (`utf-8` encoding) and reads the entire content.
+- **Regex Replacement**: It compiles a multiline regex pattern: `^({key}\s*=\s*)([^#\n\r]*)(.*)$` for each key. This captures the variable name, its current value, and any inline comments.
+- **Dynamic Formatting**: It formats the new value based on its Python datatype (e.g., surrounds strings with double quotes, formats the LLM Base URL with environment variables, or writes raw numbers/floats directly).
+- **Sub-Replacement**: It executes `pattern.sub(...)` to swap the variable assignment while preserving the key casing and comments exactly.
+- **Write-back**: Writes the updated text string back to `config.py` to persist changes.
+
+
+# `backend/state_manager.py` - Persistent Session Cache Manager
+
+Due to the stateless lifecycle of Streamlit (which reruns scripts from scratch on user actions or page refreshes), the application requires a persistent local cache to survive hard refreshes (F5). `StateManager` handles persistent serialization.
+
+## Full Working Process & Logic
+
+### 1. Pickle and JSON Serialization
+- **Cache Directory**: It establishes a hidden `.cache/` folder under the workspace root directory.
+- **Pipeline Cache (`pipeline_state.pkl`)**: Serializes and deserializes the full clean state (the cleaned `pd.DataFrame`, execution metadata, current table, and pipeline log arrays) using Python's `pickle` library in binary write/read mode.
+- **Credential Cache (`db_credentials.json`)**: Saves database login parameters (Host, Username, Database Name) securely to a local JSON file (omitting passwords or caching them safely depending on security settings) to prevent users from having to re-type connection parameters every reload.
+- **State Restoration**: If a user hits F5, `app.py` queries `StateManager.load_pipeline_state()`. If the file exists, it reconstructs the entire UI state instantly.
+
+
+# `components/settings_modal.py` - Custom Streamlit Modal
+
+Managing settings shouldn't require a dedicated side screen. Streamlit's new dialog framework provides overlay modals. `settings_modal.py` builds the configuration dashboard.
+
+## Full Working Process & Logic
+
+### 1. Dynamic Dialog Decoration
+- **Decorator Detection**: Checks if `st.dialog` or `st.experimental_dialog` is available on the installed Streamlit version, falling back to a dummy decorator on older instances to prevent import exceptions.
+- **Form Submission**: Renders a standard Streamlit form (`st.form("settings_form")`) containing inputs for LLM API Endpoint, Model Name, Temperature, Batch Chunk Size, Fuzzy Deduplication Threshold, and Outlier IQR Multiplier.
+- **Saving State**: When submitted, it maps form outputs to a configuration update dictionary, runs `update_config_file()`, displays a success toast, waits 1 second, and calls `st.rerun()` to load the new config.
+
+
+# `components/ui_components.py` - Premium Glassmorphism Renderer
+
+For enterprise software, UX/UI quality is paramount. `ui_components.py` isolates complex HTML/CSS rendering logic from backend orchestrators to draw visual assets.
+
+## Full Working Process & Logic
+
+### 1. Embedded Styling & Glassmorphism Panels
+- **Custom CSS Stylesheets**: Implements high-end glassmorphism layouts (`backdrop-filter: blur(16px)`), modern typography variables (Inter), custom grid structures (`metric-grid`), and glowing color cards (purple, green, pink, cyan).
+- **Multi-Tab Execution Logging**: Builds the tabbed layout (`Cleaned Data`, `Schema Analysis`, `Multilingual`, `Imputation`, `Deduplication`, `Currency`, `Audit Trail`).
+- **Interactive Tables & Auditing**:
+  - Highlights merged clusters in table format.
+  - Lists before/after schema changes.
+  - Visualizes missing-value heatmap matrices.
+  - Provides instant download actions for CSV, Excel, and JSON Audit Trails.
+
 
 
