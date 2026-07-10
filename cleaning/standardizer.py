@@ -179,12 +179,26 @@ class Standardizer:
                 digits = digits[2:]
             elif digits.startswith('1') and len(digits) == 11:
                 digits = digits[1:]
+                
+        # Check for placeholder phone numbers (all digits the same, e.g., 9999999999)
+        if digits and len(set(digits)) == 1:
+            return pd.NA
+            
         # Strict bound: ITU says max 15 digits, min ~7
         return digits if 7 <= len(digits) <= 15 else pd.NA
 
     @staticmethod
     def _coerce_numeric(df: pd.DataFrame, column: str) -> pd.DataFrame:
         df[column] = pd.to_numeric(df[column], errors="coerce")
+        
+        # Keyword-based absolute value logic to fix negative typos in financial/quantity fields
+        c_low = column.lower()
+        financial_keywords = ["amount", "price", "cost", "quantity", "discount", "gst", "tax"]
+        exclude_keywords = ["profit", "loss", "balance"]
+        
+        if any(k in c_low for k in financial_keywords) and not any(k in c_low for k in exclude_keywords):
+            df[column] = df[column].abs()
+            
         return df
 
     @staticmethod

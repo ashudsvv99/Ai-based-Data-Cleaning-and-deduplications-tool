@@ -322,6 +322,33 @@ class PipelineOrchestrator:
                     return c
             return None
 
+        # ── Global Rule: Temporal Paradox (Time Travel) ───────────
+        # Swap order/delivery dates if delivery is before order
+        ORDER_HINTS = ["order", "purchase", "start", "created", "placed", "open"]
+        DELIVERY_HINTS = ["delivery", "delivered", "end", "close", "completed", "shipped", "resolved"]
+        
+        order_col = None
+        delivery_col = None
+        for col in df.columns:
+            cl = col.lower()
+            if any(h in cl for h in ORDER_HINTS) and "date" in cl and order_col is None:
+                order_col = col
+            if any(h in cl for h in DELIVERY_HINTS) and "date" in cl and delivery_col is None:
+                delivery_col = col
+                
+        if order_col and delivery_col:
+            order_dt = pd.to_datetime(df[order_col], errors='coerce')
+            delivery_dt = pd.to_datetime(df[delivery_col], errors='coerce')
+            
+            paradox_mask = delivery_dt < order_dt
+            paradox_count = int(paradox_mask.sum())
+            if paradox_count > 0:
+                # Swap the values
+                temp = df.loc[paradox_mask, order_col].copy()
+                df.loc[paradox_mask, order_col] = df.loc[paradox_mask, delivery_col]
+                df.loc[paradox_mask, delivery_col] = temp
+                self.log(f"  [Global Rule] Fixed {paradox_count} temporal paradoxes (swapped '{delivery_col}' and '{order_col}')")
+
         # ── Retail ────────────────────────────────────────────────
         if domain == "Retail":
             pri = _col("priority")
