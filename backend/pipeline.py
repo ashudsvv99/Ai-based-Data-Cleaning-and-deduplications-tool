@@ -59,6 +59,43 @@ class PipelineOrchestrator:
         # Shared LLM client
         llm = LMStudioClient()
 
+        # ── Phase 0: Pre-Flight Global Translation ──
+        self.log("Phase 0: Pre-Flight Global Translation")
+        ml_engine = MultilingualEngine(llm)
+        from backend.schema_detector import has_non_ascii
+        
+        # 0a. Translate Headers
+        new_cols = []
+        for col in df.columns:
+            col_str = str(col)
+            if has_non_ascii(col_str):
+                eng_col = ml_engine._translate_single_fallback(col_str, "header")
+                clean_col = eng_col.lower().replace(" ", "_")
+                new_cols.append(clean_col)
+                self.log(f"  Translated header '{col}' -> '{clean_col}'")
+            else:
+                new_cols.append(col)
+        df.columns = new_cols
+        
+        # 0b. Translate Data
+        for col in df.select_dtypes(include=['object', 'string']).columns:
+            sample = df[col].dropna().astype(str).head(100)
+            if any(has_non_ascii(val) for val in sample):
+                unique_count = df[col].nunique()
+                total_count = len(df[col].dropna())
+                
+                if unique_count < 50 or (total_count > 0 and unique_count / total_count < 0.1):
+                    self.log(f"  Translating categorical column '{col}'...")
+                    mapping = ml_engine.translate_categorical_column(df[col], col)
+                    # The mapping is already saved in ml_engine.stats by translate_categorical_column
+                    df[col] = df[col].map(lambda x: mapping.get(str(x).strip(), x) if pd.notna(x) else x)
+                else:
+                    self.log(f"  Transliterating free-text/name column '{col}'...")
+                    mapping = ml_engine.transliterate_name_column(df[col])
+                    # Save stats so Entity Resolution can use it later
+                    ml_engine.stats[col] = {"mapping": mapping}
+                    df[col] = df[col].map(lambda x: mapping.get(str(x).strip(), x) if pd.notna(x) else x)
+
         # ── Phase 1: Load & Profile ──
         self.log("Phase 1: Loading & Profiling")
         df = self.df
@@ -140,35 +177,30 @@ class PipelineOrchestrator:
         else:
             self.log("  No mixed-currency columns detected.")
 
-        # ── Phase 5: Multilingual Translation & Transliteration ──
-        self.log("Phase 5: Multilingual Translation & Transliteration")
-        ml_engine = MultilingualEngine(llm)
+        # ── Phase 5: Standardizer Normalizations (Multilingual moved to Phase 0) ──
+        self.log("Phase 5: Standardizer Normalizations")
         standardizer = Standardizer(ml_engine)
 
         for col, strat in strategies.items():
             if strat.normalization == "none" or col not in df.columns:
                 continue
 
-            self.log(f"  Processing '{col}' with strategy: {strat.normalization}")
-
-            if strat.needs_multilingual and strat.normalization in ["transliterate_name", "translate_to_english"]:
-                df = standardizer.apply(df, col, strat.normalization)
-            elif strat.normalization in ["normalize_email", "normalize_phone", "title_case",
+            if strat.normalization in ["normalize_email", "normalize_phone", "title_case",
                                          "uppercase_strip", "standardize_case", "coerce_numeric",
                                          "parse_dates"]:
+                self.log(f"  Processing '{col}' with strategy: {strat.normalization}")
                 df = standardizer.apply(df, col, strat.normalization)
 
         # ── Phase 6: Entity Resolution ──
         self.log("Phase 6: Entity Resolution")
-        name_cols = [
-            col for col, strat in strategies.items()
-            if strat.normalization == "transliterate_name" and col in df.columns
-        ]
+        # Since Phase 0 transliterated the data, Phase 2 might not flag columns as 'transliterate_name' anymore.
+        # We rely on what Phase 0 actually transliterated.
+        name_cols = [col for col in df.columns if col in ml_engine.stats]
 
         for name_col in name_cols:
-            # Build a mapping from the standardizer's translation stats
-            if name_col in standardizer.stats:
-                raw_mapping = standardizer.stats[name_col].get("mapping", {})
+            # Build a mapping from the multilingual engine's translation stats (saved in Phase 0)
+            if name_col in ml_engine.stats:
+                raw_mapping = ml_engine.stats[name_col].get("mapping", {})
                 if raw_mapping:
                     resolver = EntityResolver()
                     unified_mapping = resolver.build_name_clusters(raw_mapping)
