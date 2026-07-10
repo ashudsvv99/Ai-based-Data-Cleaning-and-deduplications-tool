@@ -61,6 +61,7 @@ class PipelineOrchestrator:
 
         # ── Phase 0: Pre-Flight Global Translation ──
         self.log("Phase 0: Pre-Flight Global Translation")
+        df = self.df
         ml_engine = MultilingualEngine(llm)
         from backend.schema_detector import has_non_ascii
         
@@ -98,7 +99,6 @@ class PipelineOrchestrator:
 
         # ── Phase 1: Load & Profile ──
         self.log("Phase 1: Loading & Profiling")
-        df = self.df
         initial_rows = len(df)
         self.log(f"  Loaded {initial_rows} rows, {len(df.columns)} columns.")
 
