@@ -9,6 +9,15 @@ Key Fix (v2):
     Gov-ID-level merge signals (the root cause of false merges).
   - Domain parameter added so imputation rules are domain-aware.
   - New semantic type mappings: Binary_Flag, Score_Rating, Percentage, URL.
+
+Key Fix (v3):
+  - Business-sensitive columns (Email, Phone, ID_Code, Name, Location,
+    Financial) now use fill_none imputation instead of leave_empty.
+    fill_none standardizes sentinel strings ("unknown", "-", "N/A") to
+    real None/NaN — never fabricates values via mean/median/mode/KNN.
+  - Non-business columns (Numeric, Categorical, Score, Percentage) still
+    receive statistical imputation where appropriate.
+  - LLM smart rules are blocked for business-sensitive column names.
 """
 import json
 import os
@@ -168,7 +177,7 @@ class PlannerAgent:
         # ── Name ─────────────────────────────────────────────────
         elif "name" in sem:
             return CleaningStrategy(
-                imputation=imputation,
+                imputation="fill_none",
                 normalization="transliterate_name" if needs_ml else "title_case",
                 deduplication="fuzzy_name",
                 needs_multilingual=needs_ml,
@@ -180,27 +189,38 @@ class PlannerAgent:
         # family-guard rules handle it internally. Passing "exact_match" here
         # caused the engine to incorrectly merge different-named people who
         # share a family email address.
+        # imputation = fill_none: never fabricate email; normalize sentinels → None/NaN
         elif "email" in sem:
             return CleaningStrategy(
-                imputation=imputation,
+                imputation="fill_none",
                 normalization="normalize_email",
-                deduplication="none",   # ← FIXED (was "exact_match")
+                deduplication="none",
             )
 
         # ── Phone ─────────────────────────────────────────────────
         # Same reason as email — shared by family, guard handled in engine.
+        # imputation = fill_none: never fabricate phone; normalize sentinels → None/NaN
         elif "phone" in sem:
             return CleaningStrategy(
-                imputation=imputation,
+                imputation="fill_none",
                 normalization="normalize_phone",
-                deduplication="none",   # ← FIXED (was "exact_match")
+                deduplication="none",
             )
 
-        # ── ID / Code ─────────────────────────────────────────────
+        # ── ID / Code ───────────────────────────────────────────────
         elif "id_code" in sem:
             return CleaningStrategy(
-                imputation=imputation,
+                imputation="fill_none",   # ← business-sensitive ID: no fabrication
                 normalization="uppercase_strip",
+                deduplication="none",
+            )
+
+        # ── Financial (salary, payment methods, banking) ───────────────
+        # Never statistically impute financial/compensation data.
+        elif "financial" in sem:
+            return CleaningStrategy(
+                imputation="fill_none",   # ← NEVER statistically impute financial data
+                normalization="none",
                 deduplication="none",
             )
 

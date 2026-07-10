@@ -5,6 +5,14 @@ Advanced missing values imputation with:
 - KNN-based imputation for numeric columns
 - Forward/Backward fill for time-series ordered data
 - Constant fill with domain defaults
+- fill_none: normalizes business-sensitive columns to None (NaN)
+  instead of statistically fabricating values like salary, payment_method, etc.
+
+Business Rule (Non-Predictive Business datasets):
+  Columns like salary, payment_method, email, phone, bank_account, dob, gender
+  MUST use fill_none — sentinel strings ("unknown", "-", "N/A") are converted
+  to actual None/NaN. We never fabricate business identity or financial data.
+
 Full audit tracking of every fill decision.
 """
 import re
@@ -21,7 +29,46 @@ except ImportError:
 
 
 # Sentinel strings that are treated the same as NaN
-_NULL_STRINGS = {"", "nan", "none", "<na>", "unknown", "-", "n/a", "null", "?", "na"}
+_NULL_STRINGS = {"", "nan", "none", "<na>", "unknown", "-", "n/a", "null", "?", "na",
+                 "not provided", "no data", "undefined", "missing", "n.a.", "n.a"}
+
+
+# ─────────────────────────────────────────────────────────────
+# Business-Sensitive Column Pattern Guard
+# These column types must NEVER be statistically imputed in
+# Non-Predictive Business datasets. They use fill_none instead.
+# ─────────────────────────────────────────────────────────────
+_BUSINESS_SENSITIVE_PATTERNS = [
+    # Financial / compensation
+    "salary", "wage", "wages", "income", "pay", "compensation",
+    "bonus", "ctc", "package", "remuneration", "stipend",
+    # Payment methods
+    "payment_method", "payment_mode", "pay_method", "pay_mode",
+    "mode_of_payment", "payment_type", "pay_type",
+    # Banking / financial account
+    "bank_account", "bank_no", "account_no", "account_number",
+    "routing", "routing_no", "ifsc", "swift", "iban",
+    "credit_card", "card_number", "card_no", "cvv",
+    # Contact (already protected in dedup — also guard here)
+    "email", "mail", "phone", "mobile", "contact_no",
+    # Government IDs
+    "ssn", "social_security", "national_id", "aadhaar", "aadhar",
+    "pan", "pan_no", "passport", "voter_id",
+    # Personal sensitive demographics
+    "dob", "date_of_birth", "birth_date", "birthdate",
+    "gender", "sex",
+    "marital_status", "marital", "religion", "caste", "ethnicity", "race",
+]
+
+
+def _is_business_sensitive_column(col_name: str) -> bool:
+    """
+    Returns True if the column name matches any business-sensitive pattern.
+    These columns must use fill_none in Non-Predictive Business mode —
+    never fill with mean/median/mode/KNN/forward-fill/backward-fill.
+    """
+    col_lower = col_name.lower().replace(" ", "_")
+    return any(pat in col_lower for pat in _BUSINESS_SENSITIVE_PATTERNS)
 
 
 def _is_effectively_null(val) -> bool:
@@ -38,8 +85,21 @@ class SmartImputer:
         AI-generated conditional rules like "IF customer_type == 'B2B' THEN priority = 'High'"
 
     Phase 2 — Statistical Fallback (per-column strategy):
-        fill_median, fill_mean, fill_mode, fill_knn, fill_constant,
-        fill_forward, fill_backward, leave_empty
+        fill_none      — business-sensitive cols: sentinel strings → None/NaN (NO fabrication)
+        fill_median    — skewed numeric
+        fill_mean      — normally distributed numeric
+        fill_mode      — categorical / low-cardinality
+        fill_knn       — numeric with correlated neighbors
+        fill_constant  — fill with a provided constant
+        fill_forward   — time-series propagation forward
+        fill_backward  — time-series propagation backward
+        fill_interpolate — time-series linear interpolation
+        leave_empty    — explicit skip (no change at all)
+
+    CRITICAL RULE:
+        For Non-Predictive Business datasets, any column matching
+        _BUSINESS_SENSITIVE_PATTERNS is automatically redirected to fill_none —
+        even if the caller requests a statistical strategy.
 
     All decisions are tracked in:
         self.applied_rules      — LLM rule results
@@ -66,6 +126,15 @@ class SmartImputer:
         for rule in sorted_rules:
             col = rule.target_column
             if col not in df.columns:
+                continue
+
+            # Guard: never apply LLM rule to business-sensitive columns
+            if _is_business_sensitive_column(col):
+                print(
+                    f"  [SmartImputer] Skipped LLM rule for business-sensitive column '{col}' "
+                    f"— using fill_none instead"
+                )
+                df = self.apply_statistical(df, col, "fill_none")
                 continue
 
             missing_mask = df[col].apply(_is_effectively_null)
@@ -103,22 +172,45 @@ class SmartImputer:
     def apply_statistical(
         self, df: pd.DataFrame, column: str, strategy: str,
         constant_value: Optional[str] = None,
+        dataset_intent: str = "Non-Predictive Business",
     ) -> pd.DataFrame:
         """
         Apply statistical imputation and record detailed audit stats.
 
         Supported strategies:
+            fill_none     — BUSINESS SENSITIVE: convert all sentinel strings → None/NaN
+                            (No fabrication — just standardizes messy nulls to real NaN)
             fill_median   — robust for skewed numeric data
             fill_mean     — best for normally distributed numeric data
             fill_mode     — best for categorical / low-cardinality columns
             fill_knn      — KNN imputation for numeric
             fill_forward  — propagate last valid value forward
             fill_backward — propagate next valid value backward
+            fill_interpolate — linear interpolation for time-series
             fill_constant — fill with a specific provided constant
             leave_empty   — do nothing (explicit skip)
+
+        BUSINESS RULE:
+            If dataset_intent == "Non-Predictive Business" and the column matches
+            _BUSINESS_SENSITIVE_PATTERNS, statistical strategies are automatically
+            overridden to fill_none — preserving data integrity.
         """
         if strategy == "leave_empty" or column not in df.columns:
             return df
+
+        # ── Business-sensitive guard ──────────────────────────────
+        _STATISTICAL = {"fill_mean", "fill_median", "fill_mode", "fill_knn",
+                        "fill_forward", "fill_backward", "fill_interpolate"}
+        if (
+            dataset_intent == "Non-Predictive Business"
+            and strategy in _STATISTICAL
+            and _is_business_sensitive_column(column)
+        ):
+            print(
+                f"  [GUARD] '{column}' is a business-sensitive column — "
+                f"overriding '{strategy}' → fill_none (no statistical fabrication allowed)"
+            )
+            strategy = "fill_none"
 
         series = df[column]
 
@@ -137,8 +229,23 @@ class SmartImputer:
         fill_value_str = None
         extra_stats    = {}
 
+        # ── fill_none ─────────────────────────────────────────────
+        # Business-sensitive columns: sentinel strings already converted to NaN above.
+        # No further action needed — we intentionally leave them as None/NaN.
+        if strategy == "fill_none":
+            fill_value_str = "None (NaN)"
+            extra_stats    = {
+                "method":  "fill_none",
+                "note":    "Business-sensitive column: sentinel strings converted to None/NaN. No statistical fabrication.",
+            }
+            # NaN is already set from sentinel normalization above — nothing more to do.
+            print(
+                f"  [fill_none] '{column}': {missing_count} missing/sentinel values "
+                f"standardized to None/NaN (business-sensitive column — no imputation)"
+            )
+
         # ── fill_median ──────────────────────────────────────────
-        if strategy == "fill_median" and pd.api.types.is_numeric_dtype(series):
+        elif strategy == "fill_median" and pd.api.types.is_numeric_dtype(series):
             median_val     = float(non_null.median())
             fill_value_str = f"{median_val:.4g}"
             df[column]     = series.fillna(median_val)
@@ -186,8 +293,6 @@ class SmartImputer:
             print(f"  [Impute-Bfill]  '{column}': filled {missing_count} backward")
 
         # ── fill_interpolate ──────────────────────────────────────
-        # Best for time-series data: computes values between known points
-        # using linear interpolation (more accurate than forward/backward fill).
         elif strategy == "fill_interpolate":
             if pd.api.types.is_numeric_dtype(series):
                 df[column]     = series.interpolate(method="linear", limit_direction="both")

@@ -32,7 +32,8 @@ CORE PRINCIPLE (FAMILY GUARD):
 Golden Record Rules:
   - Record with fewest missing values becomes the primary "Golden Record"
   - Backfill remaining gaps from secondary records in same cluster
-  - Numeric fields: use median for stability across cluster
+  - Numeric fields: use median ONLY for non-business-sensitive analytics columns.
+    Business-sensitive columns (salary, payment, etc.) keep the primary record's value.
 
 Pass structure:
   Pass 1: Exact Gov ID match (ONLY — with strict name similarity check)
@@ -41,6 +42,13 @@ Pass structure:
   Pass 4: Fuzzy name match with STRICT family guards
   Pass 5: Multi-field weighted similarity with family guards
   Pass 6: Business Rule Backfill (Rules 4 & 5)
+
+LLM DEPENDENCY:
+  Deduplication is 100% rule-based — it does NOT call the LLM at runtime.
+  If LM Studio is offline, deduplication continues fully using the 16 rules above.
+  The LLM is only used upstream (SchemaAgent/PlannerAgent) to classify columns.
+  If that LLM step failed, the column tier classifier uses heuristic column-name
+  patterns and the engine still runs correctly with sensible defaults.
 """
 import pandas as pd
 import numpy as np
@@ -80,6 +88,39 @@ _NULL_SET = {
     "?", "na", "0", "0.0", "-1", "undefined", "missing",
     "n.a.", "n.a", "no data", "not provided",
 }
+
+# ─────────────────────────────────────────────────────────────
+# Business-Sensitive Column Patterns
+# These columns must NEVER receive statistical imputation (mean/median/mode/KNN)
+# in Non-Predictive Business datasets. The Golden Record also preserves the
+# primary record's value for these rather than computing a cluster median.
+# ─────────────────────────────────────────────────────────────
+_BUSINESS_SENSITIVE_PATTERNS = [
+    # Financial / compensation
+    "salary", "wage", "wages", "income", "pay", "compensation",
+    "bonus", "ctc", "package", "remuneration", "stipend",
+    # Payment
+    "payment_method", "payment_mode", "pay_method", "pay_mode",
+    "mode_of_payment", "payment_type", "pay_type",
+    # Banking
+    "bank_account", "bank_no", "routing", "ifsc", "swift", "iban",
+    "credit_card", "card_number", "card_no", "cvv",
+    # Contact (also protected by family-guard, but guard here too)
+    "email", "mail", "phone", "mobile", "contact_no",
+    # Government / national IDs
+    "ssn", "social_security", "national_id", "aadhaar", "aadhar",
+    "pan", "pan_no", "passport", "voter_id",
+    # Personal sensitive demographics
+    "dob", "date_of_birth", "birth_date", "birthdate",
+    "gender", "sex",
+    "marital_status", "marital", "religion", "caste", "ethnicity", "race",
+]
+
+
+def _is_business_sensitive_col(col_name: str) -> bool:
+    """Returns True if the column name matches any business-sensitive pattern."""
+    col_lower = col_name.lower().replace(" ", "_")
+    return any(pat in col_lower for pat in _BUSINESS_SENSITIVE_PATTERNS)
 
 # ─────────────────────────────────────────────────────────────
 # Thresholds
@@ -319,22 +360,55 @@ class BusinessRuleEvaluator:
         return None  # Ambiguous zone
 
     def _phones_match(self, idx1: int, idx2: int) -> Optional[bool]:
-        """Check if any phone column has matching values."""
+        """
+        Check phone columns across ALL phone columns.
+        Returns True  if ANY column has matching non-empty phone values.
+        Returns False if ANY column has conflicting non-empty phone values.
+        Returns None  if no phone column has data for both records.
+        """
+        any_match    = False
+        any_conflict = False
+        any_data     = False
         for col in self.phone_cols:
             p1 = self._phone_val(idx1, col)
             p2 = self._phone_val(idx2, col)
             if p1 and p2:
-                return p1 == p2
-        return None
+                any_data = True
+                if p1 == p2:
+                    any_match = True
+                else:
+                    any_conflict = True
+        if not any_data:
+            return None
+        # A conflict on any column outweighs a match on another
+        if any_conflict:
+            return False
+        return True if any_match else None
 
     def _emails_match(self, idx1: int, idx2: int) -> Optional[bool]:
-        """Check if any email column has matching values."""
+        """
+        Check email columns across ALL email columns.
+        Returns True  if ANY column has matching non-empty email values.
+        Returns False if ANY column has conflicting non-empty email values.
+        Returns None  if no email column has data for both records.
+        """
+        any_match    = False
+        any_conflict = False
+        any_data     = False
         for col in self.email_cols:
             e1 = self._email_val(idx1, col)
             e2 = self._email_val(idx2, col)
             if e1 and e2:
-                return e1 == e2
-        return None
+                any_data = True
+                if e1 == e2:
+                    any_match = True
+                else:
+                    any_conflict = True
+        if not any_data:
+            return None
+        if any_conflict:
+            return False
+        return True if any_match else None
 
     def _gov_ids_match(self, idx1: int, idx2: int) -> Optional[bool]:
         """Check if any Gov ID matches. Returns None if both sides are empty."""
@@ -817,14 +891,20 @@ class DeduplicationEngine:
     # ─────────────────────────────────────────────────────────────
     def _resolve_intent(self, gov_id_cols, email_cols, phone_cols, name_cols) -> str:
         """
-        Auto-detect dataset intent:
-        Any dataset with PII columns (names, IDs, emails, phones) = Business.
+        Resolve dataset intent.
+
+        Priority order:
+          1. Explicit user override (dataset_intent not Auto-Detect/empty) — respected first.
+          2. Auto-detect: any dataset with PII columns = Non-Predictive Business.
+          3. Default to Predictive if no PII detected.
         """
+        # 1. Explicit user choice takes priority over auto-detection
+        if self.dataset_intent and self.dataset_intent not in ("Auto-Detect", ""):
+            return self.dataset_intent
+        # 2. Auto-detect based on column presence
         contact_count = len(gov_id_cols) + len(email_cols) + len(phone_cols)
         if contact_count >= 1 or name_cols:
             return "Non-Predictive Business"
-        if self.dataset_intent and self.dataset_intent not in ("Auto-Detect", ""):
-            return self.dataset_intent
         return "Predictive"
 
     # ─────────────────────────────────────────────────────────────
@@ -875,8 +955,9 @@ class DeduplicationEngine:
             if root1 == root2:
                 continue
 
-            n1 = _norm(df_work.loc[root1, primary])
-            n2 = _norm(df_work.loc[root2, primary])
+            # BUG FIX: read from self.df (not df_work) since root1 and root2 are original indices
+            n1 = _norm(self.df.loc[root1, primary])
+            n2 = _norm(self.df.loc[root2, primary])
             if not n1 or not n2:
                 continue
 
@@ -890,24 +971,24 @@ class DeduplicationEngine:
 
             # Email (20% weight) — only if email matches (exact)
             if email_cols:
-                e1 = _norm_email(df_work.loc[root1, email_cols[0]])
-                e2 = _norm_email(df_work.loc[root2, email_cols[0]])
+                e1 = _norm_email(self.df.loc[root1, email_cols[0]])
+                e2 = _norm_email(self.df.loc[root2, email_cols[0]])
                 if e1 and e2:
                     score  += 0.20 * (100.0 if e1 == e2 else 0.0)
                     weight += 0.20
 
             # Phone (15% weight) — only if phone matches (exact normalized)
             if phone_cols:
-                p1 = _norm_phone(df_work.loc[root1, phone_cols[0]])
-                p2 = _norm_phone(df_work.loc[root2, phone_cols[0]])
+                p1 = _norm_phone(self.df.loc[root1, phone_cols[0]])
+                p2 = _norm_phone(self.df.loc[root2, phone_cols[0]])
                 if p1 and p2:
                     score  += 0.15 * (100.0 if p1 == p2 else 0.0)
                     weight += 0.15
 
             # Address (5% weight)
             if block_cols:
-                l1 = _norm(df_work.loc[root1, block_cols[0]])
-                l2 = _norm(df_work.loc[root2, block_cols[0]])
+                l1 = _norm(self.df.loc[root1, block_cols[0]])
+                l2 = _norm(self.df.loc[root2, block_cols[0]])
                 if l1 and l2:
                     score  += 0.05 * fuzz.ratio(l1, l2)
                     weight += 0.05
@@ -916,7 +997,8 @@ class DeduplicationEngine:
             if final_score < self.threshold:
                 continue
 
-            # Apply family guards — always
+            # ── Apply family guards — always ────────────────────────────────
+            # BUG FIX: Indentation corrected so this guard block executes for each candidate link pair
             decision = rule_evaluator.evaluate(root1, root2)
             if decision == "block":
                 blocked += 1
@@ -928,11 +1010,11 @@ class DeduplicationEngine:
 
             # "skip": check Gov ID conflicts before merging
             has_gov_conflict = any(
-                _norm(df_work.loc[root1, col]) and
-                _norm(df_work.loc[root2, col]) and
-                _norm(df_work.loc[root1, col]) != _norm(df_work.loc[root2, col])
+                _norm(self.df.loc[root1, col]) and
+                _norm(self.df.loc[root2, col]) and
+                _norm(self.df.loc[root1, col]) != _norm(self.df.loc[root2, col])
                 for col in gov_id_cols
-                if col in df_work.columns
+                if col in self.df.columns
             )
             if has_gov_conflict:
                 blocked += 1
@@ -954,6 +1036,9 @@ class DeduplicationEngine:
         Rule 4: Backfill missing Name from within the same duplicate cluster.
         Rule 5: Backfill missing Phone/Email from within the same duplicate cluster.
         NOTE: This only fills values from records already proven to be the SAME person.
+
+        BUG FIX: Previous version only logged but never wrote the fill to self.df.
+        This version writes the donor value directly to self.df.
         """
         cluster_map: Dict[int, List[int]] = {}
         for i in range(len(self.df)):
@@ -968,9 +1053,16 @@ class DeduplicationEngine:
                     continue
                 vals      = [(idx, _norm(self.df.loc[idx, col])) for idx in indices]
                 non_empty = [(idx, v) for idx, v in vals if v]
-                empty     = [idx for idx, v in vals if not v]
-                if non_empty and empty:
-                    self.log_callback(f"    ↳ Copied missing '{col}' from a duplicate (fixed {len(empty)} rows)")
+                empty_idx = [idx for idx, v in vals if not v]
+                if non_empty and empty_idx:
+                    # Take the raw value (not normalised) from the most complete donor record
+                    donor_val = self.df.loc[non_empty[0][0], col]
+                    for target_idx in empty_idx:
+                        self.df.loc[target_idx, col] = donor_val
+                    self.log_callback(
+                        f"    ↔ Backfilled '{col}' from duplicate: "
+                        f"wrote '{donor_val}' to {len(empty_idx)} row(s) (cluster root={root})"
+                    )
 
     # ─────────────────────────────────────────────────────────────
     # Golden Record builder
@@ -980,11 +1072,16 @@ class DeduplicationEngine:
         Build a Golden Record for a cluster:
         1. Primary = row with fewest missing values (most complete)
         2. Backfill remaining NaN from other records in the cluster
-        3. Numeric fields: use median for stability
+        3. Numeric fields: use cluster median for stability — EXCEPT for
+           business-sensitive columns (salary, payment, etc.) which always
+           keep the primary record's value (no fabrication).
+
+        BUG FIX: Use cluster_df.loc (not .iloc) since indices are original
+        DataFrame integer indices, not positional offsets.
         """
-        cluster_df  = self.df.iloc[indices].copy()
+        cluster_df     = self.df.loc[indices].copy()   # BUG FIX: .loc, not .iloc
         missing_counts = cluster_df.isnull().sum(axis=1)
-        primary_idx    = missing_counts.idxmin()
+        primary_idx    = missing_counts.idxmin()       # Returns original df index (label)
         golden         = cluster_df.loc[primary_idx].to_dict()
 
         # Backfill missing fields from other cluster records
@@ -998,8 +1095,12 @@ class DeduplicationEngine:
                     break
 
         # Numeric fields: cluster median for robustness
+        # EXCEPTION: business-sensitive columns keep the primary record's value.
         for col in self.df.columns:
             if not pd.api.types.is_numeric_dtype(self.df[col]):
+                continue
+            if _is_business_sensitive_col(col):
+                # Keep whatever the primary record had — do not overwrite with median
                 continue
             vals = cluster_df[col].dropna()
             if len(vals) > 0:

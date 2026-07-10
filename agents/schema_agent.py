@@ -10,11 +10,21 @@ Three-pass column classification:
 
 Intent-Aware Constraints (enforced AFTER LLM runs):
   Non-Predictive Business:
-    - Critical business columns (Name, Email, Phone, ID_Code, Location, Temporal)
-      MUST use leave_empty — never statistically fabricate business identity data.
+    - Critical business columns (Name, Email, Phone, ID_Code, Location, Temporal,
+      Financial) MUST use fill_none — converts sentinel strings to None/NaN.
+      Never statistically fabricate business identity or financial data.
+    - Business-sensitive column NAMES (salary, payment_method, gender, dob, etc.)
+      are also enforced to fill_none regardless of semantic type.
   Predictive:
     - Target variables MUST use leave_empty — rows with missing targets are dropped.
     - Time-series numeric columns default to fill_forward before LLM overrides.
+
+LLM Fallback:
+    If LM Studio is unreachable or returns invalid JSON:
+    - Pass 2 (semantic type): column keeps its heuristic classification.
+    - Pass 3 (imputation):    column keeps its heuristic default strategy.
+    - A WARNING is printed so the operator knows LLM was bypassed.
+    - All business-safety constraints (fill_none guards) still apply.
 """
 import json
 import pandas as pd
@@ -81,10 +91,28 @@ class SchemaAgent:
         schema: Dict[str, ColumnSchema] = {}
         ambiguous_cols = []
 
-        # Semantic types that are critical business identity columns.
-        # For Non-Predictive Business, Categorical status/tier/type should also
-        # use leave_empty rather than mode-filling (status = 'Active' is not safe to assume).
-        _CRITICAL_TYPES = {"Name", "Email", "Phone", "ID_Code", "Location", "Temporal", "URL", "JSON_Field"}
+        # Semantic types that are critical business identity / sensitive columns.
+        # For Non-Predictive Business, these use fill_none — sentinel strings become
+        # real None/NaN. We never statistically fabricate business identity data.
+        _CRITICAL_TYPES = {
+            "Name", "Email", "Phone", "ID_Code", "Location", "Temporal",
+            "URL", "JSON_Field",
+            "Financial",    # Salary, payment methods, bank/card info — always fill_none
+        }
+
+        # Business-sensitive column NAME patterns — enforced to fill_none
+        # regardless of semantic type, in Non-Predictive Business mode.
+        _SENSITIVE_PATTERNS = [
+            "salary", "wage", "wages", "income", "pay", "compensation",
+            "bonus", "ctc", "package", "remuneration", "stipend",
+            "payment_method", "payment_mode", "pay_method", "pay_mode",
+            "mode_of_payment", "payment_type", "pay_type",
+            "bank_account", "bank_no", "routing", "ifsc", "swift", "iban",
+            "credit_card", "card_number", "card_no", "cvv",
+            "dob", "date_of_birth", "birth_date", "birthdate",
+            "gender", "sex",
+            "marital_status", "marital", "religion", "caste", "ethnicity", "race",
+        ]
 
         for col, info in heuristic_results.items():
             sem_type   = info["semantic_type"]
@@ -94,9 +122,18 @@ class SchemaAgent:
             is_critical = dataset_intent == "Non-Predictive Business" and sem_type in _CRITICAL_TYPES
             is_target   = col in target_variables
 
+            # Also mark columns as critical if their NAME matches sensitive patterns
+            col_lower = col.lower().replace(" ", "_")
+            is_name_sensitive = (
+                dataset_intent == "Non-Predictive Business"
+                and any(pat in col_lower for pat in _SENSITIVE_PATTERNS)
+            )
+            if is_name_sensitive:
+                is_critical = True
+
             # Default imputation — will be refined by LLM in Pass 3
             if is_critical or is_target:
-                default_strat = "leave_empty"
+                default_strat = "fill_none"   # Standardize sentinels → None/NaN, never fabricate
             elif is_time_series and sem_type == "Numeric":
                 default_strat = "fill_forward"
             else:
@@ -118,6 +155,11 @@ class SchemaAgent:
         if ambiguous_cols:
             log_callback(f"SchemaAgent: Pass 2 — LLM refinement for {len(ambiguous_cols)} ambiguous columns...")
             llm_schema = self._llm_classify(df, ambiguous_cols, dataset_intent)
+            if not llm_schema:
+                log_callback(
+                    f"  [WARNING] SchemaAgent Pass 2: LLM returned empty response "
+                    f"(LM Studio offline or timeout). Keeping heuristic types for: {ambiguous_cols}"
+                )
             for col, llm_info in llm_schema.items():
                 if col in schema and isinstance(llm_info, dict):
                     schema[col].semantic_type = llm_info.get("semantic_type", schema[col].semantic_type)
@@ -138,13 +180,14 @@ class SchemaAgent:
 
         # ── Post-LLM: enforce intent constraints ──────────────────
         log_callback("SchemaAgent: Enforcing intent-aware imputation constraints...")
-        _STATISTICAL = {"fill_mean", "fill_median", "fill_mode", "fill_knn"}
+        _STATISTICAL = {"fill_mean", "fill_median", "fill_mode", "fill_knn",
+                        "fill_forward", "fill_backward", "fill_interpolate"}
         for col, s in schema.items():
             if s.is_critical_business and s.imputation_strategy in _STATISTICAL:
-                s.imputation_strategy  = "leave_empty"
+                s.imputation_strategy  = "fill_none"
                 s.imputation_reasoning = (
-                    f"[Non-Predictive Business] Critical business column '{col}' ({s.semantic_type}) — "
-                    "statistical fabrication is not allowed. Kept as empty/null."
+                    f"[Non-Predictive Business] Business-sensitive column '{col}' ({s.semantic_type}) — "
+                    "statistical imputation not allowed. Sentinel strings → None/NaN only."
                 )
             if s.is_target and s.imputation_strategy in _STATISTICAL:
                 s.imputation_strategy  = "leave_empty"
@@ -332,22 +375,28 @@ class SchemaAgent:
             enable_thinking=True
         )
 
-        if not isinstance(result, dict):
-            print("  SchemaAgent: LLM imputation selection returned unexpected format. Keeping defaults.")
+        if not isinstance(result, dict) or not result:
+            print(
+                "  [WARNING] SchemaAgent Pass 3: LLM imputation selection returned empty/invalid "
+                "response (LM Studio offline or timeout). Keeping heuristic defaults."
+            )
             return
 
         valid_strategies = {
             "fill_mean", "fill_median", "fill_mode",
             "fill_forward", "fill_backward", "fill_knn",
-            "fill_interpolate", "leave_empty",
+            "fill_interpolate", "fill_none", "leave_empty",
         }
         for col, info in result.items():
             if col in schema and isinstance(info, dict):
                 strategy  = str(info.get("strategy", "")).strip().lower()
                 reasoning = str(info.get("reasoning", "")).strip()
-                # Do not override leave_empty for critical/target columns
-                if schema[col].is_critical_business or schema[col].is_target:
-                    print(f"  [Imputation] '{col}' → leave_empty (intent constraint — LLM suggestion '{strategy}' ignored)")
+                # Do not override fill_none/leave_empty for critical/target columns
+                if schema[col].is_critical_business:
+                    print(f"  [Imputation] '{col}' → fill_none (business-sensitive constraint — LLM suggestion '{strategy}' ignored)")
+                    continue
+                if schema[col].is_target:
+                    print(f"  [Imputation] '{col}' → leave_empty (target variable constraint — LLM suggestion '{strategy}' ignored)")
                     continue
                 if strategy in valid_strategies:
                     schema[col].imputation_strategy  = strategy
@@ -359,16 +408,27 @@ class SchemaAgent:
     # ────────────────────────────────────────────
     @staticmethod
     def _default_imputation(semantic_type: str) -> str:
-        """Rule-based fallback imputation before LLM runs."""
+        """
+        Rule-based fallback imputation before LLM runs.
+
+        fill_none → business-sensitive types: sentinel strings become None/NaN.
+        fill_median/fill_mode → safe for non-sensitive analytics columns.
+        leave_empty → truly unstructured or target columns.
+        """
         defaults = {
             "Numeric":      "fill_median",
             "Categorical":  "fill_mode",
-            "Name":         "leave_empty",
-            "Email":        "leave_empty",
-            "Phone":        "leave_empty",
-            "Location":     "fill_mode",
-            "ID_Code":      "leave_empty",
-            "Temporal":     "leave_empty",
+            # Identity / contact — fill_none: never fabricate who someone is
+            "Name":         "fill_none",
+            "Email":        "fill_none",
+            "Phone":        "fill_none",
+            # Location — fill_none in business mode (enforced by caller for is_critical)
+            # For Predictive mode this stays as fill_mode (overridden by LLM if needed)
+            "Location":     "fill_none",
+            "ID_Code":      "fill_none",
+            "Temporal":     "fill_none",
+            # Financial — fill_none: salary/payment data must not be guessed
+            "Financial":    "fill_none",
             "Free_Text":    "leave_empty",
             "Binary_Flag":  "fill_mode",
             "Score_Rating": "fill_median",
