@@ -1,9 +1,0 @@
-tracking_id,sender_name,destination,weight_kg,status,shipping_cost
-TRK001,Acme Corp,London,,Delivered,250.0
-TRK002,Global Freight,Berlin,12.0,In Transit,75.0
-TRK003,Raj Transport,Delhi,850.0,Pending,1500.0
-TRK004,Speedy Delivery,Tokyo,2.5,Delivered,25.0
-TRK006,Swift Logistics,Paris,34.20000076293945,In Transit,180.0
-TRK007,Prime Movers,New York,2110.5625,Returned,3480.0
-TRK008,Express Cargo,Sydney,-10.0,Delivered,300.0
-TRK009,Fast Track,Toronto,45.0,In Transit,

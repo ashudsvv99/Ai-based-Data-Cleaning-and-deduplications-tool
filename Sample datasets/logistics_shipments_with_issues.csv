@@ -1,0 +1,551 @@
+Shipment_ID,Customer_Name,Contact_Phone,Origin,Destination,Order_Date,Delivery_Date,Weight_kg,Status
+SHP-297636,Molly Rodriguez,6329323383,Mendeztown,East Carlos,2026-02-26,2026-03-08,75.84,
+SHP-960408,Nicholas Monroe,5791662169,Grimesmouth,Reedside,2026-05-02,2026-05-12,99.09,Delivered
+SHP-183336,Karen Shaw,7668801906,Josephstad,Port Paul,2026-01-10,2026-01-11,320.19,In Transit
+SHP-802559,Hayden Ortega,4110335359,Parrishton,Carolinestad,2025-08-19,2025-09-02,236.36,In Transit
+SHP-199326,Robert Taylor,8334179373,North Mariabury,,2025-12-01,2025-11-26,264.41,In Transit
+SHP-849398,Ray Ramos,2033653860,East Stevenville,South Paul,2025-11-08,2025-11-10,54.94,Delivered
+SHP-667296,Barry Welch,8289454630,Wendyland,Goodville,2025-12-29,2026-01-07,68.01,Cancelled
+SHP-889216,Karen Hoffman,5151887478,North Elizabethmouth,Lake Christina,2026-03-08,2026-03-12,293.76,Delivered
+SHP-922471,Russell Richardson,9074999565,Murrayport,Shawchester,2025-09-11,,10.02, Pending
+SHP-408467,William Jones,9355364489,Lake Willie,Williamsview,2026-02-11,2026-02-25,309.61,In Transit
+SHP-525187,Kaylee Miller,5212581851,East Tinafort,Sharitown,2025-10-19,2025-10-27,482.59,In Transit
+SHP-855731,,9786748825,Danielchester,South Aaron,,2026-04-20,-394.04232099758383,Delivered
+SHP-802685,Christopher Jenkins,3021598245,,South Christopherview,2025-11-12,2025-11-16,409.21,cancelled
+SHP-637333,Alexander Gomez,7939173425,New Carlymouth,Smithchester,2025-12-08,2025-12-13,21.19,Pending
+SHP-946826,Samantha Terry,5113386226,East Marymouth,North Jennifer,2025-11-25,2025-12-03,56.23,Pending
+SHP-205239,Jessica Fox,7971399399,Smithberg,Pittsberg,2025-08-08,2025-08-19,424.77,Pending
+SHP-812591,Sherry Ford,,Kimfort,East Debbieland,2026-06-02,2026-06-07,,In Transit
+SHP-771088,Colleen Nguyen,1438989805,East Lydiamouth,Adamsborough,2026-06-30,2026-07-07,52.87,Pending
+SHP-498535,Luke Yates,6964188417,North Josephfurt,Lake Peter,2025-11-27,2025-12-03,336.89,Cancelled
+SHP-913608,Jamie Lopez,2753459822,New Melissabury,Jenniferside,2026-05-24,2026-05-29,191.35,Cancelled
+SHP-290719,Kayla Jackson,3057629778,Sandrashire,East Nicholasberg,2025-08-21,2025-08-25,414.84, Pending
+SHP-965401,Melanie Wilson DVM,8274273035,Brooksmouth,Kariborough,2026-03-01,2026-03-06,-339.35232099758383,PENDING
+SHP-957915,Michael Moore,3250324141,North Jodibury,Port Marissa,2025-10-30,2025-11-13,424.12,Delivered
+SHP-119857,Jason Gutierrez,8293928340,South Warren,Salaston,2026-04-10,2026-04-12,19.29,In-Transit
+SHP-950823,William Sparks,6859286614,South Tammie,New Tammy,2025-11-16,2025-11-18,474.69,PENDING
+SHP-223172,Brittany Cantu,1118543408,Williamview,Davenportfort,2025-10-13,2025-10-18,93.39,Pending
+SHP-502206,Paul Finley,7829772942,Brandishire,West Desireebury,2025-08-03,,54.68,Cancelled
+SHP-720298,Michael Meza,1665484476,New Stacy,Weaverburgh,2026-01-16,2026-01-21,422.99,Delivered
+SHP-725637,,7525484303,Lake Judith,Jasonhaven,2025-09-03,2025-09-06,305.1,In Transit
+SHP-949153,Chelsea Jacobs,9886101513,North Shannon,Toniland,2026-01-22,2026-02-02,173.91,Cancelled
+SHP-964915,Derrick Clayton,2721355673,Amyberg,Kramerton,2025-07-28,2025-07-31,371.78,Delivered
+SHP-244192,Darrell Ortiz,5650101484,West Stephaniebury,Port James,2025-09-17,2025-10-01,219.79,Pending
+SHP-459315,Keith Knox,7163022531,Thomasburgh,South Marvinburgh,2025-11-09,2025-11-20,-496.4823209975838,Delivered
+SHP-783157,,4482141802,,South Michaelmouth,2025-11-12,2025-11-17,83.8,Delivered
+SHP-803787,Heidi Owen,1651662547,North Douglas,Johnsonland,2025-10-10,2025-10-23,283.61,Pending
+SHP-130271,Lisa Allen,8616379926,West Andrea,,2026-01-05,2026-01-11,322.53,Cancelled
+SHP-944962,Jay Ramirez,7831113321,Port Matthew,,2026-03-01,2026-03-02,19.75,In Transit
+SHP-711680,Anthony Simpson,5686850445,Mitchelltown,South Dennisview,2026-04-18,2026-04-24,207.13,Pending
+SHP-605719,Ethan Villanueva,2014911848,,Raymondshire,2025-08-29,2025-09-09,63.52,Pending
+SHP-880009,Angela Jackson,4106464319,North Calebfort,North Kellihaven,2026-05-03,2026-05-10,130.96,Delivered
+SHP-803953,Joseph Horton,3075362821,Hernandezfurt,Port Amanda,2025-10-11,2025-10-15,193.78,Pending
+SHP-761338,Michael Smith,9033293776,Brooksfort,Smithside,2026-02-09,2026-02-22,-68.38232099758382,Delivered
+SHP-454349,Jason House,3420721027,Port Patriciamouth,South Adam,2026-04-22,2026-05-06,432.57,Delivered
+SHP-223172,Brittany Cantu,1118543408,Williamview,Davenportfort,2025-10-13,2025-10-18,93.39,Pending
+SHP-404466,Sarah Joseph,1322401182,Port Michael,North Tracie,2026-05-14,2026-05-15,207.22,Cancelled
+SHP-350484,Renee Mendez,6170675398,Port Willie,,2026-02-15,2026-02-24,388.61,Cancelled
+SHP-717466,Jordan Ramos,2401777036,East Nicoleview,North Jack,2025-07-31,2025-08-11,140.3,Cancelled
+SHP-841296,Scott Jones,9155819200,West Kristin,South Danny,2025-10-05,2025-10-09,342.62,Delivered
+SHP-199326,Robert Taylor,8334179373,North Mariabury,,2025-12-01,2025-11-26,264.41,In Transit
+SHP-520106,Kelly Dawson,4765583254,Port Lorifort,Smithhaven,2025-10-29,2025-10-30,152.7,Delivered
+SHP-700067,Christopher Nielsen,2236045959,Greeneshire,Lake Jessicaport,2025-08-12,2025-08-22,339.93,Cancelled
+SHP-418862,Terri Mason,4713453204,Kimton,Navarroview,2025-07-20,2025-08-02,406.33,Cancelled
+SHP-531319,Joseph Hill,5151086814,Andrechester,North Samantha,2026-01-30,2026-02-13,339.78,
+SHP-941814,Katelyn Phillips,5756663747,West Willie,East Teresaside,2026-02-02,2026-02-05,441.82,Pending
+SHP-238741,Lindsay Smith,7627266377,Charleneport,Rodneyfurt,2026-06-06,2026-06-11,23.13,In Transit
+SHP-630538,Alexandria Fisher,6320115677,Garciastad,Zimmermanchester,2025-09-16,2025-09-23,-76.15232099758383,Pending
+SHP-711248,Victor Hill,2420277403,South Sarah,West Gregoryhaven,2025-08-20,2025-09-01,,Pending
+SHP-660081,Angel Brown,,Heidiberg,Garciatown,2026-02-18,2026-02-14,6.76,In Transit
+SHP-814919,Carolyn Miller,6600100279,Harveybury,Durhamberg,2025-10-08,2025-10-12,217.79,Pending
+SHP-746901,Andrew Jones,4562272871,Christianborough,North Jessicaside,2025-12-07,2025-12-08,137.89,Delivered
+SHP-783226,Deborah Herrera,9434946584,,South Andrea,2026-02-11,,146.28,Delivered
+SHP-420214,James Thomas,7072283057,Barnesberg,Hendersonfort,2026-03-14,2026-03-28,229.48,cancelled
+SHP-824586,Kimberly Davenport,3361388464,,Michaelton,2026-06-24,2026-06-29,266.2,Cancelled
+SHP-602351,Ronald Nelson,6341783555,Derrickshire,East Brent,2026-06-26,2026-07-05,76.6,In-Transit
+SHP-921273,Mary Turner,7099469983,North Yolandafurt,Parksfort,2026-04-13,,294.12,Delivered
+SHP-214975,Christopher Becker,8995970241,South Patrickmouth,Tashatown,2026-03-31,2026-04-10,-106.55232099758383,Delivered
+SHP-561097,,7311011808,Holtstad,Lauriechester,2025-08-10,2025-08-18,173.65,Delivered
+SHP-710156,Patricia Lewis,3923699745,New Jorgeside,Valdezberg,2025-11-29,2025-11-30,,Delivered
+SHP-819050,Elizabeth Stanley,4159699467,Cindyberg,Rivasville,2026-01-25,2026-02-02,261.28,Delivered
+SHP-735863,Sandra Leach,1198486416,New Laurie,Lake James,2025-10-15,2025-10-23,307.58, Pending
+SHP-578975,Janet Weeks,1164313410,Port Chad,Morganhaven,2025-10-22,2025-11-01,220.11,Pending
+SHP-387748,Jason Clark,5647317872,New Brian,South Jenniferport,2025-12-23,2025-12-26,193.1,In Transit
+SHP-786594,Mr. Andrew Hill,3019214800,New Charlotte,Williamsmouth,2026-04-04,2026-04-15,196.51,Pending
+SHP-119651,Blake Edwards,3668616333,Berrychester,Dariustown,2025-11-13,2025-11-17,,Delivered
+SHP-592296,Deborah Hanson,7473041886,Santosmouth,Finleyfort,2026-06-14,2026-06-25,207.15,Cancelled
+SHP-431699,Caroline Edwards,3893976444,Lake Jodi,Hillstad,2025-08-31,2025-09-07,-300.3023209975838,Delivered
+SHP-424314,Mitchell Mendoza,2950049698,Hammondshire,East Teresaland,2026-01-01,2026-01-12,-126.91232099758383,Pending
+SHP-916332,Heidi Herring,2065972034,New Ericmouth,Nathanland,2026-02-18,2026-02-27,383.4,In-Transit
+SHP-761338,Michael Smith,9033293776,Brooksfort,Smithside,2026-02-09,2026-02-22,-68.38232099758382,Delivered
+SHP-153063,James Gilbert,4248149900,Port Rachel,Sarahmouth,2025-09-22,2025-09-30,261.89,
+SHP-752878,Lori Wolf,1957449367,West Andrea,Samuelfort,2025-08-26,2025-09-06,100.6,Pending
+SHP-465648,Daniel Turner,6523804237,Silvatown,Annaport,2025-11-03,2025-11-17,391.52,Pending
+SHP-778428,Kristine Newman,7824071339,Rasmussenmouth,Rodriguezville,2025-10-18,2025-10-19,91.25,Delivered
+SHP-841296,Scott Jones,9155819200,West Kristin,South Danny,2025-10-05,2025-10-09,342.62,Delivered
+SHP-770487,Patrick Sanchez,3746317213,Lake Curtis,New Roberttown,2025-08-15,2025-08-16,372.07,In Transit
+SHP-660081,Angel Brown,,Heidiberg,Garciatown,2026-02-18,2026-02-14,6.76,In Transit
+SHP-624776,Zachary Webb,3641863774,Robertland,Port Sheliaberg,,2025-12-04,392.7,Pending
+SHP-413833,Steven Wilkins,7951902330,Bridgesland,Thomasville,2026-04-06,2026-03-31,126.99,Delivered
+SHP-626199,Michael Gill,8823677798,,Pearsonborough,2026-02-13,2026-02-25,322.64,Cancelled
+SHP-648615,Amanda Pace,4928783441,Port Anthony,South Jameston,2026-02-17,2026-02-26,209.28,
+SHP-274573,Louis Brown,3521300895,South Maria,Davishaven,2025-08-23,2025-09-05,411.24,Cancelled
+SHP-213346,Andrew Ruiz,7517938612,Port Samantha,Kevinbury,2025-10-04,,127.71,Delivered
+SHP-304206,,6733962236,New Gavin,West Johntown,2025-09-09,2025-09-17,494.6,Cancelled
+SHP-357724,Kathleen Andrade,2431779064,Brownview,Taylorborough,2026-03-16,2026-03-26,333.49,Pending
+SHP-770487,Patrick Sanchez,3746317213,Lake Curtis,New Roberttown,2025-08-15,2025-08-16,372.07,In Transit
+SHP-854639,Jonathan White,4673561638,Port Colleenhaven,East Nathaniel,2025-09-11,2025-09-25,55.0,Pending
+SHP-720647,Jessica Brandt,2232986477,West Jose,Sarafurt,2026-04-08,2026-04-19,432.8,Delivered
+SHP-853305,Mr. Daniel Brown,5047709743,Lake Leeton,Shawhaven,2025-09-09,2025-09-20,361.76,Pending
+SHP-355671,Melanie Flores,5512036684,South Jonathanport,New Lynnstad,2026-01-26,2026-02-03,300.77,Cancelled
+SHP-970127,Christine Robinson,3319936135,West Kim,West Micheleberg,2025-08-29,2025-09-01,79.66,Cancelled
+SHP-481995,Cynthia Wallace,3094011037,Karenmouth,New John,,2026-05-26,399.93,Pending
+SHP-499889,Laura Haney,2333241445,Andrewfurt,Alanton,2026-06-29,2026-07-12,-109.94232099758382,cancelled
+SHP-613989,Colin Vaughan,8211516617,Smithbury,East Jessica,2026-02-24,2026-03-02,189.15,Delivered
+SHP-745239,Bobby Scott,7575259637,New Shelby,Rodriguezport,2025-10-10,2025-10-17,498.33,
+SHP-256130,Manuel King,2570991899,Josephfurt,West Susanmouth,2026-02-14,2026-02-27,200.31,Pending
+SHP-502206,Paul Finley,7829772942,Brandishire,West Desireebury,2025-08-03,,54.68,Cancelled
+SHP-631971,Katie Smith,,Williamsfurt,Jontown,2025-11-26,2025-12-08,244.68,Pending
+SHP-107686,,8575707116,Port Gina,East Amandachester,2026-03-18,2026-03-24,27.39,Delivered
+SHP-551989,Jason Shields,1599707677,Lake Deniseville,South Jessicaville,,2025-10-26,282.88,Pending
+SHP-538897,Norman Aguilar,7431813987,West Jessica,Lake Amanda,2026-05-11,2026-05-24,262.04,Delivered
+SHP-560623,Katherine Nguyen,1182758417,Claychester,Parsonsfurt,2026-04-16,2026-04-20,451.13,Cancelled
+SHP-765905,Denise Weber,1256143439,New Danielleshire,East Donna,2026-04-16,2026-04-29,157.27,Pending
+SHP-781446,Steven Hayes,,East Caleb,,2025-10-03,2025-10-14,165.52,Delivered
+SHP-629146,,3464975279,South Nancyview,New Virginiaville,2026-03-21,2026-03-30,186.64,Pending
+SHP-400850,Richard Lawson,7114223633,Stevenmouth,New Thomas,2026-06-25,2026-06-18,432.6,Delivered
+SHP-720859,Lori Garcia,9309500117,Melissaville,West Amandastad,2025-08-06,2025-08-10,336.51,Pending
+SHP-944962,Jay Ramirez,7831113321,Port Matthew,,2026-03-01,2026-03-02,19.75,In Transit
+SHP-527398,John Brown,4875962612,Priceshire,Port Nicoleshire,2025-12-05,2025-12-03,192.59,Cancelled
+SHP-272537,Roger Olson,4803044105,Juliemouth,South Sydneyberg,2026-04-29,2026-05-12,215.45,In-Transit
+SHP-854388,Evan Hobbs,3426665919,Port Lucaschester,Turnerview,2025-09-07,2025-09-06,116.8,Delivered
+SHP-918859,Jessica Perez,2931000173,Kariside,Port Jenny,2025-09-23,2025-09-26,52.92,Pending
+SHP-804737,Matthew Graves,2854772804,South Kara,Sarahland,2026-05-04,2026-05-15,295.01,Cancelled
+SHP-847078,David Moreno,1050899550,Tracyburgh,West Gabriellestad,2026-03-10,2026-03-19,362.49,Pending
+SHP-179184,Sheryl Davis,1124352982,Heatherstad,Clementsmouth,2026-02-21,2026-02-26,352.84,Pending
+SHP-853305,Mr. Daniel Brown,5047709743,Lake Leeton,Shawhaven,2025-09-09,2025-09-20,361.76,Pending
+SHP-791567,Carla Thomas,9479654136,South Kylemouth,Courtneyville,2026-06-24,2026-06-25,53.35,In Transit
+SHP-454861,Yolanda Garrett,8809893329,West Deannaside,East Tonymouth,2026-02-12,2026-02-16,154.37,cancelled
+SHP-377075,Kevin Scott,4875395503,Stevenberg,East Sarahton,,2026-05-20,167.08,Pending
+SHP-913185,John Wong,4600630513,Josehaven,Owensfort,2026-05-02,2026-05-13,53.1,Delivered
+SHP-976735,,8084809436,Martinezview,Milesborough,2026-04-06,2026-03-31,-486.8323209975838,Delivered
+SHP-239850,Lance Tanner,3074232200,Meganside,Jenniferside,2026-03-13,,404.64,Cancelled
+SHP-165046,Elizabeth Molina,8991977937,West Lisaville,Lake Deborah,2025-12-08,2025-12-15,69.73,Pending
+SHP-694116,Olivia Ayers,2548781344,New Kimberlyport,Natalieview,2025-12-06,2025-12-15,274.32,Delivered
+SHP-140932,Kim Goodwin,,South Donnaside,Port Erikachester,2026-01-29,2026-01-21,453.07,In Transit
+SHP-779094,Derek Thomas,9051829827,East Laurashire,Scottmouth,2026-04-03,2026-04-13,375.99, Pending
+SHP-593894,Patricia Smith,8757570742,North Joseton,Port Raymondport,2026-03-11,,201.55,Delivered
+SHP-824586,Kimberly Davenport,3361388464,,Michaelton,2026-06-24,2026-06-29,266.2,Cancelled
+SHP-660957,William Campbell,7579604766,Lake Samuel,East Christophertown,2026-01-18,2026-02-01,118.68,Cancelled
+SHP-617904,Brandi Gordon,7750819485,Jamesville,Franciscomouth,,,428.73,PENDING
+SHP-949153,Chelsea Jacobs,9886101513,North Shannon,Toniland,2026-01-22,2026-02-02,173.91,Cancelled
+SHP-719489,Roy Johnson,6656646925,East Ashleyburgh,Lake William,2026-06-21,2026-06-27,-288.8123209975838,Pending
+SHP-405605,Mackenzie Faulkner,2432410914,West Nicholas,Diazshire,2025-09-26,2025-09-21,394.55, delivered 
+SHP-720970,Aaron Lewis,5836956044,Karenland,Port Monicaburgh,2025-11-29,2025-12-09,318.37,cancelled
+SHP-669576,William Cardenas,8324687182,West Bobby,West Sandraview,2026-04-26,2026-04-23,418.19,Cancelled
+SHP-418862,Terri Mason,4713453204,Kimton,Navarroview,2025-07-20,2025-08-02,406.33,Cancelled
+SHP-800596,Joshua Arellano,2237386857,New Bruce,Cardenaschester,2026-02-03,2026-02-08,-71.68232099758383,In Transit
+SHP-928580,Eric Pierce,1443639751,North Ginamouth,Ramseytown,2026-05-29,2026-05-31,180.19,Delivered
+SHP-394247,Brenda Ryan,4098389895,Jessicaland,North Melissatown,2026-05-22,2026-06-01,242.82, delivered 
+SHP-342716,Kelly Haynes,5613613759,Stephenland,New Dennisfurt,2025-08-08,2025-08-16,228.7,Delivered
+SHP-349119,,5364727160,Andrewport,Juanfort,2026-06-08,2026-06-06,38.44,In Transit
+SHP-629678,Joshua Powell,3136189070,Jeffreyborough,Markport,2025-10-03,2025-10-05,472.89,Cancelled
+SHP-817659,Arthur Mcneil,,Michelleview,Jacobhaven,2026-05-03,2026-05-16,187.17,Cancelled
+SHP-780956,,8126571968,West Toddside,East Jamesmouth,2026-02-13,2026-02-14,8.27,cancelled
+SHP-300896,Jerry Henderson,7801222128,,Mortonside,2025-08-17,2025-08-12,113.56,In Transit
+SHP-398987,Stephanie Stewart,6582557981,Murphyport,New Ashley,2026-05-20,2026-06-03,-19.612320997583822,Pending
+SHP-869440,Marie Gilbert,7258731893,Marshallshire,Marcusbury,2026-05-29,2026-06-11,468.19,Delivered
+SHP-716225,Sara Black,7915226263,Kaufmanbury,Gomezstad,2026-01-15,2026-01-19,478.88,PENDING
+SHP-819622,Maria Aguilar,6857897124,Samanthaland,North Jamesmouth,2026-05-20,2026-05-25,196.77,Pending
+SHP-327114,Willie Dillon,5924077461,East Maria,Port Brandi,2026-05-04,2026-04-30,147.38,Delivered
+SHP-927524,Denise Marshall,2602884797,North Paulview,Michelletown,2025-11-01,2025-11-11,320.68,Cancelled
+SHP-205345,Bryce Blair,2324651201,Sylviamouth,East Joshua,2025-08-12,2025-08-16,200.66,Delivered
+SHP-480573,Michael Acosta,4177181331,South Andrea,Port Georgemouth,2026-02-15,2026-02-28,,Delivered
+SHP-906325,Martin Daniel,5492496998,Brooksfurt,Kanefurt,2025-12-03,,32.78,Pending
+SHP-776856,Eugene Walton,3615507143,North Stephenshire,North Amandahaven,2025-10-21,2025-10-24,190.09,In Transit
+SHP-139807,,3261436148,Smithborough,West Jennifer,2026-07-02,2026-07-13,171.7,In Transit
+SHP-519066,,2811967841,Port Ronaldburgh,Williamsbury,2026-07-01,2026-07-06,234.0,Delivered
+SHP-192295,Jillian Wilson,4728940550,,South Robertside,,2026-02-22,66.46,In Transit
+SHP-735605,,,West Raymond,Taramouth,2026-05-18,2026-05-29,275.06,Pending
+SHP-114400,Robert Torres,4282810353,Johnsonborough,,2026-04-27,2026-05-04,73.06,In Transit
+SHP-541119,Andrew Moreno,3739951076,Port Timothy,Bellshire,2025-08-17,,54.6,Pending
+SHP-995296,Traci Vincent,4804440746,Lake Jamie,Palmertown,2026-01-10,,467.02,DELIVERED
+SHP-245622,Johnny Ward,2250949136,Tannerside,New Nicole,2025-08-04,2025-08-08,147.61,
+SHP-528625,Meghan Williams,8854238082,Cameronville,Mitchellberg,2025-11-16,2025-11-28,80.73,
+SHP-474795,Yvonne Dickson,2554039848,East Dianeview,Port Wendybury,2026-02-18,2026-02-24,157.89, Pending
+SHP-224052,Margaret Montgomery,,Lake Melaniestad,West Kristinport,2026-03-02,2026-03-08,398.47,
+SHP-672808,Raymond Le,1400330495,Chelseaborough,West Angela,2025-10-05,2025-10-19,456.9,Cancelled
+SHP-475190,David Garcia,5141907136,Dicksonberg,Port Francisco,2026-05-17,2026-05-26,378.86,In Transit
+SHP-575682,Jacob Griffith,7247886041,North Ericton,West Scottchester,2026-01-15,2026-01-21,-388.1823209975838,Cancelled
+SHP-499974,Jeremy Baker,5376588372,Bakerview,East Karenville,2025-08-12,2025-08-16,418.31,Cancelled
+SHP-244789,Kristina Bolton,4048494026,Foxmouth,South Rhonda,2025-11-20,2025-11-25,277.67,PENDING
+SHP-349136,Rebecca Horton,5751023835,South Paulmouth,North Juliaborough,2026-03-08,2026-02-28,235.9,Pending
+SHP-292988,,4566852761,New Arthurland,Port Adamberg,2026-06-02,,-463.8223209975838,Cancelled
+SHP-190872,Jerry Christensen,,Rogersfort,Hunterborough,2025-11-25,2025-11-27,-277.5023209975838,Pending
+SHP-193670,Ashley Edwards,7193532615,Derrickberg,North Alyssa,2025-07-13,2025-07-18,111.71,Delivered
+SHP-185965,Kevin Mills,8385972235,Jamesmouth,West Randy,2026-03-28,2026-04-06,382.17,Delivered
+SHP-665427,Timothy Duncan,7439149233,Sanchezfort,Leeville,2026-03-23,2026-04-03,232.13,Pending
+SHP-464825,,4717261214,Samanthashire,Lake Dennisville,2025-10-11,2025-10-18,228.52,In Transit
+SHP-647957,Terry Evans,3343292475,Torreston,Port Jaredborough,2025-10-21,2025-11-04,,In Transit
+SHP-102593,Sarah Davis,9252940807,Reidstad,Port Amandaborough,2025-12-24,2025-12-30,8.02,In Transit
+SHP-970127,Christine Robinson,3319936135,West Kim,West Micheleberg,2025-08-29,2025-09-01,79.66,Cancelled
+SHP-463546,Rachel Le,2554145481,West David,Jessicaville,2026-05-06,2026-05-13,423.02,In Transit
+SHP-772925,Mary Fox,5870891270,Brandonbury,North Sarahborough,2026-03-22,2026-03-17,131.22,Pending
+SHP-141406,Mr. Edward Terry,8210176888,New Jacob,Mariomouth,2025-10-25,2025-11-03,250.33,Pending
+SHP-336574,Misty Whitney,2995226582,Christopherfurt,West Amandamouth,2025-11-30,2025-12-09,128.35,PENDING
+SHP-906066,Kenneth Nichols,4716265973,East Robertburgh,Port Randyfort,2025-09-20,2025-09-28,271.6,Pending
+SHP-547080,Crystal Sullivan,4862321353,East Danielle,Fosterborough,2026-01-01,2026-01-07,-312.4823209975838,Delivered
+SHP-482584,Ann Phillips,7418301077,Thompsonberg,Alyssaview,2026-05-28,2026-06-01,78.05,Delivered
+SHP-159642,Angela Lopez,2461042543,Lake Michellefurt,New Johnton,2026-03-07,2026-03-12,220.21,Cancelled
+SHP-429287,Joshua Oconnell,3799620568,South Kyle,Melissaland,2025-09-09,2025-09-15,304.48,In Transit
+SHP-177804,Stephen Martin,2878930355,New Shellyland,,2026-04-10,2026-04-14,409.27,PENDING
+SHP-925250,Aaron Cruz,9049270990,Costachester,Maciasstad,,2026-02-16,467.48,Delivered
+SHP-488162,Michael Miles,7110082321,New Cynthiaside,East Steven,2025-10-23,2025-10-28,81.96,cancelled
+SHP-621546,Casey James,4239406957,New Angelica,Charleston,2025-12-26,2025-12-30,103.68,Delivered
+SHP-181247,Cynthia Rogers,7040502394,East Edwardfurt,Lake Jason,2025-12-18,2025-12-26,110.8,Cancelled
+SHP-726979,James Hunter,4721365350,Stephensstad,North Kaylastad,2025-09-13,2025-09-16,12.36,In Transit
+SHP-477880,Denise Colon,4485356009,Reidville,East Nathanmouth,2025-09-17,2025-09-19,359.44,Cancelled
+SHP-107540,Mark Perez,6649827836,Port Markhaven,West Elizabeth,2025-10-01,,37.76,In-Transit
+SHP-609232,George Shelton,1664847319,Ramseymouth,,2026-06-27,2026-07-02,112.76,Delivered
+SHP-689444,Amber Garcia,7552001193,,Thomasville,2026-01-01,2026-01-10,353.36,Delivered
+SHP-607122,Nina Ali,4252504650,Maldonadoshire,South Darrenland,2025-12-06,,-313.79232099758383,Cancelled
+SHP-377370,Monica Herrera,3585650756,Millerport,Barbaraland,2025-07-28,2025-07-22,103.42,
+SHP-934638,Aaron Ortiz,2357806226,New Michael,West Aaronfurt,2026-06-05,2026-06-13,38.8,Cancelled
+SHP-223088,,4096932037,Michellechester,New Donald,2025-09-28,2025-10-03,302.2,
+SHP-796212,Kara Schmidt,5871743247,Barajasside,Michaelmouth,2025-10-23,2025-10-25,445.41,In Transit
+SHP-135207,Michael Brennan,8034746821,Lake Bradley,,2026-04-29,2026-05-07,-137.7623209975838,Delivered
+SHP-629146,,3464975279,South Nancyview,New Virginiaville,2026-03-21,2026-03-30,186.64,Pending
+SHP-705991,Brittney Olson,,West Meganstad,Port Joshuabury,2026-05-19,2026-05-26,297.99,Delivered
+SHP-352415,Cindy Cannon,,Michaelmouth,Moyertown,2026-04-18,2026-04-22,349.34,In Transit
+SHP-831063,Tammy Fernandez,6307626407,Kennethville,South Ashleyfort,2025-09-08,2025-09-03,190.58, Pending
+SHP-103717,,8438486479,Lake Scott,Hoffmanville,2025-08-08,2025-08-22,39.26,In-Transit
+SHP-953047,Anthony Bell,3179320310,Candiceburgh,Tiffanyport,2025-10-30,2025-10-25,330.08,In Transit
+SHP-381444,Arthur Hamilton MD,8239941612,Pattonstad,Sherylfort,2026-02-26,2026-03-07,451.34,Pending
+SHP-238890,Shirley Suarez,9592390865,Justinmouth,Cherylhaven,2025-07-13,2025-07-19,246.86,Delivered
+SHP-694731,Emily Rios,7887950851,Wilkersonmouth,West Donald,2026-04-25,2026-04-18,,Cancelled
+SHP-885386,Tammy Mcdowell,6915072151,West Ashleyville,Justinside,2026-01-30,2026-02-05,435.45,In Transit
+SHP-321941,George Hobbs,7803990970,Karenchester,Maryfort,2025-07-17,2025-07-26,460.1,In Transit
+SHP-195656,Anna Davis,3085816511,Lisaside,New Sueside,2025-11-15,2025-11-22,171.38,Cancelled
+SHP-446239,Mary Martinez,3030106617,Williamchester,Richardport,2026-02-10,2026-02-23,239.12,Cancelled
+SHP-230192,Elizabeth Martin,3781569954,West Stacey,Meghanview,2025-09-24,2025-09-29,414.18,Delivered
+SHP-130271,Lisa Allen,8616379926,West Andrea,,2026-01-05,2026-01-11,322.53,Cancelled
+SHP-280222,Lisa Collier,6231117883,Christopherville,South Brianna,2026-01-29,2026-02-10,131.84,Pending
+SHP-764442,Connie Haynes,8846861559,Robertstad,Lake Marilynbury,2025-10-29,2025-11-07,,
+SHP-736565,Donald Fischer,7105574449,West Russellport,Roseport,2025-07-28,2025-08-11,45.54,Delivered
+SHP-493580,John Shields,2224336336,East Shannon,West Andrewview,2025-08-20,2025-09-02,84.35,Cancelled
+SHP-299254,Autumn Key,8739238825,Rochaborough,Hermanside,,,320.13,Pending
+SHP-412071,Michele Vaughn,5067594934,Stewartstad,Keithshire,2026-03-30,2026-04-10,416.91,Cancelled
+SHP-239136,Michael Poole,3391179068,,Courtneyfurt,2026-01-01,2025-12-24,464.9,Pending
+SHP-190707,Timothy James,1619623590,South Ericbury,Lake Peter,2026-05-16,2026-05-26,257.02,Delivered
+SHP-365618,Matthew Mitchell,8528185058,Port Dianaview,Port Michealfurt,2026-04-25,,437.0,Pending
+SHP-103642,Veronica Ford,4403845222,,South Michael,2025-10-25,2025-10-28,91.66,Cancelled
+SHP-990136,Angela Cooper,4473306055,,Catherinefurt,2025-10-23,2025-10-31,70.31,Cancelled
+SHP-379449,Andrea Harrison,8130494783,Port John,Claytonville,2026-05-04,,384.2,Delivered
+SHP-941403,,7860121241,Port Daniel,Susanstad,2026-04-10,2026-04-13,-91.68232099758383,In Transit
+SHP-699245,Lisa Martinez,9660523876,Thompsonburgh,Port James,2025-07-26,2025-08-04,289.65,In Transit
+SHP-288627,Veronica Parks,7896596272,Lake Josephbury,Chaseborough,2025-09-05,2025-09-12,-358.8323209975838,Cancelled
+SHP-667296,Barry Welch,8289454630,Wendyland,Goodville,2025-12-29,2026-01-07,68.01,Cancelled
+SHP-926823,David Sandoval,5211261115,Port Bonniemouth,North Michael,2025-11-18,2025-12-02,101.09, Pending
+SHP-938900,Brittany Shaffer,4545940090,South Victor,,,2025-10-28,127.5,Delivered
+SHP-792509,David Arnold,2845919895,North Ricky,Carterbury,2025-10-30,2025-10-31,157.59,Delivered
+SHP-338161,Jessica Diaz,7100408092,Erictown,New Lisaberg,2025-11-20,2025-11-27,227.03,Cancelled
+SHP-988970,Jennifer Porter,5226368665,Johnberg,Mccormickland,2025-12-31,2026-01-03,272.41,In Transit
+SHP-633853,,3362646960,,Hernandezhaven,2025-09-02,2025-09-10,48.59,
+SHP-724756,Angela Griffin,8270110908,Christianshire,North Mariahaven,2025-09-26,2025-10-07,44.76,Pending
+SHP-691194,Nancy Sanchez,7417183769,Brittanyfort,Lake Rachel,2026-05-01,2026-05-14,,DELIVERED
+SHP-491794,Stephen Kim,2493660313,East Jennifer,Claytonbury,2025-10-20,2025-10-23,-502.8323209975838,Cancelled
+SHP-112884,John Reyes,8628842157,East Sarah,New Lindachester,2025-10-05,2025-10-11,365.05,In Transit
+SHP-184148,Mary Ryan,6904897514,Davidside,Ricebury,2026-05-30,2026-06-02,125.88,Cancelled
+SHP-177649,Steven Wallace,6201313620,Port Evelynmouth,Jennaside,2026-02-05,2026-02-16,45.19,In Transit
+SHP-103642,Veronica Ford,4403845222,,South Michael,2025-10-25,2025-10-28,91.66,Cancelled
+SHP-150931,Jessica Richards,7772180882,Lake Beth,North Paul,2026-02-28,2026-03-11,109.35,Cancelled
+SHP-685766,Edward Arroyo,4086355679,Nancyshire,Heatherfurt,2026-02-14,2026-02-15,-376.0023209975838,
+SHP-605904,Justin Webb,9974165440,Beckyfurt,,2025-08-25,2025-09-04,119.95,Delivered
+SHP-232915,Kelly Reese,7045593274,Weststad,South Williamton,2026-04-18,2026-04-27,235.63,Delivered
+SHP-725637,,7525484303,Lake Judith,Jasonhaven,2025-09-03,2025-09-06,305.1,In Transit
+SHP-221552,Jennifer Robertson,6796738787,Lake Mollymouth,Brownhaven,2025-11-27,2025-12-11,398.7,In Transit
+SHP-961760,Mikayla Rodriguez,1662259333,East David,Lewisborough,2026-04-14,2026-04-25,314.12,Pending
+SHP-256130,Manuel King,2570991899,Josephfurt,West Susanmouth,2026-02-14,2026-02-27,200.31,Pending
+SHP-182467,Eric Morgan,4518871744,Kimberlyland,New Williamstad,2025-11-23,2025-11-28,58.51,Delivered
+SHP-351974,Renee Lang,8487449580,Guerreroberg,Lake Tylerport,2025-10-19,2025-10-26,172.82,In Transit
+SHP-381342,Anna Briggs,8703867299,North Richard,Nelsonfurt,2026-04-04,2026-04-13,116.0, Pending
+SHP-191061,Penny Gomez MD,7460544248,New Alexis,North Andreaside,2026-06-30,2026-07-05,100.44,Delivered
+SHP-710434,David Evans,3001472250,Carrollborough,Lake Markfort,2025-09-15,2025-09-28,490.75,Cancelled
+SHP-627786,,6850392220,Stacymouth,Ryanberg,2025-11-20,2025-11-30,21.03,In-Transit
+SHP-693128,Jasmine White,8695129534,Carlatown,Brianfort,2026-02-01,2026-02-15,68.26,Delivered
+SHP-837606,Christopher Kelley,1859759428,Lake Sarah,Jimmytown,2026-03-28,2026-03-23,427.15,Cancelled
+SHP-799080,Brian Chen,2885330933,Alexisview,South Kristinatown,2025-07-26,2025-08-04,112.55,In-Transit
+SHP-874415,Samuel Zamora,9123207735,Port Devonburgh,Michaelmouth,2026-03-08,2026-03-22,-89.34232099758383,
+SHP-735656,Mrs. Stephanie Lee,2419179580,Lake Ryanhaven,West Ryan,2026-03-25,2026-04-03,122.81,Cancelled
+SHP-250551,Aaron Gomez,4097892639,Lopezland,Carloshaven,2026-02-06,2026-02-12,64.18,In Transit
+SHP-515594,Molly Fischer,1225953184,Riosville,East Thomasberg,2026-02-25,2026-02-28,378.45, delivered 
+SHP-876909,Robert Hines,7637761996,Lake Rachel,East Michaelport,2025-12-20,2025-12-26,55.79,Pending
+SHP-612311,Cynthia Alvarez,9623534576,Westtown,West Jeffreybury,2025-11-06,2025-11-20,279.53,Delivered
+SHP-549956,Vanessa Cardenas,9950486177,New Sarahview,East Joshuaport,2026-07-03,2026-06-23,72.17,Cancelled
+SHP-157152,Jeffrey Phillips,1627276995,Gonzaleztown,East Danielle,2025-08-11,2025-08-12,147.01,Cancelled
+SHP-908348,Shawn Hamilton,4183654731,Port Kayleetown,Brownhaven,2025-07-26,2025-07-27,134.08,
+SHP-847245,Jennifer Miles,2873548915,Lake Amandaberg,Christopherland,2026-01-24,2026-02-01,460.98,Pending
+SHP-361824,Heather Maxwell,8532327465,North Emmafort,Port Mercedeston,2026-06-04,2026-06-10,154.46,Delivered
+SHP-244383,Jennifer Banks,6928678489,North Anthony,,2026-06-30,2026-06-21,152.19,Cancelled
+SHP-130782,Jeffrey Warren,5632753983,Jennifershire,South Spencerstad,2025-07-31,2025-08-14,158.59,Pending
+SHP-849398,Ray Ramos,2033653860,East Stevenville,South Paul,2025-11-08,2025-11-10,54.94,Delivered
+SHP-233470,Maurice Gray,1817804383,New Ashley,Kelleytown,2025-11-05,2025-10-29,331.2,Pending
+SHP-113390,Allison Thomas,3605585995,East Josephburgh,Francesberg,,2026-06-07,-437.8123209975838,Pending
+SHP-646571,Eric Brown,9426850694,Lake Erika,Williamsstad,2026-03-17,2026-03-29,128.8,Pending
+SHP-961574,Margaret Tanner,3597009738,Smithborough,Lake Carlos,2025-10-18,2025-11-01,128.75,Cancelled
+SHP-551524,Samantha Gardner,8996039244,Curtismouth,Kirkchester,2025-09-13,2025-09-15,411.95,Cancelled
+SHP-615276,Sandra Mcdonald,3777580509,West Angelachester,Lauraton,2026-05-26,2026-06-03,424.33,Delivered
+SHP-823270,Jeremy Acosta,3112035409,Christinachester,Danielleton,2025-08-08,2025-08-18,316.58,Delivered
+SHP-546157,John Hall,8375996697,West Carmenside,Scotttown,2026-04-11,2026-04-09,342.19,In Transit
+SHP-703869,Kimberly Krause,1643611097,Michaelhaven,Hamptonmouth,2026-06-20,2026-06-17,427.97,Cancelled
+SHP-486649,Angela Lin,5471357886,New Brookefurt,Carpenterton,2026-01-01,2026-01-10,217.05,Pending
+SHP-182216,Dustin Welch,,Port Gary,Robertshire,2025-12-14,2025-12-16,449.95,
+SHP-739717,Arthur Colon,9123612497,Debraville,North Sophia,2025-11-05,2025-11-15,-414.8023209975838,Cancelled
+SHP-407696,Rick Blackwell,2178158203,Sarahhaven,Haysside,2026-01-10,2026-01-11,278.91,In Transit
+SHP-663483,Maria Cooke,4133661881,South Keith,West Megan,2026-03-07,2026-03-13,216.25,Pending
+SHP-611994,Melissa Johnston,6167393219,New Dawnton,Millerton,2026-07-03,2026-07-09,209.9,In Transit
+SHP-616554,David Medina,7648059419,Chavezside,Matthewsberg,2026-06-19,2026-06-22,-379.4823209975838,Cancelled
+SHP-465227,Gregory Rios,7642365889,Garystad,Hansonmouth,,2025-07-30,458.87,
+SHP-432695,Wayne Steele,9459318641,Jeffreyshire,South Kurt,2026-04-03,2026-04-13,146.04, delivered 
+SHP-884140,Richard Avery,6046864799,East Williammouth,East Paultown,2026-05-18,2026-06-01,92.02,Delivered
+SHP-561124,Jeremy Turner,8612747444,Brittanystad,West Steventon,2025-08-01,2025-08-15,343.71,PENDING
+SHP-369761,Alexis Rogers,5482431018,Ashleyborough,New Melissa,2026-06-23,2026-07-05,239.12,Cancelled
+SHP-734356,Shelly Lopez,8495457335,,Kevintown,2025-09-30,2025-10-14,452.56,Pending
+SHP-700556,Scott Duke,4639017775,East Sydneychester,,2026-04-08,2026-04-14,423.46,Pending
+SHP-371222,,9881854670,South Brandyhaven,,2025-09-26,2025-09-29,,Cancelled
+SHP-342389,William Baker,,North Lisaton,Michaelmouth,2025-12-22,2026-01-03,37.14,Pending
+SHP-195513,Kaitlyn Burke,3127657643,North Josestad,New Benjaminfurt,2026-07-06,2026-07-18,481.26,Pending
+SHP-438756,Nicholas Garner,4746123831,West Timothyport,West Paige,2026-06-10,2026-06-14,371.57,Cancelled
+SHP-729057,,1065857791,Meganchester,Mckenziemouth,2026-03-03,2026-03-07,481.23,Delivered
+SHP-598844,Megan Romero,8417757797,Port Diane,West Connor,2025-08-29,2025-08-31,218.15,In-Transit
+SHP-777513,David Kim,8826851692,Warrenburgh,Nathanport,2025-12-07,2025-12-09,219.59,Pending
+SHP-648513,Lisa Reynolds,7552812957,South Michael,Hernandezside,2026-06-21,2026-07-04,207.67,PENDING
+SHP-746624,Brian Torres,5555027957,Cookfurt,Scottchester,2026-05-23,2026-05-28,,Delivered
+SHP-428096,Todd Armstrong,2164344392,,East Aprilfurt,2026-04-21,2026-04-23,343.79,Pending
+SHP-211726,Tommy Wallace,4120719599,Curtisland,South Shane,2026-02-10,,329.19,cancelled
+SHP-324597,Ralph Lee,8518238399,East Chris,New Kellihaven,2025-07-25,2025-08-04,-313.4823209975838,Cancelled
+SHP-274573,Louis Brown,3521300895,South Maria,Davishaven,2025-08-23,2025-09-05,411.24,Cancelled
+SHP-765320,Jesse Clark,9912233947,New Kathy,Gloverland,2025-08-29,,206.07,In Transit
+SHP-990731,Toni Thomas,1194576436,Susantown,North Bobby,2026-02-17,2026-02-20,358.23,Cancelled
+SHP-243260,Mark Williamson,,Jackiefort,West Andrew,2025-07-29,2025-08-03,234.19,Cancelled
+SHP-437864,Kiara Smith,1149460439,Lake Jessicabury,Larryville,2025-12-06,2025-12-08,121.82,Pending
+SHP-738419,Debbie Andrews,8471762590,Sarashire,Stonefort,2026-01-17,2026-01-23,183.55,Delivered
+SHP-819050,Elizabeth Stanley,4159699467,Cindyberg,Rivasville,2026-01-25,2026-02-02,261.28,Delivered
+SHP-408823,Nicholas Rush,,Rosalesshire,,,2026-03-28,393.26,
+SHP-880762,Isaac Castro,1481933114,Mauricechester,West Michelleborough,2026-02-19,2026-03-05,,In Transit
+SHP-107686,,8575707116,Port Gina,East Amandachester,2026-03-18,2026-03-24,27.39,Delivered
+SHP-391668,Daniel Schneider,3524521602,Montoyaland,Wallaceshire,2025-12-31,2026-01-13,483.3,Cancelled
+SHP-456331,Christopher Thomas,1780520225,Jonestown,Lake Alyssafurt,2025-12-20,2025-12-25,-199.0323209975838,In Transit
+SHP-265613,Timothy Johns,5305985001,Santosport,Justinton,2026-06-28,2026-07-10,152.79,Cancelled
+SHP-896204,April Kelly,7660813178,Amystad,North Pennyfort,2025-09-02,2025-09-05,314.39,Delivered
+SHP-144887,Kelly Moody,6913417379,Harrisonmouth,North Tinamouth,2025-08-19,2025-08-09,,Pending
+SHP-665484,Kyle Welch,3027530378,Millsside,Reginafort,2026-02-04,2026-02-09,207.39,In-Transit
+SHP-776913,Jeremy Mcintyre,1572989855,Figueroahaven,Lorihaven,2026-05-13,2026-05-19,275.28,In Transit
+SHP-688956,Reginald Padilla,3667292043,New Justin,Gonzalezberg,2026-06-06,2026-06-16,-486.6223209975838,Delivered
+SHP-816289,Cheryl Mclaughlin,2065354117,Lake John,Jamieborough,2026-05-30,2026-06-04,194.87, Pending
+SHP-949541,Alison Cooper,5758659815,,New Ethan,2026-02-12,2026-02-24,455.3,Delivered
+SHP-820442,Karen Keith,2963288053,Evansfurt,New Ashleyhaven,2026-05-17,2026-05-09,419.16,Cancelled
+SHP-735605,,,West Raymond,Taramouth,2026-05-18,2026-05-29,275.06,Pending
+SHP-900190,Zachary Owens,9229469952,Tylerland,Wagnerbury,2025-10-01,2025-10-04,498.49, delivered 
+SHP-597635,Hannah Martin,5453811475,Kaitlynland,Anthonyton,2025-09-11,,,In Transit
+SHP-979940,Gabriela Thomas,3971203213,West Samanthafort,Port Janice,2025-12-31,2026-01-05,333.66,Pending
+SHP-913761,Jonathan Roberts,3347621138,Barbaramouth,West Nancy,2026-03-23,2026-03-25,223.66,DELIVERED
+SHP-360221,Lindsay Lawson,1033015788,Port Melanieport,New Catherine,2025-09-21,2025-09-26,472.94,In Transit
+SHP-427040,Richard Boyd,5140460939,Thomasmouth,Floresport,2025-07-27,2025-07-28,499.3,Cancelled
+SHP-331230,Kyle Smith,9383431259,Sierraberg,Keithville,2025-07-13,2025-07-17,326.82,Delivered
+SHP-862712,Maria Hernandez,9284507318,East Jonathanburgh,Port Katherine,2025-08-08,2025-08-18,340.29,Cancelled
+SHP-839389,Susan Jordan,2704657157,Lake Sarah,West Carlos,2026-02-02,,479.85,Cancelled
+SHP-963539,Valerie Taylor,8834841054,Carrieborough,Edwardsfurt,,2025-11-13,333.07,Delivered
+SHP-434827,Brittany Shaw,2267841227,East Brent,Maddoxshire,2026-01-22,2026-01-26,168.28,Cancelled
+SHP-802685,Christopher Jenkins,3021598245,,South Christopherview,2025-11-12,2025-11-16,409.21,cancelled
+SHP-742686,,5613503623,Christianburgh,Port Travisbury,2025-11-15,2025-11-23,341.65,Pending
+SHP-185461,Brenda Bailey,7371573279,Andersonland,Angelicamouth,2026-05-22,2026-05-29,413.74,Pending
+SHP-710156,Patricia Lewis,3923699745,New Jorgeside,Valdezberg,2025-11-29,2025-11-30,,Delivered
+SHP-935922,,8138816152,South Kimberlystad,Stephensfort,2025-11-21,2025-11-24,299.55,Delivered
+SHP-165046,Elizabeth Molina,8991977937,West Lisaville,Lake Deborah,2025-12-08,2025-12-15,69.73,Pending
+SHP-191061,Penny Gomez MD,7460544248,New Alexis,North Andreaside,2026-06-30,2026-07-05,100.44,Delivered
+SHP-533914,Jesse Perry,4856070374,West Ronaldview,Stephaniefort,2025-08-05,2025-08-13,,PENDING
+SHP-387748,Jason Clark,5647317872,New Brian,South Jenniferport,2025-12-23,2025-12-26,193.1,In Transit
+SHP-173863,Crystal Green,7460728316,Hayesfurt,Stewartfurt,2026-03-28,2026-04-10,277.18,Delivered
+SHP-956572,Larry Salas,1367704871,Lake Timothystad,Lake Meghanville,2025-10-29,2025-11-10,206.18, Pending
+SHP-400692,Adam Weeks,2613385303,Evanschester,Carlatown,2026-02-08,2026-02-19,482.25,In-Transit
+SHP-266889,Karen Green,5161807235,Port Dana,Simsview,2025-12-28,2026-01-10,425.1,In Transit
+SHP-443897,Emily Long,2388450337,Brittneyhaven,Ericksonport,2026-01-10,2026-01-23,-211.4423209975838,Delivered
+SHP-705050,Amy Hernandez,3409076656,Christopherbury,New Kathybury,2026-05-07,2026-05-09,42.25,In-Transit
+SHP-514186,James Simmons MD,6515369278,,North Christina,,2026-03-19,-432.9023209975838,In Transit
+SHP-274446,Stephanie Williams,7739255769,West Michaelchester,East Amanda,2026-02-15,2026-02-22,-282.60232099758383,Delivered
+SHP-918665,Patrick Cannon,4486522557,New Dannyside,Amberton,2026-05-01,2026-04-26,34.69,Pending
+SHP-800224,Eric Sullivan,9205284543,Hannahport,Christinabury,2025-08-31,2025-09-01,362.61,Cancelled
+SHP-947228,Leon Erickson,6618965944,North David,Garrettville,2026-04-22,2026-04-28,381.87,Delivered
+SHP-734534,Thomas Williams,2886149718,,Debrashire,2025-12-19,2025-12-27,345.9,Cancelled
+SHP-665579,Tammy Sellers,8877444318,Tracyville,Natashaport,2025-10-11,2025-10-10,188.24,In Transit
+SHP-128941,Wesley White,1030884438,Benjaminchester,Jessicamouth,2025-12-26,2026-01-07,317.4,In Transit
+SHP-734210,Grant Watts,1248786714,Williamview,North Cynthiaview,2025-07-27,,473.74,Delivered
+SHP-955374,Gary Rodriguez,7625389037,Silvatown,Bakershire,2026-02-19,2026-02-26,31.83,Pending
+SHP-953025,Sandra Cohen,2549972386,Welchberg,Lake Kimberlymouth,2025-07-24,2025-07-29,-18.37232099758382,In Transit
+SHP-947228,Leon Erickson,6618965944,North David,Garrettville,2026-04-22,2026-04-28,381.87,Delivered
+SHP-361824,Heather Maxwell,8532327465,North Emmafort,Port Mercedeston,2026-06-04,2026-06-10,154.46,Delivered
+SHP-917018,Steven Stein,6228133486,New Adriana,Jacksonview,2025-11-04,2025-11-01,475.52,Pending
+SHP-288503,,4989487508,South Robert,Johnsonmouth,2026-02-24,2026-03-01,-91.78232099758382,In Transit
+SHP-805511,Deborah James,2960488639,Danielbury,Johnsonside,2025-11-14,2025-11-27,235.0,Pending
+SHP-885408,Zoe Bell,3181106786,Port Susanton,East Jamestown,2026-03-08,2026-02-27,96.98,Delivered
+SHP-156215,Tiffany Washington,9259157845,Port Patrick,Ortizfort,2025-12-18,2025-12-20,50.16,Delivered
+SHP-187295,Luke Miller,4203205881,Parkerbury,Scottberg,2025-08-30,2025-09-09,41.15,Cancelled
+SHP-480992,Ruth Richard,9138644862,Annfort,Jenniferville,2025-08-17,2025-08-31,44.04,In Transit
+SHP-327738,Eric Lloyd,2486744752,Steventon,Christopherberg,2025-08-01,2025-08-06,98.3,DELIVERED
+SHP-656837,David Garcia,4776677517,Jenniferville,North Tamara,2026-07-06,2026-07-20,39.56,Cancelled
+SHP-648615,Amanda Pace,4928783441,Port Anthony,South Jameston,2026-02-17,2026-02-26,209.28,
+SHP-125611,William Carr,2067970820,South Robertshire,Lake Heather,2026-01-18,2026-01-22,270.46,In Transit
+SHP-424314,Mitchell Mendoza,2950049698,Hammondshire,East Teresaland,2026-01-01,2026-01-12,-126.91232099758383,Pending
+SHP-971733,Shannon Martin,8178361487,South Kenneth,Ambermouth,2025-07-10,2025-07-23,264.61,Cancelled
+SHP-854987,Christian Rivera,6562457052,Hudsonbury,Piercemouth,2025-10-18,2025-10-30,210.67,In Transit
+SHP-479818,Ruth Guerrero,8607135564,Shepherdville,Leonardfort,2025-09-30,2025-10-12,107.6,Cancelled
+SHP-235047,Ryan Lamb,2437308013,North Sheriton,New Ryan,2026-04-17,2026-04-23,51.78,
+SHP-327900,Marcus Roberts,6572436051,Samanthaberg,New Amy,2026-03-14,,345.86,In Transit
+SHP-117367,Scott Gordon,8285000265,Serranoville,South Rachel,,2026-03-03,-65.44232099758382,In Transit
+SHP-337178,Jill Smith,3894673596,Lisachester,South Chad,2025-12-06,2025-12-11,224.34,Cancelled
+SHP-916953,Carlos Johnson,4262396395,Catherinebury,East Grace,2025-11-26,2025-11-19,205.61,Cancelled
+SHP-793384,Dylan Miller,6241752544,Port Craig,Shawnstad,2025-09-11,2025-09-21,142.7,Delivered
+SHP-739966,Jessica Bowen,6777473414,South Christina,Heathland,2026-06-23,2026-06-20,145.21, Pending
+SHP-144887,Kelly Moody,6913417379,Harrisonmouth,North Tinamouth,2025-08-19,2025-08-09,,Pending
+SHP-576805,,9922723063,North Kristinbury,Port Anne,2025-08-06,2025-08-11,121.07,Pending
+SHP-720995,Catherine Saunders MD,4735313433,Hahnborough,Salinasland,2026-05-24,2026-05-30,388.31,Delivered
+SHP-785010,Charles Johnson,3107125807,Markland,North Robertburgh,2025-09-11,2025-09-17,278.75,Cancelled
+SHP-279708,Ryan Newman,7805633786,Arielville,East Jasonshire,2026-01-11,2026-01-25,321.08,Pending
+SHP-847251,Sonya Davis,8943294720,Heatherburgh,North Dannymouth,2026-03-13,2026-03-24,448.78,Pending
+SHP-338596,,1221670908,Hernandezbury,New Stacyville,2025-09-22,2025-09-27,276.86,
+SHP-535037,,7228002201,Antoniostad,South Sean,2025-10-10,2025-10-23,,Pending
+SHP-794303,Brian Turner,8392424691,East Jessica,Connerfort,2026-03-19,2026-03-12,208.38, Pending
+SHP-180674,Justin Knight,9861449701,Rhodesside,Patrickberg,2026-05-13,2026-05-27,234.81,Pending
+SHP-421517,Bryan Lee,6464693977,Lake Amandaburgh,East Joanna,2025-10-25,2025-11-04,109.26,Pending
+SHP-520106,Kelly Dawson,4765583254,Port Lorifort,Smithhaven,2025-10-29,2025-10-30,152.7,Delivered
+SHP-600149,Guy Molina,7249213370,,South Jeffrey,2025-12-26,2026-01-02,349.81,Cancelled
+SHP-950155,Jason White,8357059814,Kimberlychester,West Erik,2026-04-08,2026-04-15,-503.97232099758384,Pending
+SHP-156778,Jenny Ayers,5980945846,New Michaelburgh,Brayhaven,,2026-01-16,-260.1223209975838,Pending
+SHP-623879,Carol Moore,6246612046,New Emilyville,Lake William,2025-07-27,2025-07-25,-94.60232099758383,Delivered
+SHP-174675,Cory Wilson,7201539282,Morenochester,Port Melissaberg,,2025-10-04,25.97,Pending
+SHP-990598,Scott Thomas,7763765757,Melendezside,Faulknerside,2026-02-01,2026-02-13,151.14,Cancelled
+SHP-187949,Denise Whitehead,8261111839,Port Samuel,Port Shannon,2025-11-23,2025-12-04,357.36,Cancelled
+SHP-800305,Elizabeth Alvarado,9285415473,West Darrell,Lake Angelaview,2025-10-27,2025-11-10,404.35,PENDING
+SHP-506313,Michael Cannon,6262814762,New Justin,Davidsonville,2025-08-16,2025-08-30,355.25,In-Transit
+SHP-332785,Kelly Carpenter,5567946981,South Neil,Bartonshire,2026-04-04,2026-04-12,390.12,Delivered
+SHP-653948,Alexandria Ward,2849649210,Davidshire,Diazburgh,2026-05-02,2026-05-05,193.2,In Transit
+SHP-268772,Luis King,,East Emilyshire,Port Karenside,2026-01-05,2026-01-08,199.51,Pending
+SHP-987624,Mrs. Taylor Frey,8585583166,,Lindastad,2026-06-30,2026-07-04,117.14,In-Transit
+SHP-430984,Alexandra Clark,3964774623,West Michaelview,New Jose,,2025-11-03,458.48,Pending
+SHP-869864,Haley Ross PhD,7887897660,West Johnville,Shannonberg,2025-08-17,2025-08-18,50.21,Delivered
+SHP-931161,Mr. Jonathan Taylor,7691931213,East Chris,Jasonburgh,2025-09-09,2025-08-30,471.04,Pending
+SHP-237962,April Cannon,4602080228,South Tylerfort,New Nicolebury,2025-10-02,2025-10-08,304.56,Cancelled
+SHP-415779,David Fowler,7243788374,Brownfort,Lake Zacharybury,2026-04-15,2026-04-20,129.44,Delivered
+SHP-859782,Paige Carlson,7393195616,Port Jamesbury,Harrytown,2026-04-11,2026-04-25,30.15,Cancelled
+SHP-127965,James Brooks,4405620755,Vangstad,North Lucas,2025-08-17,2025-08-19,-157.02232099758382,Cancelled
+SHP-234001,,,Lake Ellenhaven,Andrewport,2025-09-18,2025-09-23,441.41,In Transit
+SHP-244789,Kristina Bolton,4048494026,Foxmouth,South Rhonda,2025-11-20,2025-11-25,277.67,PENDING
+SHP-688637,Nicole Patterson,3303082117,Coxberg,Daviston,2026-06-09,2026-06-16,44.01,Pending
+SHP-926372,Jacqueline Richards,8133593748,Yorkfort,,2026-03-08,2026-03-13,-232.1023209975838, Pending
+SHP-719446,Mr. Jeffrey Carr,7752880042,Cherylberg,Knappville,2026-06-20,2026-06-28,402.81,In Transit
+SHP-398151,Jeremiah Lopez,2125089309,West Shelleyfort,Port Cameronfort,2025-08-08,2025-08-20,223.71,Cancelled
+SHP-132498,Matthew Lawson,4996346509,,Jamieborough,2025-12-16,2025-12-23,-37.73232099758382,Pending
+SHP-273148,Shane Henderson,,New Karina,Lake Larry,2026-03-28,2026-03-31,233.82,Pending
+SHP-588461,Haley Humphrey,5010075517,Port Tammy,Shawton,2026-05-29,2026-06-05,61.81,In Transit
+SHP-934692,Mary Campbell,1422701550,Clarencebury,Jeffreyborough,2025-09-05,2025-09-12,365.47,Delivered
+SHP-775990,Donna Jones,7844995269,East Jessicafort,Michaelbury,2025-08-18,2025-08-27,415.0,Cancelled
+SHP-601410,Paul Obrien,5165932723,Milesfort,Port John,2026-04-29,2026-04-22,237.4,Pending
+SHP-194458,Dylan Foster,6350369667,West Christopher,New Raymondland,2025-12-12,2025-12-21,329.03,
+SHP-822794,Kathryn Mccann,8083429496,North Samuelland,Cassiefurt,2026-05-06,2026-05-08,-80.56232099758383,Delivered
+SHP-711248,Victor Hill,2420277403,South Sarah,West Gregoryhaven,2025-08-20,2025-09-01,,Pending
+SHP-515492,Megan Green,9952125442,North Stephanie,Hawkinsside,2025-10-15,2025-10-26,90.42,In Transit
+SHP-224052,Margaret Montgomery,,Lake Melaniestad,West Kristinport,2026-03-02,2026-03-08,398.47,
+SHP-989265,Luis Perry,1569113257,West Michaelborough,Lake Jamesport,2025-10-17,2025-10-20,218.33,Cancelled
+SHP-853681,Diane Glover,2916728422,Gonzalezborough,Marieborough,2025-11-26,,146.36,Cancelled
+SHP-441819,Brian Lambert,6561543484,Rosemouth,Carrshire,2025-08-23,2025-09-01,-311.0623209975838,Delivered
+SHP-900441,Tracy May,9467483275,Murraystad,East Jennifer,2026-01-16,2026-01-25,253.39,Pending
+SHP-355021,Courtney Sutton DVM,3304560537,North Richardfurt,Browntown,,2026-04-17,187.45,Pending
+SHP-693022,Jon Rivera,9523104008,East Michaelmouth,Lake Nicole,,2025-08-21,385.87,In-Transit
+SHP-477880,Denise Colon,4485356009,Reidville,East Nathanmouth,2025-09-17,2025-09-19,359.44,Cancelled
+SHP-204411,Sara Smith,9984030846,South Stephen,Harrisberg,2026-06-17,2026-06-26,-117.86232099758382,Cancelled
+SHP-272537,Roger Olson,4803044105,Juliemouth,South Sydneyberg,2026-04-29,2026-05-12,215.45,In-Transit
+SHP-611994,Melissa Johnston,6167393219,New Dawnton,Millerton,2026-07-03,2026-07-09,209.9,In Transit
+SHP-807256,Maurice Andrade,3058982440,Port Henry,Wagnerburgh,2026-02-02,2026-02-16,-460.35232099758383,Pending
+SHP-854639,Jonathan White,4673561638,Port Colleenhaven,East Nathaniel,2025-09-11,2025-09-25,55.0,Pending
+SHP-596574,Elizabeth Sanders,8325222092,Jacobsonview,Lake Amyburgh,2025-12-01,2025-12-09,309.6,Delivered
+SHP-100177,Rebecca Richmond,2306204982,Pamelaside,Lake Emily,2025-11-19,2025-11-22,164.72,In Transit
+SHP-437433,Thomas Flores,2014766981,New Nathanhaven,East Jeffreyhaven,2025-07-28,2025-07-31,131.7,In Transit
+SHP-926867,Hannah Snow,,North Hannah,Jenniferview,2026-06-24,2026-07-01,153.75,
+SHP-240606,David Rivera,2178884276,,North Joseph,2026-03-29,2026-03-26,433.21,Delivered
+SHP-575575,Anthony Gonzales,9935429720,Marshallmouth,West Michelle,2025-11-11,2025-11-12,,cancelled
+SHP-989545,Casey Marshall,3363629219,Stephaniemouth,Rivasside,2025-12-30,2025-12-31,327.81,Delivered
+SHP-442230,Donald Riddle,3115806625,Perezside,Reynoldsshire,2026-03-23,2026-03-25,,In Transit
+SHP-879769,Laura Wilson,,South Diamondmouth,,2025-12-22,2025-12-29,328.18,Cancelled
+SHP-947975,Carlos Perry,5683143581,New Stevenport,South Jonathantown,2026-04-26,2026-04-28,381.38,Delivered
+SHP-427557,Erin Daniels,2034953269,Lake Dillon,Port Devin,2026-04-03,2026-04-13,265.6,Pending
+SHP-506951,Kristen Gates,7745949301,Starktown,Rodriguezberg,2025-09-05,2025-09-08,333.86,Delivered
+SHP-884170,Matthew Bowers,8577013359,South Paul,South Danielle,2025-08-06,2025-08-11,167.42,Delivered
+SHP-565108,Bobby Franklin,6928691380,East Joshuashire,Oscarhaven,2025-11-01,2025-11-02,471.66,In-Transit
+SHP-959099,Eric Lane,9760623742,Barbarafurt,Davidborough,2025-08-08,2025-08-10,212.52,PENDING
+SHP-837920,Madeline Hill,7641192909,Bethshire,South Desiree,2025-11-29,2025-12-10,-393.5023209975838,Pending
+SHP-329258,Lance Hoffman,1958682846,Robinsonshire,Lisatown,2026-05-01,2026-05-13,55.74,Delivered
+SHP-237962,April Cannon,4602080228,South Tylerfort,New Nicolebury,2025-10-02,2025-10-08,304.56,Cancelled
+SHP-438041,Paige Hart,7183058541,Craigside,Nataliechester,2026-05-20,2026-05-28,234.9,Pending
+SHP-513160,Mary Miller,3328710672,,North Jorge,2025-11-14,2025-11-26,160.23,Delivered
+SHP-594241,Grace White,1948540266,Clarkstad,Melissaview,2026-01-01,2026-01-04,,Cancelled
+SHP-669827,Timothy Kane,8339176912,New Patrick,Williamsfort,,2026-04-11,262.36, delivered 
+SHP-980521,,2893321208,New Michelleberg,West Angelashire,2026-02-20,2026-03-02,185.61,In Transit
+SHP-124813,Jennifer Ramirez,2452066459,Port Joshuahaven,Frazierside,2025-11-16,2025-11-26,279.19,In Transit
+SHP-652329,Alyssa Alvarado,9863781331,Michellemouth,Amyberg,2026-04-07,2026-04-08,467.62,Delivered
+SHP-313068,Brittney Murphy,7767834064,West Hollybury,East Christopherchester,2025-08-24,2025-09-03,,cancelled
+SHP-566509,Teresa Adkins,9837912162,Gutierrezburgh,East Jessicaview,2026-07-10,2026-07-18,-344.3923209975838,Pending
+SHP-298663,Matthew Hudson,4752171298,,Reeseshire,2025-11-26,2025-11-30,403.3,In Transit
+SHP-709303,Karen Carlson,9561946187,Kellibury,South Christopher,2026-03-07,2026-03-11,408.81,Pending
+SHP-755744,Mary Henry,5979337757,Charlesmouth,,2026-05-11,2026-05-20,-242.4423209975838,Pending
+SHP-810687,Patricia Becker,7250964836,Lake Colton,West Kristinaton,2026-02-20,2026-03-03,289.96, delivered 
+SHP-193326,Sara Caldwell,8358867651,,Lake Jenniferview,2026-03-17,2026-03-19,406.2, delivered 
+SHP-458388,Mary Miller,4907446848,Meyerbury,Allenberg,2025-12-23,,459.43,In Transit
+SHP-259784,John Wilson,6305160342,South Holly,Garyville,2026-05-08,2026-05-10,471.09,In Transit
+SHP-531262,Arthur Pena,1370292681,Lake Mirandahaven,Lake Morgan,2026-01-28,2026-02-02,202.09,Cancelled
+SHP-575394,Amy Wade,,,Lake Alexander,2026-01-19,2026-01-26,15.32,Pending
+SHP-700067,Christopher Nielsen,2236045959,Greeneshire,Lake Jessicaport,2025-08-12,2025-08-22,339.93,Cancelled
+SHP-844638,Katherine Miller,5695387521,Port Kathleenport,West Jeffreyport,,2025-09-15,373.57,Pending
+SHP-160738,Keith Miller,8173347748,,,2026-02-08,2026-02-20,468.64,Delivered
+SHP-266694,Michael Powell,8235656521,East Jamesborough,East Antonioton,2026-07-01,2026-07-13,241.87,In Transit
+SHP-716113,Victor Vaughn,4160930353,Bruceborough,Castanedaville,2025-10-10,2025-10-21,46.97,Pending
+SHP-791444,Brianna Dennis,9857430687,Billyfort,North Joseph,2025-10-09,2025-10-12,-268.1223209975838,Pending
+SHP-873935,Ashley Moreno,8006745733,,East Jenniferland,2025-07-27,2025-08-09,140.96,Delivered
+SHP-483545,Holly Morales,3878201524,West Angela,South Williamside,2025-10-27,2025-11-10,84.61,Cancelled
+SHP-213346,Andrew Ruiz,7517938612,Port Samantha,Kevinbury,2025-10-04,,127.71,Delivered
+SHP-141158,Kelli Mccoy,1141312095,East Kellyfurt,Kimport,2026-01-05,2026-01-19,160.67,In Transit
+SHP-613989,Colin Vaughan,8211516617,Smithbury,East Jessica,2026-02-24,2026-03-02,189.15,Delivered
+SHP-921273,Mary Turner,7099469983,North Yolandafurt,Parksfort,2026-04-13,,294.12,Delivered
+SHP-853905,Daniel Coleman,3877685081,West Nancy,,2025-12-27,2026-01-03,180.03,Cancelled
+SHP-700521,Carmen Bond,8556573246,Wilsonborough,Davishaven,2025-12-30,2026-01-13,272.8,
+SHP-458388,Mary Miller,4907446848,Meyerbury,Allenberg,2025-12-23,,459.43,In Transit
+SHP-214975,Christopher Becker,8995970241,South Patrickmouth,Tashatown,2026-03-31,2026-04-10,-106.55232099758383,Delivered
+SHP-936587,,6344160868,Angelahaven,North John,2025-12-15,2025-12-20,83.08,Pending
+SHP-417012,William Mason,,Lake Jonathanfurt,New Stacybury,2025-09-07,2025-09-21,350.44,In-Transit
+SHP-781571,Shannon Mcdowell,7243361127,Lake Michaelland,,2025-07-30,2025-08-02,188.18,Pending
+SHP-520521,Carmen Smith,8217611860,Bakermouth,Rodneyside,2026-03-24,2026-04-03,36.45,Cancelled
+SHP-830000,Valerie Perez,3698343112,Terrimouth,,2026-03-02,2026-03-15,,Pending
+SHP-961866,Samantha Ellison,6619630925,North Benjamin,Ericview,2025-11-29,2025-12-05,258.84,
+SHP-748133,Kathleen Burton,9343730920,Dawnport,Sanchezfurt,2025-11-02,2025-11-11,272.29,Cancelled
+SHP-972310,Emily Nelson,7472806994,East Derekshire,East Danielmouth,2026-01-07,2025-12-31,292.26,Delivered
+SHP-328486,Amber Cooper,2905584866,New Virginialand,Johnsonchester,2025-09-18,2025-09-30,153.24,Delivered
+SHP-511564,Raymond Quinn,1819412471,Dennishaven,South Michaeltown,2026-03-24,2026-04-01,160.28,In Transit
+SHP-197527,Paul Peterson,3874432021,South Lee,New Joseph,,2026-04-29,490.93, delivered 
+SHP-717466,Jordan Ramos,2401777036,East Nicoleview,North Jack,2025-07-31,2025-08-11,140.3,Cancelled
+SHP-991993,Javier Mercado,4401896171,North David,Port Erikchester,2026-06-29,2026-06-25,396.23,Delivered
+SHP-543940,Michael Harris,6545970956,Port Brooke,Reneeland,2025-08-13,2025-08-14,309.33,In Transit
+SHP-794083,Ralph Anderson,2444812497,Mooreburgh,Lake Samuel,2025-12-16,2025-12-24,426.22,In Transit
+SHP-997004,William Richardson,,Bruceview,North Stacy,2026-05-26,2026-06-06,-129.80232099758382, delivered 
+SHP-956429,Nicole Hernandez,6131005449,Loveton,North Brianview,2026-02-12,2026-02-21,-154.23232099758383,Cancelled
+SHP-583550,Julia Estrada,7292076361,Santanaside,North Scott,2025-11-21,2025-11-29,,PENDING
+SHP-136346,Ms. Kelly Holder,6510697299,Adambury,Port Leslie,2026-05-06,2026-05-14,269.16,Pending
+SHP-744328,Jeffrey Patterson,5092199300,Reyeston,Lake Nathan,2025-07-15,2025-07-18,425.09,Cancelled
+SHP-384263,Benjamin Frost,6299224734,East Sarahmouth,East Brendafurt,2026-07-06,,311.68,Pending
+SHP-745919,Kelly Allen MD,2979245480,Morrisshire,North Emilychester,2025-11-29,2025-12-11,398.51,In Transit
+SHP-285751,Lori Marshall,4070964768,Maldonadoshire,Michellemouth,2025-09-07,2025-09-09,298.09,In Transit
+SHP-153045,Kimberly Smith,7483366056,Port Melindaburgh,Tuckerborough,2026-06-11,2026-06-13,379.11,Delivered
+SHP-195763,Michael Valencia,1106456634,Port Emilyview,Port Katelynfort,2026-01-27,2026-02-08,462.62,Cancelled
+SHP-575755,Jessica Mcguire,8531118333,Port Dianaside,South Shannon,2025-10-07,,446.36,Cancelled
+SHP-520400,John Campbell,3587283948,Markside,Smithborough,2025-10-31,2025-10-28,380.78,Delivered
+SHP-183057,David Duran,3271361431,,Robertland,2025-09-19,2025-10-01,489.47,Delivered
+SHP-666456,Christopher Guerrero,3980491761,East Alexisbury,Alfredview,2025-07-30,2025-08-11,110.91,Cancelled

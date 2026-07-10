@@ -10,3 +10,7 @@ test_live_db_modules.py
 test_messy_data.sql
 All Scripts Working Guide.zip
 COMPLETE_DOCUMENTATION_NON_TECH.md
+*temp*.py
+.cache/
+exports/
+*test*.py
