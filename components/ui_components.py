@@ -534,29 +534,162 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
     with tab_audit:
         st.markdown('<div class="section-header">&#128203; <span>AI Audit Trail</span></div>', unsafe_allow_html=True)
         explanations = metadata.get("explanations", [])
+
+        _SEVERITY_COLORS = {
+            "info":    ("#22d3ee",  "rgba(34,211,238,0.07)",  "rgba(34,211,238,0.25)"),
+            "change":  ("#a78bfa",  "rgba(139,92,246,0.07)",  "rgba(139,92,246,0.3)"),
+            "warning": ("#fbbf24",  "rgba(251,191,36,0.07)",  "rgba(251,191,36,0.3)"),
+            "fix":     ("#4ade80",  "rgba(74,222,128,0.06)",  "rgba(74,222,128,0.25)"),
+            "remove":  ("#f87171",  "rgba(248,113,113,0.06)", "rgba(248,113,113,0.25)"),
+            "detect":  ("#60a5fa",  "rgba(96,165,250,0.07)",  "rgba(96,165,250,0.25)"),
+            "llm":     ("#c084fc",  "rgba(192,132,252,0.07)", "rgba(192,132,252,0.3)"),
+            "error":   ("#f43f5e",  "rgba(244,63,94,0.07)",   "rgba(244,63,94,0.3)"),
+        }
+
         if explanations:
-            for exp in explanations[:40]:
-                task = exp.get("task", "Transform")
-                task_color = "tag-purple" if "Translit" in task else "tag-cyan"
-                orig_esc = html.escape(str(exp.get("original", "?")))
-                cleaned_esc = html.escape(str(exp.get("cleaned", "?")))
-                col_esc = html.escape(str(exp.get("column", "?")))
-                expl_esc = html.escape(str(exp.get("explanation", "")))
-                task_esc = html.escape(str(task))
-                parts = []
-                parts.append('<div class="glass-panel" style="margin-bottom:0.5rem">')
-                parts.append('<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">')
-                parts.append('<span style="font-weight:600;color:#a78bfa;font-size:0.83rem">' + col_esc + '</span>')
-                parts.append('<span class="' + task_color + '" style="font-size:0.68rem">' + task_esc + '</span>')
-                parts.append('</div>')
-                parts.append('<div style="font-size:0.8rem;color:#64748b">')
-                parts.append('<code style="background:rgba(248,113,113,0.1);color:#f87171;padding:1px 5px;border-radius:4px">' + orig_esc + '</code>')
-                parts.append(' &rarr; ')
-                parts.append('<code style="background:rgba(74,222,128,0.1);color:#4ade80;padding:1px 5px;border-radius:4px">' + cleaned_esc + '</code>')
-                parts.append('</div>')
-                parts.append('<div style="font-size:0.75rem;color:#475569;margin-top:4px">&#128172; ' + expl_esc + '</div>')
-                parts.append('</div>')
-                st.markdown("".join(parts), unsafe_allow_html=True)
+            # Check if new rich format (has 'step' key) or old flat format
+            is_rich = any("step" in e for e in explanations)
+
+            if is_rich:
+                # ── Group by pipeline step ──────────────────────────────
+                from collections import defaultdict
+                steps_map = defaultdict(list)
+                for exp in explanations:
+                    step_key = f"{exp.get('step_number', 99):02d}_{exp.get('step', 'Other')}"
+                    steps_map[step_key].append(exp)
+
+                step_icons = {
+                    "Domain Detection":      "🔍",
+                    "Schema Classification": "🧠",
+                    "Multilingual Processing": "🌐",
+                    "String Pre-cleaning":   "✨",
+                    "Entity Resolution":     "👥",
+                    "Deduplication":         "🗑️",
+                    "Smart Imputation":      "🧩",
+                    "Outlier Handling":      "📊",
+                    "Currency Conversion":   "💱",
+                    "Validation":            "✅",
+                    "Pipeline Complete":     "🏁",
+                }
+
+                for step_key in sorted(steps_map.keys()):
+                    step_entries = steps_map[step_key]
+                    step_name   = step_entries[0].get("step", "Other")
+                    step_num    = step_entries[0].get("step_number", "?")
+                    step_icon   = step_icons.get(step_name, "⚙️")
+
+                    # Count meaningful changes in this step
+                    n_changes = sum(1 for e in step_entries if e.get("severity") in ("change", "fix", "remove"))
+                    badge_html = (
+                        f'<span style="background:rgba(139,92,246,0.15);color:#a78bfa;'
+                        f'border:1px solid rgba(139,92,246,0.3);border-radius:6px;'
+                        f'padding:2px 8px;font-size:0.7rem;font-weight:700">'
+                        f'{n_changes} change(s)</span>' if n_changes > 0 else
+                        '<span style="background:rgba(100,116,139,0.15);color:#64748b;'
+                        'border:1px solid rgba(100,116,139,0.2);border-radius:6px;'
+                        'padding:2px 8px;font-size:0.7rem">no changes</span>'
+                    )
+
+                    st.markdown(
+                        f'<div style="display:flex;align-items:center;gap:10px;'
+                        f'font-size:0.9rem;font-weight:700;color:#e2e8f0;'
+                        f'border-bottom:1px solid rgba(255,255,255,0.07);'
+                        f'padding-bottom:0.5rem;margin:1.4rem 0 0.8rem">'
+                        f'<span style="display:inline-flex;align-items:center;justify-content:center;'
+                        f'width:24px;height:24px;border-radius:50%;background:rgba(139,92,246,0.2);'
+                        f'border:1px solid rgba(139,92,246,0.4);font-size:0.7rem;font-weight:700;'
+                        f'color:#a78bfa">{step_num}</span>'
+                        f'{step_icon} {step_name} {badge_html}</div>',
+                        unsafe_allow_html=True
+                    )
+
+                    for exp in step_entries:
+                        severity = exp.get("severity", "info")
+                        icon     = exp.get("icon", "ℹ️")
+                        col_name = html.escape(str(exp.get("column", "")))
+                        task     = html.escape(str(exp.get("task", "")))
+                        original = html.escape(str(exp.get("original", "")))
+                        cleaned  = html.escape(str(exp.get("cleaned", "")))
+                        expl     = html.escape(str(exp.get("explanation", "")))
+
+                        text_color, bg_color, border_color = _SEVERITY_COLORS.get(
+                            severity, ("#94a3b8", "rgba(255,255,255,0.03)", "rgba(255,255,255,0.07)")
+                        )
+
+                        # Build original → cleaned arrow if both present
+                        arrow_html = ""
+                        if original and cleaned:
+                            arrow_html = (
+                                f'<div style="display:flex;align-items:center;gap:8px;'
+                                f'font-size:0.78rem;margin-bottom:5px">'
+                                f'<code style="background:rgba(248,113,113,0.1);color:#f87171;'
+                                f'padding:1px 6px;border-radius:4px;white-space:nowrap">'
+                                f'{original}</code>'
+                                f'<span style="color:#475569">&#8594;</span>'
+                                f'<code style="background:rgba(74,222,128,0.1);color:#4ade80;'
+                                f'padding:1px 6px;border-radius:4px;white-space:nowrap">'
+                                f'{cleaned}</code>'
+                                f'</div>'
+                            ) if original != cleaned else (
+                                f'<div style="font-size:0.78rem;color:#64748b;margin-bottom:4px">'
+                                f'<code style="background:rgba(100,116,139,0.1);color:#94a3b8;'
+                                f'padding:1px 6px;border-radius:4px">{cleaned}</code></div>'
+                            )
+
+                        col_tag = (
+                            f'<span style="background:rgba(139,92,246,0.12);color:#c4b5fd;'
+                            f'border:1px solid rgba(139,92,246,0.25);border-radius:4px;'
+                            f'padding:1px 7px;font-size:0.68rem;font-weight:600;'
+                            f'font-family:monospace">{col_name}</span> ' if col_name and col_name != "DATASET" else
+                            '<span style="background:rgba(34,211,238,0.08);color:#67e8f9;'
+                            'border:1px solid rgba(34,211,238,0.2);border-radius:4px;'
+                            'padding:1px 7px;font-size:0.68rem;font-weight:600">DATASET</span> '
+                        )
+
+                        st.markdown(
+                            f'<div style="background:{bg_color};border:1px solid {border_color};'
+                            f'border-left:3px solid {text_color};border-radius:10px;'
+                            f'padding:0.7rem 1rem;margin-bottom:0.45rem">'
+                            f'  <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">'
+                            f'    <span style="font-size:1rem">{icon}</span>'
+                            f'    {col_tag}'
+                            f'    <span style="font-size:0.72rem;color:{text_color};'
+                            f'background:{bg_color};border:1px solid {border_color};'
+                            f'border-radius:4px;padding:1px 6px">{task}</span>'
+                            f'  </div>'
+                            f'  {arrow_html}'
+                            f'  <div style="font-size:0.78rem;color:#94a3b8;line-height:1.6">'
+                            f'    {expl}'
+                            f'  </div>'
+                            f'</div>',
+                            unsafe_allow_html=True
+                        )
+
+            else:
+                # ── Legacy flat format (backward compat) ────────────────
+                for exp in explanations[:40]:
+                    task = exp.get("task", "Transform")
+                    task_color = "tag-purple" if "Translit" in task else "tag-cyan"
+                    orig_esc    = html.escape(str(exp.get("original", "?")))
+                    cleaned_esc = html.escape(str(exp.get("cleaned", "?")))
+                    col_esc     = html.escape(str(exp.get("column", "?")))
+                    expl_esc    = html.escape(str(exp.get("explanation", "")))
+                    task_esc    = html.escape(str(task))
+                    parts = [
+                        '<div class="glass-panel" style="margin-bottom:0.5rem">',
+                        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">',
+                        '<span style="font-weight:600;color:#a78bfa;font-size:0.83rem">' + col_esc + '</span>',
+                        '<span class="' + task_color + '" style="font-size:0.68rem">' + task_esc + '</span>',
+                        '</div>',
+                        '<div style="font-size:0.8rem;color:#64748b">',
+                        '<code style="background:rgba(248,113,113,0.1);color:#f87171;padding:1px 5px;border-radius:4px">' + orig_esc + '</code>',
+                        ' &rarr; ',
+                        '<code style="background:rgba(74,222,128,0.1);color:#4ade80;padding:1px 5px;border-radius:4px">' + cleaned_esc + '</code>',
+                        '</div>',
+                        '<div style="font-size:0.75rem;color:#475569;margin-top:4px">&#128172; ' + expl_esc + '</div>',
+                        '</div>',
+                    ]
+                    st.markdown("".join(parts), unsafe_allow_html=True)
         else:
             st.markdown("""
             <div class="glass-panel">
@@ -566,5 +699,30 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
 
         # Execution log - HTML-escape to prevent tags from breaking the layout
         st.markdown('<div class="section-header" style="margin-top:1.5rem">&#128221; <span>Execution Log</span></div>', unsafe_allow_html=True)
-        log_text_escaped = "<br>".join(html.escape(line) for line in logs)
-        st.markdown('<div class="log-box" style="white-space:pre-wrap">' + log_text_escaped + '</div>', unsafe_allow_html=True)
+
+        # Color-coded log rendering
+        log_lines = []
+        for line in logs:
+            safe = html.escape(line)
+            if any(k in line for k in ["Error", "Failed", "❌"]):
+                log_lines.append(f'<span style="color:#f87171">{safe}</span>')
+            elif "[Step" in line and "]" in line:
+                log_lines.append(f'<span style="color:#a78bfa;font-weight:700">{safe}</span>')
+            elif any(k in line for k in ["Completed", "✓", "Done", "PASSED", "✅"]):
+                log_lines.append(f'<span style="color:#4ade80">{safe}</span>')
+            elif any(k in line for k in ["[Domain", "[Schema", "[Imputation", "[Dedup", "[Outlier", "[Currency"]):
+                log_lines.append(f'<span style="color:#22d3ee">{safe}</span>')
+            elif any(k in line for k in ["LLM", "🤖", "AI ", "[Pass"]):
+                log_lines.append(f'<span style="color:#c084fc">{safe}</span>')
+            elif any(k in line for k in ["[WARNING]", "Warning", "⚠️"]):
+                log_lines.append(f'<span style="color:#fbbf24">{safe}</span>')
+            elif line.startswith("  ") and ":" in line:
+                log_lines.append(f'<span style="color:#94a3b8">{safe}</span>')
+            else:
+                log_lines.append(f'<span style="color:#64748b">{safe}</span>')
+
+        st.markdown(
+            '<div class="log-box" style="white-space:pre-wrap;max-height:500px">' +
+            "<br>".join(log_lines) + '</div>',
+            unsafe_allow_html=True
+        )

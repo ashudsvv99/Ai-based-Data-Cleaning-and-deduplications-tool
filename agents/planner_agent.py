@@ -2,22 +2,20 @@
 Planner agent: maps semantic column types to deterministic cleaning strategies,
 and generates LLM-guided smart imputation rules based on column relationships.
 
-Key Fix (v2):
-  - Email and Phone deduplication set to "none" — family-guard logic in
-    DeduplicationEngine already handles them. Passing them as "exact_match"
-    previously caused the engine to treat shared family emails/phones as
-    Gov-ID-level merge signals (the root cause of false merges).
-  - Domain parameter added so imputation rules are domain-aware.
-  - New semantic type mappings: Binary_Flag, Score_Rating, Percentage, URL.
+v4 — New semantic types added:
+  - Geospatial    → leave_empty, no dedup (lat/lon coordinates)
+  - Currency      → fill_none, no dedup (monetary values with symbols)
+  - Structured_ID → fill_none, uppercase_strip, no dedup (PAN/Aadhaar/GSTIN/etc.)
 
-Key Fix (v3):
-  - Business-sensitive columns (Email, Phone, ID_Code, Name, Location,
-    Financial) now use fill_none imputation instead of leave_empty.
-    fill_none standardizes sentinel strings ("unknown", "-", "N/A") to
-    real None/NaN — never fabricates values via mean/median/mode/KNN.
-  - Non-business columns (Numeric, Categorical, Score, Percentage) still
-    receive statistical imputation where appropriate.
+v3 — fill_none for business-sensitive columns:
+  - Business-sensitive columns (Email, Phone, ID_Code, Name, Location, Financial)
+    use fill_none: standardizes sentinel strings → real None/NaN, never fabricates.
+  - Non-business columns (Numeric, Categorical, Score, Percentage) get statistical imputation.
   - LLM smart rules are blocked for business-sensitive column names.
+
+v2 — Email/Phone deduplication = "none":
+  - Family-guard logic in DeduplicationEngine handles them internally.
+  - Passing "exact_match" caused false merges on shared family emails/phones.
 """
 import json
 import os
@@ -253,6 +251,30 @@ class PlannerAgent:
             return CleaningStrategy(
                 imputation="leave_empty",
                 normalization="none",
+                deduplication="none",
+            )
+
+        # ── Geospatial (lat/lon) ───────────────────────────────────
+        elif "geospatial" in sem:
+            return CleaningStrategy(
+                imputation="leave_empty",   # Cannot impute coordinates
+                normalization="coerce_numeric",
+                deduplication="none",
+            )
+
+        # ── Currency (monetary values with symbols) ────────────────
+        elif "currency" in sem:
+            return CleaningStrategy(
+                imputation="fill_none",     # Don't fabricate monetary values
+                normalization="coerce_numeric",
+                deduplication="none",
+            )
+
+        # ── Structured_ID (PAN, Aadhaar, GSTIN, SSN, IFSC) ────────
+        elif "structured_id" in sem:
+            return CleaningStrategy(
+                imputation="fill_none",     # Never fabricate structured IDs
+                normalization="uppercase_strip",
                 deduplication="none",
             )
 

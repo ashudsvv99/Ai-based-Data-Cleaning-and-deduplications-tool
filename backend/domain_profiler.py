@@ -1,10 +1,15 @@
 """
-Domain & Intent Profiler — Two-pass detection with rich domain coverage.
+Domain & Intent Profiler — LLM-First Detection.
 
-Pass 1 — Fast keyword heuristic (no LLM, always runs).
-Pass 2 — LLM verification: sends column names + dtypes + sample values so the
-          LLM can confirm, override, or detect domains the keyword list
-          doesn't cover (e.g. Real Estate, Legal, Manufacturing, Logistics).
+Architecture (two-pass, LLM-primary):
+  Pass 1 — Keyword heuristic (fast, always runs, no LLM).
+            Produces a score-ranked list of candidate domains.
+            This score is sent as a HINT to the LLM, not used as the final answer.
+  Pass 2 — LLM is the PRIMARY decision maker.
+            It receives: column names, dtypes, sample values, value distributions,
+            missing%, unique counts, non-ASCII ratio, detected scripts, and the
+            heuristic scores as context — then makes a holistic judgment.
+            If LLM is offline or fails → heuristic result is used as fallback.
 
 DATASET INTENT:
   Every dataset is classified into ONE of two intents:
@@ -26,11 +31,12 @@ DATASET INTENT:
 import json
 import re
 import pandas as pd
+import numpy as np
 from typing import Optional
 
 
 # ──────────────────────────────────────────────
-# Extended domain keyword dictionary
+# Extended domain keyword dictionary (hint only)
 # ──────────────────────────────────────────────
 DOMAIN_KEYWORDS = {
     "Retail": [
@@ -119,6 +125,41 @@ DOMAIN_KEYWORDS = {
         "litigation", "counsel", "verdict", "statute", "compliance",
         "regulation", "audit", "penalty", "dispute",
     ],
+    "Agriculture": [
+        "crop", "harvest", "irrigation", "fertilizer", "pesticide",
+        "farm", "soil", "yield", "livestock", "acreage",
+        "sowing", "rainfall", "mandi", "produce", "commodity",
+    ],
+    "Sports": [
+        "player", "team", "match", "score", "goal", "wicket",
+        "season", "league", "tournament", "fixture", "innings",
+        "athlete", "coach", "stadium", "referee", "ranking",
+    ],
+    "Telecommunications": [
+        "subscriber", "sim", "recharge", "data_usage", "call",
+        "network", "bandwidth", "plan", "roaming", "tariff",
+        "tower", "signal_strength", "imei", "operator", "postpaid",
+    ],
+    "Government": [
+        "citizen", "aadhar", "pan", "voter", "ward", "district",
+        "scheme", "beneficiary", "ministry", "department_code",
+        "census", "election", "constituency", "municipality",
+    ],
+    "Environmental": [
+        "emission", "pollution", "carbon", "co2", "temperature",
+        "rainfall", "air_quality", "pm2_5", "water_quality",
+        "species", "biodiversity", "deforestation", "climate",
+    ],
+    "Cybersecurity": [
+        "ip_address", "vulnerability", "exploit", "malware", "firewall",
+        "intrusion", "cve", "threat", "patch", "incident",
+        "log", "access_control", "breach", "phishing", "endpoint",
+    ],
+    "Research": [
+        "experiment", "hypothesis", "sample", "control", "variable",
+        "observation", "measurement", "trial", "dataset", "study",
+        "survey", "respondent", "questionnaire", "findings",
+    ],
 }
 
 # ──────────────────────────────────────────────
@@ -135,31 +176,41 @@ _PREDICTIVE_HINTS = [
 
 # Sub-intent classification per domain
 _DOMAIN_SUB_INTENT = {
-    "Retail":        "Transactional",
-    "Finance":       "Transactional",
-    "Healthcare":    "Master Data",
-    "Education":     "Master Data",
-    "HR":            "Master Data",
-    "Logistics":     "Operational",
-    "Real Estate":   "Master Data",
-    "Manufacturing": "Operational",
-    "E-Commerce":    "Transactional",
-    "CRM":           "Master Data",
-    "Insurance":     "Master Data",
-    "Pharma":        "Analytical",
-    "Supply Chain":  "Operational",
-    "IoT":           "Operational",
-    "Legal":         "Master Data",
-    "Generic":       "Master Data",
+    "Retail":            "Transactional",
+    "Finance":           "Transactional",
+    "Healthcare":        "Master Data",
+    "Education":         "Master Data",
+    "HR":                "Master Data",
+    "Logistics":         "Operational",
+    "Real Estate":       "Master Data",
+    "Manufacturing":     "Operational",
+    "E-Commerce":        "Transactional",
+    "CRM":               "Master Data",
+    "Insurance":         "Master Data",
+    "Pharma":            "Analytical",
+    "Supply Chain":      "Operational",
+    "IoT":               "Operational",
+    "Legal":             "Master Data",
+    "Agriculture":       "Operational",
+    "Sports":            "Analytical",
+    "Telecommunications":"Transactional",
+    "Government":        "Master Data",
+    "Environmental":     "Analytical",
+    "Cybersecurity":     "Operational",
+    "Research":          "Analytical",
+    "Generic":           "Master Data",
 }
 
 
 class DomainProfiler:
     """
-    Two-pass domain & intent detector.
+    LLM-first domain & intent detector.
 
-    Pass 1: Fast keyword scoring (always runs, no LLM).
-    Pass 2: LLM confirmation/override (runs when llm_client is provided).
+    Pass 1: Fast keyword scoring (always runs, no LLM) → produces a ranked
+            list of candidate domains used as a HINT for the LLM.
+    Pass 2: LLM is the PRIMARY decision maker — it receives full dataset
+            context (columns, dtypes, distributions, samples, scripts) and
+            makes a holistic judgment.  Falls back to heuristic if LLM fails.
 
     Returns a dict with keys:
         domain, intent, sub_intent, confidence, method, reasoning,
@@ -178,18 +229,7 @@ class DomainProfiler:
         log_callback=None,
     ) -> dict:
         """
-        Returns:
-        {
-            "domain":           "Retail",
-            "intent":           "Non-Predictive Business",
-            "sub_intent":       "Transactional",
-            "confidence":       "High",
-            "method":           "LLM-confirmed" | "Heuristic",
-            "reasoning":        "...",
-            "target_variables": [],
-            "is_time_series":   False,
-            "heuristic_scores": {...}
-        }
+        Returns a domain detection result dict.
         """
         log = log_callback or print
 
@@ -199,7 +239,7 @@ class DomainProfiler:
         heuristic_domain = heuristic_result["domain"]
         sub_intent       = _DOMAIN_SUB_INTENT.get(heuristic_domain, "Master Data")
 
-        log(f"  [Domain/Heuristic] Best match: {heuristic_domain} "
+        log(f"  [Domain/Heuristic] Candidate: {heuristic_domain} "
             f"(score={heuristic_result['score']}) | Intent: {heuristic_intent} | Sub: {sub_intent}")
 
         if self.llm_client is None:
@@ -215,9 +255,9 @@ class DomainProfiler:
                 "heuristic_scores": heuristic_result["all_scores"],
             }
 
-        # ── Pass 2: LLM verification ──
+        # ── Pass 2: LLM as primary detector ──
         try:
-            llm_result = self._llm_detect(df, heuristic_result, heuristic_intent)
+            llm_result = self._llm_detect(df, heuristic_result, heuristic_intent, log)
             llm_domain = llm_result.get("domain", heuristic_domain)
             llm_result["sub_intent"] = _DOMAIN_SUB_INTENT.get(llm_domain, sub_intent)
             log(f"  [Domain/LLM] Domain: {llm_domain} | Intent: {llm_result['intent']} "
@@ -227,7 +267,7 @@ class DomainProfiler:
             llm_result["heuristic_scores"] = heuristic_result["all_scores"]
             return llm_result
         except Exception as e:
-            log(f"  [Domain/LLM] LLM detection failed ({e}), using heuristic.")
+            log(f"  [Domain/LLM] LLM detection failed ({e}), using heuristic fallback.")
             return {
                 "domain":           heuristic_domain,
                 "intent":           heuristic_intent,
@@ -241,7 +281,7 @@ class DomainProfiler:
             }
 
     # ────────────────────────────────────────
-    # Pass 1: keyword scoring
+    # Pass 1: Keyword scoring
     # ────────────────────────────────────────
     def _keyword_score(self, df: pd.DataFrame) -> dict:
         cols = [str(c).lower().replace(" ", "_") for c in df.columns]
@@ -253,7 +293,7 @@ class DomainProfiler:
                 if any(kw in col for kw in keywords):
                     scores[domain] += 1
 
-        # Score sample values of string columns
+        # Score sample values of string columns (lightweight scan)
         for col in df.columns:
             if pd.api.types.is_object_dtype(df[col]):
                 sample_vals = df[col].dropna().astype(str).str.lower().head(20).tolist()
@@ -262,10 +302,14 @@ class DomainProfiler:
                         if any(kw in val for kw in keywords):
                             scores[domain] += 0.5
 
-        best = max(scores, key=scores.get)
+        # Sort scores descending for top-3 hint
+        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        best_domain, best_score = sorted_scores[0]
+
         return {
-            "domain": best if scores[best] > 0 else "Generic",
-            "score":  round(scores[best], 1),
+            "domain":     best_domain if best_score > 0 else "Generic",
+            "score":      round(best_score, 1),
+            "top3":       [(d, round(s, 1)) for d, s in sorted_scores[:3]],
             "all_scores": {k: round(v, 1) for k, v in scores.items()},
         }
 
@@ -290,14 +334,12 @@ class DomainProfiler:
                 if set(unique_vals).issubset({0, 1, 0.0, 1.0}):
                     binary_cols += 1
 
-        # High numeric ratio + binary cols + no contact identifiers → Predictive
         numeric_ratio  = df.select_dtypes(include="number").shape[1] / max(len(df.columns), 1)
         contact_cols   = sum(1 for c in cols_lower if any(k in c for k in ["email", "phone", "mobile", "name"]))
         id_cols        = sum(1 for c in cols_lower if any(k in c for k in ["customer_id", "patient_id", "employee_id"]))
 
         if numeric_ratio > 0.65 and contact_cols == 0 and id_cols == 0:
             return "Predictive"
-
         if binary_cols >= 1 and numeric_ratio > 0.5 and contact_cols == 0:
             return "Predictive"
 
@@ -312,66 +354,95 @@ class DomainProfiler:
         )
 
     # ────────────────────────────────────────
-    # Pass 2: LLM verification
+    # Pass 2: LLM as primary decision maker
     # ────────────────────────────────────────
-    def _llm_detect(self, df: pd.DataFrame, heuristic: dict, heuristic_intent: str) -> dict:
-        """Ask the LLM to confirm domain AND dataset intent, plus identify target variables."""
-        columns     = list(df.columns)
-        sample_rows = df.head(3).astype(str).to_dict(orient="records")
-        col_dtypes  = {str(c): str(df[c].dtype) for c in df.columns}
+    def _llm_detect(
+        self, df: pd.DataFrame, heuristic: dict, heuristic_intent: str, log=print
+    ) -> dict:
+        """
+        Ask the LLM to be the PRIMARY domain detector.
+        Sends a rich dataset profile for holistic judgment.
+        Heuristic scores are provided as context hints — not the final answer.
+        """
+        columns    = list(df.columns)
+        col_dtypes = {str(c): str(df[c].dtype) for c in df.columns}
 
-        # Compute basic stats for richer context
-        numeric_ratio  = round(df.select_dtypes(include="number").shape[1] / max(len(df.columns), 1), 2)
-        null_pct       = round(df.isna().mean().mean() * 100, 1)
-        known_domains  = list(DOMAIN_KEYWORDS.keys()) + ["Generic", "Other"]
+        # Build rich per-column profiles
+        col_profiles = self._build_column_profiles(df)
+
+        # Sample rows (up to 5)
+        sample_rows = df.head(5).astype(str).to_dict(orient="records")
+
+        numeric_ratio = round(df.select_dtypes(include="number").shape[1] / max(len(df.columns), 1), 2)
+        null_pct      = round(df.isna().mean().mean() * 100, 1)
+        known_domains = sorted(DOMAIN_KEYWORDS.keys()) + ["Generic", "Other"]
 
         system_prompt = (
-            "You are an expert data scientist and data analyst specializing in dataset classification.\n"
-            "Given dataset column names, data types, and sample rows, determine:\n"
-            "  1. The industry DOMAIN from the list provided.\n"
-            "  2. The DATASET INTENT — EXACTLY one of:\n"
-            "       \"Predictive\"              (used for ML training, forecasting, analytics, classification)\n"
-            "       \"Non-Predictive Business\" (CRM, ERP, HR records, customer databases, operational logs)\n"
-            "  3. TARGET VARIABLES — columns that are prediction targets (empty list if Non-Predictive).\n"
-            "  4. IS_TIME_SERIES — true if the dataset has a temporal ordering column.\n\n"
+            "You are an expert data scientist specializing in dataset profiling and domain classification.\n"
+            "Your job is to analyze a dataset and determine its DOMAIN, INTENT, and key properties.\n\n"
+            "You are the PRIMARY decision maker. The heuristic keyword scores are provided as hints only —\n"
+            "use your judgment based on the full column profiles and sample data.\n\n"
+            "DOMAIN LIST (choose the best match or 'Generic' if none fit):\n"
+            f"{json.dumps(known_domains, indent=2)}\n\n"
+            "DATASET INTENT — choose EXACTLY ONE:\n"
+            "  \"Predictive\"              — ML training, forecasting, analytical features, classification\n"
+            "  \"Non-Predictive Business\" — CRM, ERP, HR records, transactions, master data, operational logs\n\n"
             "CLASSIFICATION RULES:\n"
-            "  - Contact info (email, phone, name, address) present → Non-Predictive Business\n"
-            "  - Column names like: churn, fraud, label, target, class, y, is_*, has_*, will_* → Predictive\n"
-            "  - Mostly numeric feature columns (age, income, score, count) + no contact cols → Predictive\n"
-            "  - Binary columns (0/1) alongside numeric features → likely Predictive (flag columns)\n"
-            "  - Transaction records (order_id, invoice_no, payment) → Non-Predictive Business\n"
-            "  - Clinical / patient records → Non-Predictive Business (unless has explicit 'diagnosis' label)\n"
-            "  - Sensor / IoT readings with timestamps → Non-Predictive Business (Operational)\n\n"
-            "Return ONLY a JSON object with these exact keys:\n"
+            "  - Contact info (email, phone, name, address) → Non-Predictive Business\n"
+            "  - Columns like: churn, fraud, label, target, class, is_*, has_*, will_* → Predictive\n"
+            "  - Mostly numeric features (age, income, score, count) + no contact cols → Predictive\n"
+            "  - Transaction records (order_id, invoice, payment_status) → Non-Predictive Business\n"
+            "  - Clinical/patient records → Non-Predictive Business (unless explicit diagnosis label)\n"
+            "  - Sensor/IoT readings with timestamps → Non-Predictive Business (Operational)\n"
+            "  - Non-ASCII values (Hindi, Arabic, Tamil, etc.) in name/category columns → flag it\n\n"
+            "TARGET VARIABLES: list columns that are prediction targets (empty if Non-Predictive)\n\n"
+            "Return ONLY a JSON object with EXACTLY these keys:\n"
             "{\n"
             '  "domain": "<domain from list>",\n'
             '  "intent": "Predictive" | "Non-Predictive Business",\n'
             '  "confidence": "High" | "Medium" | "Low",\n'
-            '  "reasoning": "<one concise sentence explaining your decision>",\n'
-            '  "target_variables": ["<col1>"],\n'
-            '  "is_time_series": true | false\n'
-            "}\n\n"
-            f"Known domains: {json.dumps(known_domains)}"
+            '  "reasoning": "<2-3 sentences explaining your decision>",\n'
+            '  "target_variables": ["<col1>", "<col2>"],\n'
+            '  "is_time_series": true | false,\n'
+            '  "has_multilingual_data": true | false,\n'
+            '  "special_characteristics": "<any unusual data patterns or domain-specific notes>"\n'
+            "}"
         )
 
+        # Compact the column profiles to avoid token overflow
+        compact_profiles = {
+            col: {
+                "dtype": p["dtype"],
+                "missing_pct": p["missing_pct"],
+                "unique_count": p["unique_count"],
+                "sample_values": p["sample_values"][:5],
+                "non_ascii_ratio": p.get("non_ascii_ratio", 0),
+            }
+            for col, p in col_profiles.items()
+        }
+
         user_prompt = (
-            f"Heuristic domain: {heuristic['domain']} (score={heuristic['score']})\n"
-            f"Heuristic intent: {heuristic_intent}\n"
-            f"Numeric column ratio: {numeric_ratio}\n"
-            f"Average null %: {null_pct}%\n\n"
+            f"=== HEURISTIC HINT (keyword scoring — for reference only) ===\n"
+            f"Top candidate domains: {json.dumps(heuristic.get('top3', []))}\n"
+            f"Heuristic intent: {heuristic_intent}\n\n"
+            f"=== DATASET OVERVIEW ===\n"
+            f"Total columns: {len(columns)} | Numeric ratio: {numeric_ratio} | Avg null%: {null_pct}%\n"
             f"Column names: {json.dumps(columns)}\n"
             f"Column dtypes: {json.dumps(col_dtypes)}\n\n"
-            f"Sample rows:\n{json.dumps(sample_rows, ensure_ascii=False, default=str)}\n\n"
+            f"=== COLUMN PROFILES ===\n"
+            f"{json.dumps(compact_profiles, ensure_ascii=False, default=str, indent=2)}\n\n"
+            f"=== SAMPLE ROWS (first 5) ===\n"
+            f"{json.dumps(sample_rows, ensure_ascii=False, default=str, indent=2)}\n\n"
             "OUTPUT JSON:"
         )
 
         raw = self.llm_client.chat_completion_json(
-            system_prompt, user_prompt, num_expected_keys=6, enable_thinking=True
+            system_prompt, user_prompt, num_expected_keys=8, enable_thinking=True
         )
 
         if isinstance(raw, dict) and "domain" in raw:
             intent = str(raw.get("intent", heuristic_intent)).strip()
-            # Normalise intent string
+            # Normalize intent string
             if "predictive" in intent.lower() and "non" not in intent.lower():
                 intent = "Predictive"
             else:
@@ -381,23 +452,72 @@ class DomainProfiler:
             if not isinstance(target_vars, list):
                 target_vars = []
 
+            detected_domain = str(raw.get("domain", heuristic["domain"])).strip()
+            # Validate domain is in our known list
+            all_known = list(DOMAIN_KEYWORDS.keys()) + ["Generic"]
+            if detected_domain not in all_known:
+                log(f"  [Domain/LLM] Unknown domain '{detected_domain}' returned — keeping heuristic.")
+                detected_domain = heuristic["domain"]
+
             return {
-                "domain":           str(raw.get("domain", heuristic["domain"])).strip(),
-                "intent":           intent,
-                "confidence":       str(raw.get("confidence", "Medium")).strip(),
-                "method":           "LLM-confirmed",
-                "reasoning":        str(raw.get("reasoning", "LLM domain & intent detection")).strip(),
-                "target_variables": [str(v) for v in target_vars if v in list(df.columns)],
-                "is_time_series":   bool(raw.get("is_time_series", False)),
+                "domain":                 detected_domain,
+                "intent":                 intent,
+                "confidence":             str(raw.get("confidence", "Medium")).strip(),
+                "method":                 "LLM-primary",
+                "reasoning":              str(raw.get("reasoning", "LLM domain & intent detection")).strip(),
+                "target_variables":       [str(v) for v in target_vars if v in columns],
+                "is_time_series":         bool(raw.get("is_time_series", False)),
+                "has_multilingual_data":  bool(raw.get("has_multilingual_data", False)),
+                "special_characteristics": str(raw.get("special_characteristics", "")).strip(),
             }
 
-        # LLM parse failed — fall back
+        # LLM parse failed — fall back to heuristic
+        log("  [Domain/LLM] Response parse failed. Falling back to heuristic.")
         return {
             "domain":           heuristic["domain"],
             "intent":           heuristic_intent,
             "confidence":       "Medium",
             "method":           "Heuristic (LLM parse failed)",
-            "reasoning":        f"Raw LLM response: {str(raw)[:100]}",
+            "reasoning":        f"LLM returned unparseable response: {str(raw)[:100]}",
             "target_variables": [],
             "is_time_series":   self._heuristic_time_series(df),
         }
+
+    def _build_column_profiles(self, df: pd.DataFrame) -> dict:
+        """Build a rich per-column profile for the LLM context."""
+        from backend.schema_detector import column_non_ascii_ratio, column_script_distribution
+        profiles = {}
+        for col in df.columns:
+            series = df[col]
+            missing_count = int(series.isna().sum())
+            total = len(series)
+            missing_pct = round(missing_count / max(total, 1) * 100, 1)
+            unique_count = int(series.nunique())
+
+            # Sample values (non-null, up to 8)
+            sample_vals = [str(v) for v in series.dropna().head(8).tolist()]
+
+            profile = {
+                "dtype":        str(series.dtype),
+                "missing_pct":  missing_pct,
+                "unique_count": unique_count,
+                "sample_values": sample_vals,
+            }
+
+            # Numeric stats
+            if pd.api.types.is_numeric_dtype(series):
+                non_null = series.dropna()
+                if len(non_null) > 0:
+                    profile["min"]  = round(float(non_null.min()), 3)
+                    profile["max"]  = round(float(non_null.max()), 3)
+                    profile["mean"] = round(float(non_null.mean()), 3)
+
+            # String / object stats
+            if pd.api.types.is_object_dtype(series) or pd.api.types.is_string_dtype(series):
+                non_ascii = column_non_ascii_ratio(series)
+                profile["non_ascii_ratio"] = round(non_ascii, 3)
+                if non_ascii > 0.01:
+                    profile["scripts_detected"] = column_script_distribution(series)
+
+            profiles[col] = profile
+        return profiles

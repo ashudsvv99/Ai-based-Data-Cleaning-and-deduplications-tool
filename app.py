@@ -414,35 +414,74 @@ if ingest_method == "📄 Local File (CSV / Excel)":
     uploaded_file = st.file_uploader(
         "Drop your CSV or Excel file here",
         type=["csv", "xlsx", "xls"],
+        key="file_uploader_main",
         on_change=lambda: [st.session_state.pop("pipeline_results_ready", None), StateManager.clear_pipeline_state()]
     )
 
     if uploaded_file is None:
+        # Real drag-and-drop zone: injects JS that forwards drop events
+        # to Streamlit's hidden <input type="file"> element
         st.markdown("""
-        <div class="upload-zone">
-          <div style="font-size:2.5rem;margin-bottom:0.7rem">📊</div>
-          <div style="font-size:1rem;font-weight:600;color:#94a3b8;margin-bottom:0.3rem">Drag & drop your dataset here</div>
-          <div style="font-size:0.8rem;color:#475569">Supports CSV, XLSX, XLS · Up to 200 MB</div>
+        <div
+          id="custom-drop-zone"
+          style="border:2px dashed rgba(139,92,246,0.4);border-radius:16px;
+                 padding:2.8rem 2rem;text-align:center;background:rgba(139,92,246,0.04);
+                 transition:border-color 0.2s,background 0.2s,box-shadow 0.2s;
+                 cursor:pointer;margin-top:0.5rem"
+        >
+          <div style="font-size:2.8rem;margin-bottom:0.6rem">&#128202;</div>
+          <div style="font-size:1rem;font-weight:700;color:#a78bfa;margin-bottom:0.3rem">Drag &amp; drop your dataset here</div>
+          <div style="font-size:0.82rem;color:#64748b">Supports CSV, XLSX, XLS &middot; Up to 200 MB</div>
+          <div style="font-size:0.75rem;color:#475569;margin-top:0.5rem">or use the Upload button above</div>
         </div>
+        <script>
+        (function(){
+          function initDZ(){
+            var zone = document.getElementById('custom-drop-zone');
+            var inputs = document.querySelectorAll('input[type="file"]');
+            var fi = inputs.length > 0 ? inputs[inputs.length-1] : null;
+            if(!zone||!fi){
+              if((initDZ._n||0)<15){initDZ._n=(initDZ._n||0)+1;setTimeout(initDZ,200);}
+              return;
+            }
+            zone.addEventListener('click',function(){fi.click();});
+            zone.addEventListener('dragover',function(e){
+              e.preventDefault();e.stopPropagation();
+              zone.style.borderColor='rgba(139,92,246,0.9)';
+              zone.style.background='rgba(139,92,246,0.12)';
+              zone.style.boxShadow='0 0 0 4px rgba(139,92,246,0.15)';
+            });
+            zone.addEventListener('dragleave',function(e){
+              e.preventDefault();
+              zone.style.borderColor='rgba(139,92,246,0.4)';
+              zone.style.background='rgba(139,92,246,0.04)';
+              zone.style.boxShadow='none';
+            });
+            zone.addEventListener('drop',function(e){
+              e.preventDefault();e.stopPropagation();
+              zone.style.borderColor='rgba(74,222,128,0.6)';
+              zone.style.background='rgba(74,222,128,0.06)';
+              zone.style.boxShadow='0 0 0 4px rgba(74,222,128,0.12)';
+              var dt=e.dataTransfer;
+              if(dt&&dt.files&&dt.files.length>0){
+                try{
+                  var tr=new DataTransfer();
+                  for(var i=0;i<dt.files.length;i++){tr.items.add(dt.files[i]);}
+                  fi.files=tr.files;
+                  fi.dispatchEvent(new Event('change',{bubbles:true}));
+                }catch(err){fi.click();}
+              }
+            });
+          }
+          initDZ();
+        })();
+        </script>
         """, unsafe_allow_html=True)
 
 else:
-    st.markdown("""
-    <div style="background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.3);border-radius:12px;padding:2.5rem;text-align:center;margin-bottom:1rem;">
-      <div style="font-size:3rem;margin-bottom:1rem">🗄️</div>
-      <div style="font-size:1.4rem;font-weight:700;color:#e2e8f0;margin-bottom:0.5rem">Connect to a Live Database</div>
-      <div style="font-size:0.9rem;color:#94a3b8;margin-bottom:1.5rem">
-        Query, clean, and write back directly to PostgreSQL, MySQL, SQL Server, Oracle, and DB2.
-      </div>
-    """, unsafe_allow_html=True)
-    
-    # Render button to open modal or switch page
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        if st.button("Launch Database Studio 🚀", type="primary", use_container_width=True):
-            st.switch_page("pages/Live_Database.py")
-            
-    st.markdown("</div>", unsafe_allow_html=True)
+    # Direct navigation: no intermediate "Launch" button page
+    st.switch_page("pages/Live_Database.py")
+
 
 
 if uploaded_file is None:
