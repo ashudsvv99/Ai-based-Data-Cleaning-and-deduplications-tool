@@ -129,23 +129,29 @@ class Validator:
         Validates all non-null values in an Email-type column.
         Uses regex -- no hardcoded column names. Works for 'email',
         'contact_email', 'user_email', 'email_address', etc.
+        Supports comma-separated consolidated emails.
         """
         problems = []
         for idx, val in series.dropna().items():
             s = str(val).strip()
             if not s:
                 continue
-            # Check for known dummy placeholders first
-            if _DUMMY_EMAIL_PATTERNS.match(s):
-                problems.append(
-                    f"Column '{col_name}' row {idx}: "
-                    f"'{s}' is a placeholder/dummy email, not a real address"
-                )
-            elif not _EMAIL_REGEX.match(s):
-                problems.append(
-                    f"Column '{col_name}' row {idx}: "
-                    f"'{s}' is not a valid email (missing @, TLD, or contains spaces)"
-                )
+            # Split comma-separated emails
+            parts = [p.strip() for p in s.split(",") if p.strip()]
+            if not parts:
+                continue
+            for email in parts:
+                # Check for known dummy placeholders first
+                if _DUMMY_EMAIL_PATTERNS.match(email):
+                    problems.append(
+                        f"Column '{col_name}' row {idx}: "
+                        f"'{email}' is a placeholder/dummy email, not a real address"
+                    )
+                elif not _EMAIL_REGEX.match(email):
+                    problems.append(
+                        f"Column '{col_name}' row {idx}: "
+                        f"'{email}' is not a valid email (missing @, TLD, or contains spaces)"
+                    )
         return problems
 
     def _validate_phone_column(self, series: pd.Series, col_name: str) -> list:
@@ -153,31 +159,41 @@ class Validator:
         Validates all non-null values in a Phone-type column.
         Checks digit count (7-15 international range) and non-numeric chars.
         Works for 'phone', 'mobile', 'contact_number', 'tel', etc.
+        Supports comma-separated consolidated phones.
         """
         problems = []
         for idx, val in series.dropna().items():
             s = str(val).strip()
             if not s:
                 continue
-            digits_only = re.sub(r'[^\d]', '', s)
-            if not digits_only:
+            # Split comma-separated phone numbers
+            parts = [p.strip() for p in s.split(",") if p.strip()]
+            if not parts:
                 continue
-            # All-same digit pattern (e.g. 0000000000, 9999999999)
-            if len(set(digits_only)) == 1:
-                problems.append(
-                    f"Column '{col_name}' row {idx}: "
-                    f"'{s}' looks like a placeholder (all same digit)"
-                )
-            elif not re.match(r'^\+?\d+$', s):
-                problems.append(
-                    f"Column '{col_name}' row {idx}: "
-                    f"'{s}' contains non-numeric characters"
-                )
-            elif not (7 <= len(digits_only) <= 15):
-                problems.append(
-                    f"Column '{col_name}' row {idx}: "
-                    f"'{s}' has invalid length ({len(digits_only)} digits, expected 7-15)"
-                )
+            for phone in parts:
+                digits_only = re.sub(r'[^\d]', '', phone)
+                if not digits_only:
+                    problems.append(
+                        f"Column '{col_name}' row {idx}: "
+                        f"'{phone}' does not contain any digits"
+                    )
+                    continue
+                # All-same digit pattern (e.g. 0000000000, 9999999999)
+                if len(set(digits_only)) == 1:
+                    problems.append(
+                        f"Column '{col_name}' row {idx}: "
+                        f"'{phone}' looks like a placeholder (all same digit)"
+                    )
+                elif not re.match(r'^\+?\d+$', phone):
+                    problems.append(
+                        f"Column '{col_name}' row {idx}: "
+                        f"'{phone}' contains non-numeric characters"
+                    )
+                elif not (7 <= len(digits_only) <= 15):
+                    problems.append(
+                        f"Column '{col_name}' row {idx}: "
+                        f"'{phone}' has invalid length ({len(digits_only)} digits, expected 7-15)"
+                    )
         return problems
 
     def _validate_numeric_column(self, series: pd.Series, col_name: str) -> list:

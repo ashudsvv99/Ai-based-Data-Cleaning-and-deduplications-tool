@@ -549,6 +549,7 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
         if explanations:
             # Check if new rich format (has 'step' key) or old flat format
             is_rich = any("step" in e for e in explanations)
+            html_parts = []
 
             if is_rich:
                 # ── Group by pipeline step ──────────────────────────────
@@ -590,7 +591,7 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
                         'padding:2px 8px;font-size:0.7rem">no changes</span>'
                     )
 
-                    st.markdown(
+                    html_parts.append(
                         f'<div style="display:flex;align-items:center;gap:10px;'
                         f'font-size:0.9rem;font-weight:700;color:#e2e8f0;'
                         f'border-bottom:1px solid rgba(255,255,255,0.07);'
@@ -599,8 +600,7 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
                         f'width:24px;height:24px;border-radius:50%;background:rgba(139,92,246,0.2);'
                         f'border:1px solid rgba(139,92,246,0.4);font-size:0.7rem;font-weight:700;'
                         f'color:#a78bfa">{step_num}</span>'
-                        f'{step_icon} {step_name} {badge_html}</div>',
-                        unsafe_allow_html=True
+                        f'{step_icon} {step_name} {badge_html}</div>'
                     )
 
                     for exp in step_entries:
@@ -646,7 +646,7 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
                             'padding:1px 7px;font-size:0.68rem;font-weight:600">DATASET</span> '
                         )
 
-                        st.markdown(
+                        html_parts.append(
                             f'<div style="background:{bg_color};border:1px solid {border_color};'
                             f'border-left:3px solid {text_color};border-radius:10px;'
                             f'padding:0.7rem 1rem;margin-bottom:0.45rem">'
@@ -661,8 +661,7 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
                             f'  <div style="font-size:0.78rem;color:#94a3b8;line-height:1.6">'
                             f'    {expl}'
                             f'  </div>'
-                            f'</div>',
-                            unsafe_allow_html=True
+                            f'</div>'
                         )
 
             else:
@@ -689,7 +688,14 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
                         '<div style="font-size:0.75rem;color:#475569;margin-top:4px">&#128172; ' + expl_esc + '</div>',
                         '</div>',
                     ]
-                    st.markdown("".join(parts), unsafe_allow_html=True)
+                    html_parts.append("".join(parts))
+
+            # Display scrollable wrapper
+            st.markdown(
+                '<div style="background:#090d16; border:1px solid #1e293b; border-radius:10px; padding:1.2rem; max-height:480px; overflow-y:auto; box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);">' +
+                "".join(html_parts) + '</div>',
+                unsafe_allow_html=True
+            )
         else:
             st.markdown("""
             <div class="glass-panel">
@@ -722,7 +728,7 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
                 log_lines.append(f'<span style="color:#64748b">{safe}</span>')
 
         st.markdown(
-            '<div class="log-box" style="white-space:pre-wrap;max-height:500px">' +
+            '<div style="background:#090d16; border:1px solid #1e293b; border-radius:10px; padding:1.2rem; font-family:\'Courier New\', monospace; font-size:0.8rem; color:#94a3b8; max-height:350px !important; overflow-y:auto !important; line-height:1.6; white-space:pre-wrap; box-shadow:inset 0 2px 8px rgba(0,0,0,0.5); display:block !important;">' +
             "<br>".join(log_lines) + '</div>',
             unsafe_allow_html=True
         )

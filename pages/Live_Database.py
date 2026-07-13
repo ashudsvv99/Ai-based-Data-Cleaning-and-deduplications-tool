@@ -492,7 +492,7 @@ st.markdown("""
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "🔌 Connect",
     "🗺️ Database Map",
-    "📊 Health Profiler",
+    "📊 Data Health Profile",
     "💬 AI Query Studio",
     "🧹 AI Cleaning",
     "📋 Audit Log",
@@ -710,19 +710,53 @@ with tab2:
                 col = "#f87171" if null_pct > 10 else "#4ade80"
                 st.markdown(f'<div class="mini-m"><div class="mv" style="color:{col}">{null_pct}%</div><div class="ml">Null Rate</div></div>', unsafe_allow_html=True)
             with mc3:
-                st.markdown(f'<div class="mini-m"><div class="mv" style="color:#22d3ee">{tdf.duplicated().sum()}</div><div class="ml">Exact Dupes</div></div>', unsafe_allow_html=True)
+                # ── Type-safe exact duplicate detection ──
+                try:
+                    tdf_str = tdf.astype(str)
+                    exact_dupe_count = int(tdf_str.duplicated().sum())
+                except Exception:
+                    exact_dupe_count = 0
+                # Also try SQL-based count from the database for accuracy
+                try:
+                    _preview_tbl = st.session_state.active_table
+                    _prev_conn   = st.session_state.db_connector
+                    all_cols_preview = list(tdf.columns)
+                    if all_cols_preview:
+                        if _prev_conn.db_type == "MySQL":
+                            _pcol_list = ", ".join([f"`{c}`" for c in all_cols_preview])
+                            _pdup_sql = (
+                                f"SELECT COALESCE(SUM(cnt - 1), 0) FROM "
+                                f"(SELECT {_pcol_list}, COUNT(*) as cnt FROM `{_preview_tbl}` "
+                                f"GROUP BY {_pcol_list} HAVING COUNT(*) > 1) AS dupes"
+                            )
+                        else:
+                            _pcol_list = ", ".join([f'"{c}"' for c in all_cols_preview])
+                            _pdup_sql = (
+                                f'SELECT COALESCE(SUM(cnt - 1), 0) FROM '
+                                f'(SELECT {_pcol_list}, COUNT(*) as cnt FROM "{_preview_tbl}" '
+                                f'GROUP BY {_pcol_list} HAVING COUNT(*) > 1) AS dupes'
+                            )
+                        _pdup_res, _pdup_err = _prev_conn.execute_query(_pdup_sql)
+                        if _pdup_err is None and _pdup_res is not None and len(_pdup_res) > 0:
+                            _sql_val = _pdup_res.iloc[0, 0]
+                            if _sql_val is not None:
+                                exact_dupe_count = int(_sql_val)
+                except Exception:
+                    pass
+                dupe_col = "#f87171" if exact_dupe_count > 0 else "#4ade80"
+                st.markdown(f'<div class="mini-m"><div class="mv" style="color:{dupe_col}">{exact_dupe_count}</div><div class="ml">Exact Dupes</div></div>', unsafe_allow_html=True)
             st.dataframe(tdf.head(100), use_container_width=True, height=300)
 
 
 # ═══════════════════════════════════════════════════════════════
-# TAB 3 — HEALTH PROFILER
+# TAB 3 — DATA HEALTH PROFILE
 # ═══════════════════════════════════════════════════════════════
 with tab3:
     if not is_conn:
-        st.info("🔌 Connect to a database first (Tab 1) to run the health profiler.")
+        st.info("🔌 Connect to a database first (Tab 1) to run the data health profile.")
     else:
-        st.markdown('<div class="sec-hdr">📊 <span>Health Profiler</span></div>', unsafe_allow_html=True)
-        
+        st.markdown('<div class="sec-hdr">📊 <span>Data Health Profile</span></div>', unsafe_allow_html=True)
+
         if st.session_state.db_tables:
             hp_tbl = st.selectbox("Select table to profile:",
                 st.session_state.db_tables,
@@ -734,110 +768,374 @@ with tab3:
             hp_tbl = None
 
         if hp_tbl:
-            tbl = hp_tbl
+            tbl       = hp_tbl
             connector = st.session_state.db_connector
-            
-            st.markdown("Run a comprehensive scan to detect missing values, exact duplicates, and fuzzy inconsistencies.")
-            
-            if st.button("🚀 Run Complete Health Check", key="run_health_check", type="primary"):
-                with st.spinner("Profiling dataset... (loading up to 10,000 rows for fuzzy logic)"):
-                    from backend.profiler import DatasetProfiler
-                    
+
+            # ──────────────────────────────────────────────────────────
+            # HELPER: Count exact duplicate rows via SQL
+            # Strategy: use a proper subquery with GROUP BY + HAVING.
+            # The SUM(cnt - 1) gives the number of EXTRA rows (i.e., dupes).
+            # ──────────────────────────────────────────────────────────
+            def _count_exact_dupes_sql(connector, tbl_name: str) -> int:
+                try:
+                    info = connector.get_table_info(tbl_name)
+                    cols = [c["name"] for c in info.get("columns", [])]
+                    if not cols:
+                        return 0
+                    if connector.db_type == "MySQL":
+                        qc = lambda c: f"`{c}`"
+                        qt = lambda t: f"`{t}`"
+                    else:
+                        qc = lambda c: f'"{c}"'
+                        qt = lambda t: f'"{t}"'
+                    col_list = ", ".join([qc(c) for c in cols])
+                    # Counts extra copies: if a group has cnt=3, it contributes 2 dupes
+                    sql = (
+                        f"SELECT COALESCE(SUM(cnt - 1), 0) AS total_dupe_rows "
+                        f"FROM (SELECT {col_list}, COUNT(*) AS cnt "
+                        f"FROM {qt(tbl_name)} "
+                        f"GROUP BY {col_list} HAVING COUNT(*) > 1) AS grp"
+                    )
+                    res, err = connector.execute_query(sql)
+                    if err is None and res is not None and len(res) > 0:
+                        val = res.iloc[0, 0]
+                        return int(val) if val is not None else 0
+                except Exception:
+                    pass
+                return 0
+
+            # ──────────────────────────────────────────────────────────
+            # HELPER: Fetch rows that are part of exact-dup groups.
+            # Uses a CTE / derived-table JOIN so it works on SQLite,
+            # PostgreSQL, MySQL, SQL Server — avoids the broken tuple-IN syntax.
+            # ──────────────────────────────────────────────────────────
+            def _fetch_exact_dupe_rows_sql(connector, tbl_name: str, limit: int = 500) -> pd.DataFrame:
+                try:
+                    info = connector.get_table_info(tbl_name)
+                    cols = [c["name"] for c in info.get("columns", [])]
+                    if not cols:
+                        return pd.DataFrame()
+                    if connector.db_type == "MySQL":
+                        qc = lambda c: f"`{c}`"
+                        qt = lambda t: f"`{t}`"
+                    else:
+                        qc = lambda c: f'"{c}"'
+                        qt = lambda t: f'"{t}"'
+
+                    col_list   = ", ".join([qc(c) for c in cols])
+                    join_conds = " AND ".join([
+                        f"t.{qc(c)} = d.{qc(c)}" for c in cols
+                    ])
+                    # Join the original table against the group-by subquery to
+                    # retrieve the actual duplicate rows — works on all SQL dialects.
+                    sql = (
+                        f"SELECT t.{col_list} "
+                        f"FROM {qt(tbl_name)} t "
+                        f"JOIN (SELECT {col_list} FROM {qt(tbl_name)} "
+                        f"      GROUP BY {col_list} HAVING COUNT(*) > 1) AS d "
+                        f"ON {join_conds} "
+                        f"ORDER BY {col_list} "
+                        f"LIMIT {limit}"
+                    )
+                    res, err = connector.execute_query(sql)
+                    if err is None and res is not None:
+                        return res
+                except Exception:
+                    pass
+                # ── Pandas fallback ──
+                return pd.DataFrame()
+
+            # ──────────────────────────────────────────────────────────
+            # HELPER: Run fuzzy dedup keeping ALL columns so Gov-ID pass
+            # can link Type-1 (name typo, same IDs) and Type-2 (name typo
+            # + different phone/email but same PAN/Aadhaar) records.
+            # ──────────────────────────────────────────────────────────
+            def _run_fuzzy_dedup(df_full: pd.DataFrame):
+                from backend.schema_detector import classify_all_columns
+                from cleaning.deduplication import (
+                    DeduplicationEngine, _classify_col_tiers,
+                    _GOV_ID_PATTERNS, _name_similarity, NAME_MATCH_THRESHOLD,
+                )
+                import re
+
+                schema_mapping = classify_all_columns(df_full)
+
+                # Build strategies — keep ALL columns incl. Gov IDs.
+                # This ensures Pass 1 (Gov ID match) fires for Type-1 & Type-2.
+                dedup_strats = {}
+                for col, info in schema_mapping.items():
+                    stype = info.get("semantic_type", "")
+                    col_l = col.lower().replace(" ", "_")
+                    # Classify Gov IDs as exact_match so they go into gov_id_cols tier
+                    is_gov = any(
+                        re.search(fr'\b{re.escape(p)}\b', col_l.replace("_", " "))
+                        for p in _GOV_ID_PATTERNS
+                    )
+                    if is_gov or stype == "ID_Code":
+                        dedup_strats[col] = "exact_match"   # → Tier 1 (Gov ID)
+                    elif stype in ("Name", "Free_Text"):
+                        dedup_strats[col] = "fuzzy_name"
+                    elif stype in ("Location", "Categorical"):
+                        dedup_strats[col] = "blocking_key"
+                    else:
+                        dedup_strats[col] = "none"
+
+                # Ensure at least one name col is marked for fuzzy matching
+                if "fuzzy_name" not in dedup_strats.values():
+                    for col, strat in dedup_strats.items():
+                        col_l = col.lower()
+                        if "name" in col_l:
+                            dedup_strats[col] = "fuzzy_name"
+                            break
+
+                # Run in "Non-Predictive Business" mode so Rule 14
+                # (Gov ID supremacy) fires and overrides contact conflicts —
+                # critical for detecting Type-2 fuzzy dupes.
+                engine = DeduplicationEngine(
+                    df_full, dedup_strats,
+                    dataset_intent="Non-Predictive Business",
+                )
+                engine.execute()
+
+                # Classify clusters into Type 1 / Type 2 / Exact
+                gov_id_cols, _, _, _, name_cols, _ = _classify_col_tiers(
+                    df_full, dedup_strats
+                )
+                contact_cols = [
+                    c for c in df_full.columns
+                    if any(k in c.lower() for k in ["phone", "mobile", "email", "address", "addr"])
+                ]
+
+                type1_clusters, type2_clusters, exact_clusters = [], [], []
+                for cluster in engine.cluster_report:
+                    idxs = cluster["row_indices"]
+                    rows = df_full.loc[idxs]
+
+                    # Check if it is truly an exact dup
                     try:
-                        # Load max 10k rows for performance
+                        is_exact = rows.astype(str).duplicated(keep=False).all()
+                    except Exception:
+                        is_exact = False
+
+                    if is_exact:
+                        exact_clusters.append(cluster)
+                        continue
+
+                    # Check if contact fields differ (Type 2) vs same (Type 1)
+                    contact_differs = False
+                    if contact_cols:
+                        for cc in contact_cols:
+                            if cc in rows.columns:
+                                vals = rows[cc].astype(str).str.strip().str.lower().unique()
+                                non_empty = [v for v in vals if v not in ("", "nan", "none", "null")]
+                                if len(non_empty) > 1:
+                                    contact_differs = True
+                                    break
+
+                    if contact_differs:
+                        type2_clusters.append(cluster)
+                    else:
+                        type1_clusters.append(cluster)
+
+                return engine, type1_clusters, type2_clusters, exact_clusters, name_cols, contact_cols
+
+            # ──────────────────────────────────────────────────────────
+            # UI
+            # ──────────────────────────────────────────────────────────
+            st.markdown(
+                "Run a comprehensive scan: exact duplicates (via SQL), "
+                "fuzzy near-matches **Type 1** (name typo only) & "
+                "**Type 2** (name + contacts changed, Gov ID unchanged)."
+            )
+
+            if st.button("🚀 Run Complete Health Check", key="run_health_check", type="primary"):
+                with st.spinner("Loading table and profiling…"):
+                    from backend.profiler import DatasetProfiler
+                    try:
                         df_sample = connector.load_table(tbl, limit=10000)
-                        
+
                         if df_sample.empty:
                             st.warning("Table is empty.")
                         else:
-                            # 1. Base Profiling
-                            profiler = DatasetProfiler(df_sample)
+                            # ─── 1. Base profile (pandas) ───────────────
+                            profiler      = DatasetProfiler(df_sample)
                             profile_stats = profiler.profile()
-                            
-                            st.markdown("#### 📈 Overview Stats (10k sample)")
+
+                            # ─── 2. SQL-accurate exact dup count ─────────
+                            sql_dup_count    = _count_exact_dupes_sql(connector, tbl)
+                            pandas_dup_count = profile_stats["exact_duplicate_rows"]
+
+                            # Also do type-safe pandas check
+                            try:
+                                ts_dup_count = int(df_sample.astype(str).duplicated().sum())
+                            except Exception:
+                                ts_dup_count = pandas_dup_count
+
+                            accurate_dup_count = max(sql_dup_count, ts_dup_count)
+
+                            # ─── Overview metrics ────────────────────────
+                            st.markdown("#### 📈 Overview Stats")
                             c1, c2, c3, c4 = st.columns(4)
-                            c1.metric("Total Rows", profile_stats["total_rows"])
-                            c2.metric("Total Columns", profile_stats["total_columns"])
-                            c3.metric("Data Quality Score", f"{profile_stats['quality_score']}/100")
-                            c4.metric("Exact Duplicates", profile_stats["exact_duplicate_rows"])
-                            
+                            c1.metric("Total Rows",       profile_stats["total_rows"])
+                            c2.metric("Total Columns",    profile_stats["total_columns"])
+                            c3.metric("Quality Score",    f"{profile_stats['quality_score']}/100")
+                            c4.metric("Exact Duplicates", accurate_dup_count,
+                                      delta=f"⚠️ {accurate_dup_count} extra rows" if accurate_dup_count > 0 else "✅ Clean",
+                                      delta_color="inverse")
+
+                            # ─── 3. Missing values ───────────────────────
                             st.markdown("#### 🧩 Missing Values per Column")
-                            m_df = pd.DataFrame([
-                                {"Column": col, "Missing": stats["null_count"], "Missing %": stats["null_percentage"]}
+                            m_rows = [
+                                {"Column": col, "Missing Count": stats["null_count"],
+                                 "Missing %": f"{stats['null_percentage']}%"}
                                 for col, stats in profile_stats["column_statistics"].items()
                                 if stats["null_count"] > 0
-                            ])
-                            if not m_df.empty:
-                                st.dataframe(m_df, use_container_width=True)
+                            ]
+                            if m_rows:
+                                st.dataframe(pd.DataFrame(m_rows), use_container_width=True)
                             else:
-                                st.success("✅ No missing values found in the sampled data!")
-                                
-                            # Show Exact Duplicates
+                                st.success("✅ No missing values found!")
+
+                            # ─── 4. Exact Duplicates (SQL-backed) ────────
                             st.markdown("#### 👯 Exact Duplicates")
-                            if profile_stats["exact_duplicate_rows"] > 0:
-                                st.warning(f"⚠️ Found {profile_stats['exact_duplicate_rows']} exact duplicate rows!")
-                                exact_dupes_df = df_sample[df_sample.duplicated(keep=False)].sort_values(list(df_sample.columns))
-                                st.dataframe(exact_dupes_df, use_container_width=True)
+                            if accurate_dup_count > 0:
+                                st.error(
+                                    f"🔴 **{accurate_dup_count} exact duplicate row(s)** found in `{tbl}`. "
+                                    f"These are rows where every column is identical."
+                                )
+                                with st.spinner("Fetching duplicate rows…"):
+                                    exact_df = _fetch_exact_dupe_rows_sql(connector, tbl, limit=500)
+                                if not exact_df.empty:
+                                    st.caption(f"Showing up to 500 duplicate rows (sorted to group duplicates together):")
+                                    st.dataframe(exact_df, use_container_width=True, height=280)
+                                else:
+                                    # Pure pandas fallback
+                                    try:
+                                        mask = df_sample.astype(str).duplicated(keep=False)
+                                        pd_df = df_sample[mask]
+                                        if not pd_df.empty:
+                                            st.dataframe(pd_df.sort_values(list(pd_df.columns)).head(500),
+                                                         use_container_width=True, height=280)
+                                    except Exception:
+                                        st.warning("Could not display duplicate rows — check DB permissions.")
                             else:
                                 st.success("✅ No exact duplicates found!")
-                            
-                            # 2. Fuzzy Deduplication
-                            st.markdown("#### 👥 Fuzzy Deduplication (Near-Matches)")
-                            from backend.schema_detector import classify_all_columns
-                            from cleaning.deduplication import DeduplicationEngine
-                            
-                            # Auto-detect schema to get baseline strategies for dedup
-                            schema_mapping = classify_all_columns(df_sample)
-                            
-                            dedup_strats = {}
-                            id_cols_to_drop = []
-                            for col, info in schema_mapping.items():
-                                stype = info.get("semantic_type", "")
-                                if stype == "ID_Code":
-                                    id_cols_to_drop.append(col)
-                                    dedup_strats[col] = "none"
-                                elif stype in ("Name", "Free_Text"):
-                                    dedup_strats[col] = "fuzzy_name"
-                                elif stype in ("Location", "Categorical"):
-                                    dedup_strats[col] = "blocking_key"
-                                else:
-                                    dedup_strats[col] = "none"
 
-                            # Fallback: if no text column was found for fuzzy matching, promote a categorical
-                            if "fuzzy_name" not in dedup_strats.values():
-                                for col, strat in dedup_strats.items():
-                                    if strat == "blocking_key":
-                                        dedup_strats[col] = "fuzzy_name"
-                                        break
-                                    
-                            # Drop IDs from sample so Pass 1 doesn't aggressively merge valid transactions
-                            df_eval = df_sample.drop(columns=id_cols_to_drop)
+                            # ─── 5. Fuzzy Duplicates ─────────────────────
+                            st.markdown("#### 👥 Fuzzy Duplicate Detection")
+                            st.caption(
+                                "Detects near-matches: **Type 1** = name typo only (all other fields match). "
+                                "**Type 2** = name typo + contacts changed, but Gov IDs (PAN / Aadhaar) still match."
+                            )
 
-                            # Run engine in Predictive intent to prevent business rules from aggressively merging IDs
-                            dedup = DeduplicationEngine(df_eval, dedup_strats, dataset_intent="Predictive")
-                            dedup.execute() # Executes and populates dedup.cluster_report
-                            
-                            clusters = dedup.cluster_report
-                            changes = dedup.dedup_changes
-                            if clusters and changes:
-                                fuzzy_count = sum(c["cluster_size"] for c in clusters)
-                                st.warning(f"⚠️ Found {fuzzy_count} records in {len(clusters)} fuzzy clusters!")
-                                st.markdown("**Detected Fuzzy Duplicated Values:**")
-                                
-                                comp_df = pd.DataFrame(changes)
-                                # Convert dicts/lists to strings to prevent 'unhashable type: dict' during drop_duplicates
-                                for c in comp_df.columns:
-                                    comp_df[c] = comp_df[c].apply(lambda x: str(x) if isinstance(x, (dict, list)) else x)
-                                comp_df = comp_df.drop_duplicates().reset_index(drop=True)
-                                st.dataframe(comp_df, use_container_width=True)
-                            elif clusters:
-                                fuzzy_count = sum(c["cluster_size"] for c in clusters)
-                                st.warning(f"⚠️ Found {fuzzy_count} records in {len(clusters)} fuzzy clusters, but no text differences detected (likely exact matches).")
-                            else:
-                                st.success("✅ No fuzzy duplicates detected!")
-                                
+                            with st.spinner("Running fuzzy duplicate analysis (this may take a moment)…"):
+                                try:
+                                    (engine, type1_clusters, type2_clusters,
+                                     exact_clusters_f, name_cols, contact_cols) = _run_fuzzy_dedup(df_sample)
+
+                                    total_fuzzy_records = (
+                                        sum(c["cluster_size"] for c in type1_clusters) +
+                                        sum(c["cluster_size"] for c in type2_clusters)
+                                    )
+
+                                    if not type1_clusters and not type2_clusters:
+                                        st.success("✅ No fuzzy duplicates detected!")
+                                    else:
+                                        st.warning(
+                                            f"⚠️ Found **{total_fuzzy_records} records** in "
+                                            f"**{len(type1_clusters) + len(type2_clusters)} fuzzy duplicate clusters** "
+                                            f"({len(type1_clusters)} Type 1, {len(type2_clusters)} Type 2)"
+                                        )
+
+                                        # ── TYPE 1: Name typo, everything else matches ──
+                                        if type1_clusters:
+                                            with st.expander(
+                                                f"🟡 **Type 1 — Name Typo Only** ({len(type1_clusters)} clusters, "
+                                                f"{sum(c['cluster_size'] for c in type1_clusters)} records)",
+                                                expanded=True
+                                            ):
+                                                st.caption(
+                                                    "These records have a **typo in the name only**. "
+                                                    "All other fields (email, phone, address, PAN, Aadhaar) are identical."
+                                                )
+                                                rows_t1 = []
+                                                for cluster in type1_clusters:
+                                                    idxs      = cluster["row_indices"]
+                                                    canon     = cluster["canonical_name"]
+                                                    for idx in idxs:
+                                                        row = df_sample.loc[idx].to_dict()
+                                                        row["_cluster_canonical"] = canon
+                                                        row["_match_type"]        = "Type 1 — Name Typo"
+                                                        rows_t1.append(row)
+                                                if rows_t1:
+                                                    t1_df = pd.DataFrame(rows_t1)
+                                                    # Bring cluster info columns to front
+                                                    front = ["_match_type", "_cluster_canonical"]
+                                                    rest  = [c for c in t1_df.columns if c not in front]
+                                                    st.dataframe(t1_df[front + rest], use_container_width=True, height=280)
+
+                                        # ── TYPE 2: Name typo + contacts changed ──
+                                        if type2_clusters:
+                                            with st.expander(
+                                                f"🔴 **Type 2 — Name Typo + Changed Contacts** ({len(type2_clusters)} clusters, "
+                                                f"{sum(c['cluster_size'] for c in type2_clusters)} records)",
+                                                expanded=True
+                                            ):
+                                                st.caption(
+                                                    "These records have a **name typo AND different phone/email/address**, "
+                                                    "but share the same **Gov ID (PAN / Aadhaar)** — "
+                                                    "IntelliClean AI linked them via the static identifier."
+                                                )
+                                                rows_t2 = []
+                                                for cluster in type2_clusters:
+                                                    idxs      = cluster["row_indices"]
+                                                    canon     = cluster["canonical_name"]
+                                                    for idx in idxs:
+                                                        row = df_sample.loc[idx].to_dict()
+                                                        row["_cluster_canonical"] = canon
+                                                        row["_match_type"]        = "Type 2 — Name + Contacts Changed"
+                                                        rows_t2.append(row)
+                                                if rows_t2:
+                                                    t2_df = pd.DataFrame(rows_t2)
+                                                    front = ["_match_type", "_cluster_canonical"]
+                                                    rest  = [c for c in t2_df.columns if c not in front]
+                                                    st.dataframe(t2_df[front + rest], use_container_width=True, height=280)
+
+                                        # ── Summary table ──
+                                        st.markdown("##### 📋 Fuzzy Match Summary")
+                                        summary_rows = []
+                                        for cluster in type1_clusters + type2_clusters:
+                                            idxs       = cluster["row_indices"]
+                                            match_type = "Type 1" if cluster in type1_clusters else "Type 2"
+                                            canon      = cluster["canonical_name"]
+                                            name_col   = name_cols[0] if name_cols else None
+                                            variants   = []
+                                            if name_col and name_col in df_sample.columns:
+                                                variants = list(df_sample.loc[idxs, name_col].astype(str).unique())
+                                            summary_rows.append({
+                                                "Match Type":       match_type,
+                                                "Canonical Name":   canon,
+                                                "Variants Found":   " | ".join(variants),
+                                                "Cluster Size":     len(idxs),
+                                            })
+                                        if summary_rows:
+                                            st.dataframe(
+                                                pd.DataFrame(summary_rows),
+                                                use_container_width=True,
+                                            )
+
+                                except Exception as fe:
+                                    import traceback
+                                    st.error(f"Fuzzy analysis error: {fe}")
+                                    with st.expander("Show error details"):
+                                        st.code(traceback.format_exc())
+
                     except Exception as e:
+                        import traceback
                         st.error(f"Error during profiling: {e}")
+                        with st.expander("Show error details"):
+                            st.code(traceback.format_exc())
+
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -886,9 +1184,25 @@ with tab4:
                 st.session_state.pending_action = None
                 st.rerun()
 
-            # Quick suggestions
+            # ── Always-visible Quick Actions ──
+            st.markdown('<div class="sec-hdr">⚡ <span>Quick Actions</span></div>', unsafe_allow_html=True)
+            _quick_actions = [
+                ("🔍 Check all issues",       "Check this table for all types of issues"),
+                ("👯 Find exact duplicates",  "Find exact duplicate rows"),
+                ("❓ Count nulls per column", "How many null values in each column?"),
+                ("📊 Show table summary",     "Show summary statistics for this table"),
+                ("🔢 Show top 10 rows",       "Show top 10 rows"),
+                ("📈 Row count",              "How many total rows are in this table?"),
+            ]
+            for _qa_label, _qa_prompt in _quick_actions:
+                if st.button(_qa_label, key=f"qa_{_qa_label}", use_container_width=True):
+                    st.session_state._run_query_nl = _qa_prompt
+                    st.rerun()
+
+            st.divider()
+            # Dynamic AI-generated suggestions
             if st.session_state.suggest_queries:
-                st.markdown('<div class="sec-hdr">⚡ <span>Quick Queries</span></div>', unsafe_allow_html=True)
+                st.markdown('<div class="sec-hdr">🤖 <span>AI Suggestions</span></div>', unsafe_allow_html=True)
                 for q in st.session_state.suggest_queries[:6]:
                     lbl = q.get("label", "Query")[:32]
                     cat = q.get("category", "")
@@ -919,8 +1233,11 @@ with tab4:
                     chat_html += (
                         '<div style="text-align:center;color:#475569;padding:2rem;font-size:0.85rem">'
                         '💬 Ask anything in plain English about your data.<br>'
-                        '<span style="font-size:0.75rem">e.g. "Show me the top 10 customers" · '
-                        '"Find duplicate emails" · "How many nulls in each column?"</span>'
+                        '<span style="font-size:0.75rem">'
+                        '"Check this table for all types of issues" · '
+                        '"Find duplicate emails" · "How many nulls in each column?"<br>'
+                        '"Show rows where name is empty" · "Count total rows"'
+                        '</span>'
                         '</div>'
                     )
                 for msg in st.session_state.chat_messages:
@@ -1012,7 +1329,7 @@ with tab4:
                 with st.form("nl_query_form", clear_on_submit=True):
                     user_input = st.text_input(
                         "Ask about your data",
-                        placeholder="e.g. Show top 5 customers by order count · Find duplicate emails · Delete rows with no name",
+                        placeholder="e.g. Show top 5 rows · Find all duplicate emails · Check this table for all types of issues · Count nulls per column",
                         label_visibility="collapsed",
                     )
                     submitted = st.form_submit_button("▶ Send", type="primary", use_container_width=False)
@@ -1026,44 +1343,161 @@ with tab4:
                     query_text = st.session_state.pop("_run_query_nl")
                     st.session_state.chat_messages.append({"role": "user", "content": query_text})
 
-                    with st.spinner("🤖 Generating SQL..."):
-                        sample_str = ""
-                        if st.session_state.table_df is not None:
-                            sample_str = st.session_state.table_df.head(5).to_string(index=False)
+                    # ── Detect 'check all issues' intent for comprehensive analysis ──
+                    _COMPREHENSIVE_TRIGGERS = [
+                        "all types of issues", "all issues", "check this table", "full analysis",
+                        "comprehensive check", "data quality check", "health check", "audit this table",
+                        "what issues", "what problems", "data problems", "find all problems",
+                        "scan this table", "inspect this table", "quality report", "analyse this table",
+                        "analyze this table",
+                    ]
+                    _is_comprehensive = any(t in query_text.lower() for t in _COMPREHENSIVE_TRIGGERS)
 
-                        result = agent.generate_sql(
-                            query_text,
-                            table_schema,
-                            db_type=db_type,
-                            sample_data=sample_str,
-                            all_tables_schemas=st.session_state.all_schemas,
-                            active_table=active_tbl,
-                        )
+                    if _is_comprehensive and active_tbl:
+                        # Run multi-query comprehensive analysis
+                        with st.spinner("🔍 Running comprehensive data quality analysis..."):
+                            _comp_results = []
+                            _comp_conn = conn
+                            _db_t = db_type
 
-                    st.session_state.last_sql = result.get("sql", "")
+                            def _qc(sql_q):
+                                r, e = _comp_conn.execute_query(sql_q)
+                                return r, e
 
-                    if result.get("pending_confirmation"):
-                        # Destructive — show modal, do NOT execute yet
-                        result["user_query"] = query_text
-                        st.session_state.pending_action = result
+                            # Helper for quoting
+                            if _db_t == "MySQL":
+                                def _q(c): return f"`{c}`"
+                                def _qt(t): return f"`{t}`"
+                            else:
+                                def _q(c): return f'"{c}"'
+                                def _qt(t): return f'"{t}"'
+
+                            _schema_cols = table_schema.get("columns", [])
+                            _col_names = [c["name"] for c in _schema_cols]
+                            _col_list = ", ".join([_q(c) for c in _col_names])
+
+                            analysis_summary = []
+
+                            # 1. Row count
+                            r, e = _qc(f"SELECT COUNT(*) as total_rows FROM {_qt(active_tbl)}")
+                            total_rows = int(r.iloc[0, 0]) if (e is None and r is not None and len(r) > 0) else '?'
+                            analysis_summary.append(f"📊 **Total rows**: {total_rows:,}" if isinstance(total_rows, int) else f"📊 **Total rows**: {total_rows}")
+
+                            # 2. Exact duplicates (SQL-level)
+                            try:
+                                if _db_t == "MySQL":
+                                    dup_sql = f"SELECT SUM(cnt-1) FROM (SELECT {_col_list}, COUNT(*) as cnt FROM {_qt(active_tbl)} GROUP BY {_col_list} HAVING COUNT(*) > 1) AS t"
+                                else:
+                                    dup_sql = f"SELECT SUM(cnt-1) FROM (SELECT {_col_list}, COUNT(*) as cnt FROM {_qt(active_tbl)} GROUP BY {_col_list} HAVING COUNT(*) > 1) AS t"
+                                r, e = _qc(dup_sql)
+                                dup_count = int(r.iloc[0, 0]) if (e is None and r is not None and len(r) > 0 and r.iloc[0, 0] is not None) else 0
+                                analysis_summary.append(f"{'🔴' if dup_count > 0 else '✅'} **Exact duplicate rows**: {dup_count}")
+                            except Exception:
+                                analysis_summary.append("ℹ️ **Exact duplicates**: Could not compute")
+
+                            # 3. Missing values per column
+                            null_issues = []
+                            for col_info in _schema_cols:
+                                cn = col_info["name"]
+                                r, e = _qc(f"SELECT COUNT(*) as null_count FROM {_qt(active_tbl)} WHERE {_q(cn)} IS NULL OR TRIM(CAST({_q(cn)} AS VARCHAR)) = ''" if _db_t != "MySQL" else f"SELECT COUNT(*) as null_count FROM {_qt(active_tbl)} WHERE {_q(cn)} IS NULL OR TRIM(CAST({_q(cn)} AS CHAR)) = ''")
+                                if e is None and r is not None and len(r) > 0:
+                                    nc = int(r.iloc[0, 0])
+                                    if nc > 0:
+                                        null_issues.append(f"{cn}: {nc} missing")
+                            if null_issues:
+                                analysis_summary.append(f"🔴 **Missing/null values**: {len(null_issues)} column(s) affected\n  → " + ", ".join(null_issues[:8]) + ("..." if len(null_issues) > 8 else ""))
+                            else:
+                                analysis_summary.append("✅ **Missing values**: None found")
+
+                            # 4. Numeric outlier check (for numeric cols)
+                            numeric_cols = [c["name"] for c in _schema_cols if any(t in c.get("type","").upper() for t in ["INT","FLOAT","DOUBLE","DECIMAL","NUMERIC","REAL","BIGINT","SMALLINT"])]
+                            outlier_issues = []
+                            for cn in numeric_cols[:5]:  # check first 5 numeric cols
+                                try:
+                                    r, e = _qc(f"SELECT AVG(CAST({_q(cn)} AS FLOAT)) as avg_val, STDDEV(CAST({_q(cn)} AS FLOAT)) as std_val FROM {_qt(active_tbl)} WHERE {_q(cn)} IS NOT NULL" if _db_t != "MySQL" else f"SELECT AVG({_q(cn)}) as avg_val, STD({_q(cn)}) as std_val FROM {_qt(active_tbl)} WHERE {_q(cn)} IS NOT NULL")
+                                    if e is None and r is not None and len(r) > 0:
+                                        avg_v = r.iloc[0, 0]
+                                        std_v = r.iloc[0, 1]
+                                        if avg_v is not None and std_v is not None and float(std_v) > 0:
+                                            threshold = float(avg_v) + 3 * float(std_v)
+                                            r2, e2 = _qc(f"SELECT COUNT(*) FROM {_qt(active_tbl)} WHERE {_q(cn)} > {threshold} OR {_q(cn)} < {float(avg_v) - 3 * float(std_v)}")
+                                            if e2 is None and r2 is not None and len(r2) > 0 and int(r2.iloc[0, 0]) > 0:
+                                                outlier_issues.append(f"{cn}: {int(r2.iloc[0, 0])} outliers (±3σ)")
+                                except Exception:
+                                    pass
+                            if outlier_issues:
+                                analysis_summary.append(f"🟡 **Numeric outliers** (3σ rule): " + ", ".join(outlier_issues))
+                            elif numeric_cols:
+                                analysis_summary.append(f"✅ **Numeric outliers**: None detected in checked columns")
+
+                            # 5. Distinct value stats for categorical cols
+                            str_cols = [c["name"] for c in _schema_cols if any(t in c.get("type","").upper() for t in ["VARCHAR","TEXT","CHAR","STRING","NVARCHAR"])]
+                            low_cardinality = []
+                            for cn in str_cols[:5]:
+                                try:
+                                    r, e = _qc(f"SELECT COUNT(DISTINCT {_q(cn)}) as uniq FROM {_qt(active_tbl)}")
+                                    if e is None and r is not None and len(r) > 0:
+                                        uniq = int(r.iloc[0, 0])
+                                        if uniq == 1:
+                                            low_cardinality.append(f"{cn} (only 1 unique value!)")
+                                except Exception:
+                                    pass
+                            if low_cardinality:
+                                analysis_summary.append(f"⚠️ **Low cardinality / constant columns**: " + ", ".join(low_cardinality))
+
+                            # Format comprehensive report
+                            report_text = f"## 🔍 Comprehensive Data Quality Report — `{active_tbl}`\n\n" + "\n\n".join(analysis_summary)
+                            report_text += f"\n\n---\n💡 *Ask me about specific issues, e.g. 'Show duplicate rows' · 'Show rows where email is null' · 'Fix missing values'*"
+
                         st.session_state.chat_messages.append({
                             "role": "assistant",
-                            "content": f"⚠️ **Action requires your approval** — {result.get('explanation','')}",
-                            "confidence": result.get("confidence","Medium"),
+                            "content": report_text,
+                            "confidence": "High",
                         })
                         st.session_state.last_result = None
+                        st.session_state.last_sql = ""
                         st.rerun()
+
                     else:
-                        # READ — auto-execute immediately
-                        with st.spinner("⚡ Executing..."):
-                            exec_res = agent.execute_with_backup(
-                                conn, result["sql"], result,
-                                backup_dir=os.path.join(os.getcwd(), "exports"),
-                                user_query=query_text,
-                                table_schema=table_schema,
+                        # ── Standard NL → SQL workflow ──
+                        with st.spinner("🤖 Generating SQL..."):
+                            sample_str = ""
+                            if st.session_state.table_df is not None:
+                                sample_str = st.session_state.table_df.head(5).to_string(index=False)
+
+                            result = agent.generate_sql(
+                                query_text,
+                                table_schema,
+                                db_type=db_type,
+                                sample_data=sample_str,
+                                all_tables_schemas=st.session_state.all_schemas,
+                                active_table=active_tbl,
                             )
-                        _handle_exec_result(exec_res, result)
-                        st.rerun()
+
+                        st.session_state.last_sql = result.get("sql", "")
+
+                        if result.get("pending_confirmation"):
+                            # Destructive — show modal, do NOT execute yet
+                            result["user_query"] = query_text
+                            st.session_state.pending_action = result
+                            st.session_state.chat_messages.append({
+                                "role": "assistant",
+                                "content": f"⚠️ **Action requires your approval** — {result.get('explanation','')}",
+                                "confidence": result.get("confidence","Medium"),
+                            })
+                            st.session_state.last_result = None
+                            st.rerun()
+                        else:
+                            # READ — auto-execute immediately
+                            with st.spinner("⚡ Executing..."):
+                                exec_res = agent.execute_with_backup(
+                                    conn, result["sql"], result,
+                                    backup_dir=os.path.join(os.getcwd(), "exports"),
+                                    user_query=query_text,
+                                    table_schema=table_schema,
+                                )
+                            _handle_exec_result(exec_res, result)
+                            st.rerun()
 
 
 # ═══════════════════════════════════════════════════════════════

@@ -25,7 +25,16 @@ class DatasetProfiler:
         missing_counts = temp_df.isnull().sum()
         missing_pct = (missing_counts / total_rows) * 100
 
-        exact_duplicates = self.df.duplicated().sum()
+        # Type-safe exact duplicate detection — cast to str to handle mixed types
+        # (timestamps, Decimal objects, etc.) that come from live databases.
+        try:
+            exact_duplicates = int(self.df.astype(str).duplicated().sum())
+        except Exception:
+            try:
+                exact_duplicates = int(self.df.duplicated().sum())
+            except Exception:
+                exact_duplicates = 0
+
 
         column_stats = {}
         for col in self.df.columns:
