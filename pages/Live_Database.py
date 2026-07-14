@@ -338,7 +338,7 @@ if st.session_state.db_connector and st.session_state.db_connector.is_connected:
                     schemas.append(info)
             st.session_state.all_schemas = schemas
             agent = st.session_state.nl_agent
-            st.session_state.relationships = agent.discover_relationships(schemas) if hasattr(agent, 'discover_relationships') else []
+            st.session_state.relationships = agent.discover_relationships(conn, schemas) if hasattr(agent, 'discover_relationships') else []
         _temp_refresh()
 
 def _refresh_schema():
@@ -367,6 +367,9 @@ def _refresh_schema():
 
 def _handle_exec_result(exec_res: dict, query_meta: dict):
     """Process execution result: update chat, audit log, follow-ups."""
+    import uuid
+    msg_id = str(uuid.uuid4())
+    
     if exec_res.get("success"):
         rdf   = exec_res.get("result_df")
         nrows = len(rdf) if rdf is not None else exec_res.get("rows_affected", 0)
@@ -375,9 +378,15 @@ def _handle_exec_result(exec_res: dict, query_meta: dict):
             msg += f"\n✅ {nrows} rows affected."
         st.session_state.last_result = exec_res
         st.session_state.chat_messages.append({
+            "id": msg_id,
             "role": "assistant",
             "content": msg,
             "confidence": query_meta.get("confidence", "Medium"),
+            "success": True,
+            "result_df": rdf,
+            "rows_affected": nrows,
+            "execution_time": exec_res.get("execution_time", 0),
+            "sql": query_meta.get("sql", ""),
         })
         # Backups info
         for bk in exec_res.get("backups", []):
@@ -386,26 +395,45 @@ def _handle_exec_result(exec_res: dict, query_meta: dict):
                 "content": f"🔒 Backup created: `{bk.get('backup_table','?')}` · CSV: `{bk.get('csv_path','?')}`",
                 "confidence": "High",
             })
-        # Follow-up suggestions
-        if rdf is not None:
-            summary = f"{nrows} rows" if nrows > 0 else "No results"
-            try:
-                chips = st.session_state.nl_agent.suggest_followup_queries(
-                    query_meta.get("user_query", ""),
-                    summary,
-                    query_meta.get("affected_tables", [st.session_state.active_table])[0]
-                    if query_meta.get("affected_tables") else (st.session_state.active_table or ""),
-                )
-                st.session_state.followup_chips = chips
-            except Exception:
-                st.session_state.followup_chips = []
+        # Follow-up suggestions removed as per user request
+        st.session_state.followup_chips = []
     else:
         err = exec_res.get("error", "Unknown error")
+        err_str = str(err)
+        
+        # Make error friendly
+        friendly_err = err_str
+        if "[SQL:" in friendly_err:
+            friendly_err = friendly_err.split("[SQL:")[0].strip()
+        if "(Background on this error at:" in friendly_err:
+            friendly_err = friendly_err.split("(Background on this error at:")[0].strip()
+        
+        import re
+        friendly_err = re.sub(r"^\(.*?\) ", "", friendly_err)
+        if friendly_err.startswith("(") and ")" in friendly_err:
+            try:
+                m = re.search(r',\s*"(.*?)"\)', friendly_err) or re.search(r",\s*'(.*?)'\)", friendly_err)
+                if m:
+                    friendly_err = m.group(1)
+            except Exception:
+                pass
+                
+        friendly_err = friendly_err.strip() or "Unknown database error"
+        friendly_err = friendly_err[0].upper() + friendly_err[1:]
+        
+        friendly_err += " (Check the 👁 View Generated SQL section below to manually fix and run it.)"
+        
+        exec_res["error"] = friendly_err # Update for UI
+
         st.session_state.last_result = exec_res
         st.session_state.chat_messages.append({
+            "id": msg_id,
             "role": "assistant",
-            "content": f"❌ Execution failed: {err}",
+            "content": f"❌ Execution failed: {friendly_err}",
             "confidence": "Low",
+            "success": False,
+            "error": friendly_err,
+            "sql": query_meta.get("sql", ""),
         })
 
     # Add to audit log
@@ -525,6 +553,7 @@ with tab1:
         with col_disc:
             if st.button("🔌 Disconnect", type="primary", use_container_width=True):
                 st.session_state.db_connector.disconnect()
+                StateManager.clear_db_credentials()
                 for k in ["db_connector","db_tables","all_schemas","active_table","table_schema","table_df","relationships","db_overview"]:
                     st.session_state[k] = [] if isinstance(st.session_state.get(k), list) else None
                 st.rerun()
@@ -619,6 +648,9 @@ with tab1:
                 st.session_state.nl_agent     = NLQueryAgent(LMStudioClient())
                 _refresh_schema()
                 if save_btn:
+                    save_params = params.copy()
+                    save_params["db_type"] = db_type
+                    StateManager.save_db_credentials(save_params)
                     st.success(f"✅ {msg}")
                     st.rerun()
                 else:
@@ -710,39 +742,54 @@ with tab2:
                 col = "#f87171" if null_pct > 10 else "#4ade80"
                 st.markdown(f'<div class="mini-m"><div class="mv" style="color:{col}">{null_pct}%</div><div class="ml">Null Rate</div></div>', unsafe_allow_html=True)
             with mc3:
-                # ── Type-safe exact duplicate detection ──
+                # ── Exact duplicate detection: exclude PK columns, normalize NULLs ──
                 try:
-                    tdf_str = tdf.astype(str)
-                    exact_dupe_count = int(tdf_str.duplicated().sum())
+                    _prev_tbl  = st.session_state.active_table
+                    _prev_conn = st.session_state.db_connector
+                    # Detect PK columns to exclude from comparison
+                    _p_info = _prev_conn.get_table_info(_prev_tbl)
+                    _p_all  = [c["name"] for c in _p_info.get("columns", [])]
+                    _p_pks  = set(_p_info.get("pk_columns", []))
+                    if not _p_pks:
+                        _p_pks = {
+                            c for c in _p_all
+                            if c.lower() in ("id", "pk") or
+                               c.lower().endswith("_id") or
+                               c.lower().startswith("id_")
+                        }
+                    _p_data_cols = [c for c in _p_all if c not in _p_pks] or _p_all
+                    if _prev_conn.db_type == "MySQL":
+                        _pcol_list = ", ".join([f"`{c}`" for c in _p_data_cols])
+                        _pdup_sql = (
+                            f"SELECT COALESCE(SUM(cnt - 1), 0) FROM "
+                            f"(SELECT {_pcol_list}, COUNT(*) as cnt FROM `{_prev_tbl}` "
+                            f"GROUP BY {_pcol_list} HAVING COUNT(*) > 1) AS dupes"
+                        )
+                    else:
+                        _pcol_list = ", ".join([f'"{c}"' for c in _p_data_cols])
+                        _pdup_sql = (
+                            f'SELECT COALESCE(SUM(cnt - 1), 0) FROM '
+                            f'(SELECT {_pcol_list}, COUNT(*) as cnt FROM "{_prev_tbl}" '
+                            f'GROUP BY {_pcol_list} HAVING COUNT(*) > 1) AS dupes'
+                        )
+                    _pdup_res, _pdup_err = _prev_conn.execute_query(_pdup_sql)
+                    _sql_val = _pdup_res.iloc[0, 0] if (_pdup_err is None and _pdup_res is not None and len(_pdup_res) > 0) else None
+                    exact_dupe_count = int(_sql_val) if _sql_val is not None else 0
                 except Exception:
-                    exact_dupe_count = 0
-                # Also try SQL-based count from the database for accuracy
-                try:
-                    _preview_tbl = st.session_state.active_table
-                    _prev_conn   = st.session_state.db_connector
-                    all_cols_preview = list(tdf.columns)
-                    if all_cols_preview:
-                        if _prev_conn.db_type == "MySQL":
-                            _pcol_list = ", ".join([f"`{c}`" for c in all_cols_preview])
-                            _pdup_sql = (
-                                f"SELECT COALESCE(SUM(cnt - 1), 0) FROM "
-                                f"(SELECT {_pcol_list}, COUNT(*) as cnt FROM `{_preview_tbl}` "
-                                f"GROUP BY {_pcol_list} HAVING COUNT(*) > 1) AS dupes"
-                            )
-                        else:
-                            _pcol_list = ", ".join([f'"{c}"' for c in all_cols_preview])
-                            _pdup_sql = (
-                                f'SELECT COALESCE(SUM(cnt - 1), 0) FROM '
-                                f'(SELECT {_pcol_list}, COUNT(*) as cnt FROM "{_preview_tbl}" '
-                                f'GROUP BY {_pcol_list} HAVING COUNT(*) > 1) AS dupes'
-                            )
-                        _pdup_res, _pdup_err = _prev_conn.execute_query(_pdup_sql)
-                        if _pdup_err is None and _pdup_res is not None and len(_pdup_res) > 0:
-                            _sql_val = _pdup_res.iloc[0, 0]
-                            if _sql_val is not None:
-                                exact_dupe_count = int(_sql_val)
-                except Exception:
-                    pass
+                    # Pandas fallback: exclude PK cols present in loaded df
+                    try:
+                        _tdf_pk = {
+                            c for c in tdf.columns
+                            if c.lower() in ("id", "pk") or
+                               c.lower().endswith("_id") or
+                               c.lower().startswith("id_")
+                        }
+                        _tdf_data = [c for c in tdf.columns if c not in _tdf_pk] or list(tdf.columns)
+                        _NULL_R = {"none", "nan", "nat", "null", "", "na", "n/a"}
+                        _tdf_n  = tdf[_tdf_data].applymap(lambda v: "__NULL__" if str(v).strip().lower() in _NULL_R else str(v).strip().lower())
+                        exact_dupe_count = int(_tdf_n.duplicated().sum())
+                    except Exception:
+                        exact_dupe_count = 0
                 dupe_col = "#f87171" if exact_dupe_count > 0 else "#4ade80"
                 st.markdown(f'<div class="mini-m"><div class="mv" style="color:{dupe_col}">{exact_dupe_count}</div><div class="ml">Exact Dupes</div></div>', unsafe_allow_html=True)
             st.dataframe(tdf.head(100), use_container_width=True, height=300)
@@ -776,10 +823,38 @@ with tab3:
             # Strategy: use a proper subquery with GROUP BY + HAVING.
             # The SUM(cnt - 1) gives the number of EXTRA rows (i.e., dupes).
             # ──────────────────────────────────────────────────────────
+            def _get_non_pk_cols(connector, tbl_name: str) -> list:
+                """Return column names excluding primary key columns."""
+                info = connector.get_table_info(tbl_name)
+                all_cols = [c["name"] for c in info.get("columns", [])]
+                pk_cols  = set(info.get("pk_columns", []))
+                # Also auto-detect common PK naming patterns if not declared
+                if not pk_cols:
+                    pk_cols = {
+                        c for c in all_cols
+                        if c.lower() in ("id", "pk") or
+                           c.lower().endswith("_id") or
+                           c.lower().startswith("id_")
+                    }
+                non_pk = [c for c in all_cols if c not in pk_cols]
+                # If filtering removed everything, fall back to all columns
+                return non_pk if non_pk else all_cols
+
+            def _normalize_df_for_dedup(df: pd.DataFrame) -> pd.DataFrame:
+                """Normalize all values for reliable exact-duplicate detection.
+                Converts to string, strips whitespace, lowercases, and unifies
+                all null/empty representations to a single sentinel value."""
+                NULL_SENTINEL = "__NULL__"
+                NULL_REPRS = {"none", "nan", "nat", "null", "", "na", "n/a"}
+                def _norm_val(v):
+                    s = str(v).strip().lower()
+                    return NULL_SENTINEL if s in NULL_REPRS else s
+                return df.applymap(_norm_val)
+
             def _count_exact_dupes_sql(connector, tbl_name: str) -> int:
+                """Count exact duplicate rows, excluding PK columns, via SQL."""
                 try:
-                    info = connector.get_table_info(tbl_name)
-                    cols = [c["name"] for c in info.get("columns", [])]
+                    cols = _get_non_pk_cols(connector, tbl_name)
                     if not cols:
                         return 0
                     if connector.db_type == "MySQL":
@@ -806,13 +881,12 @@ with tab3:
 
             # ──────────────────────────────────────────────────────────
             # HELPER: Fetch rows that are part of exact-dup groups.
-            # Uses a CTE / derived-table JOIN so it works on SQLite,
-            # PostgreSQL, MySQL, SQL Server — avoids the broken tuple-IN syntax.
+            # Excludes PK columns from GROUP BY / JOIN so rows that are
+            # identical in all data columns are correctly detected.
             # ──────────────────────────────────────────────────────────
             def _fetch_exact_dupe_rows_sql(connector, tbl_name: str, limit: int = 500) -> pd.DataFrame:
                 try:
-                    info = connector.get_table_info(tbl_name)
-                    cols = [c["name"] for c in info.get("columns", [])]
+                    cols = _get_non_pk_cols(connector, tbl_name)
                     if not cols:
                         return pd.DataFrame()
                     if connector.db_type == "MySQL":
@@ -824,7 +898,8 @@ with tab3:
 
                     col_list   = ", ".join([qc(c) for c in cols])
                     join_conds = " AND ".join([
-                        f"t.{qc(c)} = d.{qc(c)}" for c in cols
+                        f"(t.{qc(c)} = d.{qc(c)} OR (t.{qc(c)} IS NULL AND d.{qc(c)} IS NULL))"
+                        for c in cols
                     ])
                     # Join the original table against the group-by subquery to
                     # retrieve the actual duplicate rows — works on all SQL dialects.
@@ -842,7 +917,7 @@ with tab3:
                         return res
                 except Exception:
                     pass
-                # ── Pandas fallback ──
+                # ── Pandas fallback: normalize then deduplicate ──
                 return pd.DataFrame()
 
             # ──────────────────────────────────────────────────────────
@@ -906,14 +981,36 @@ with tab3:
                     if any(k in c.lower() for k in ["phone", "mobile", "email", "address", "addr"])
                 ]
 
+                # Non-PK columns only — used for exact-dup classification inside fuzzy engine
+                _all_fuzzy_cols = list(df_full.columns)
+                _fuzzy_pk_cols = {
+                    c for c in _all_fuzzy_cols
+                    if c.lower() in ("id", "pk") or
+                       c.lower().endswith("_id") or
+                       c.lower().startswith("id_")
+                }
+                _fuzzy_data_cols = [c for c in _all_fuzzy_cols if c not in _fuzzy_pk_cols] or _all_fuzzy_cols
+
+                NULL_SENTINEL = "__NULL__"
+                NULL_REPRS_F  = {"none", "nan", "nat", "null", "", "na", "n/a"}
+
+                def _norm_row(row_series):
+                    """Normalize a row for exact-dup comparison."""
+                    result = []
+                    for v in row_series:
+                        s = str(v).strip().lower()
+                        result.append(NULL_SENTINEL if s in NULL_REPRS_F else s)
+                    return tuple(result)
+
                 type1_clusters, type2_clusters, exact_clusters = [], [], []
                 for cluster in engine.cluster_report:
                     idxs = cluster["row_indices"]
-                    rows = df_full.loc[idxs]
+                    rows = df_full.loc[idxs, _fuzzy_data_cols]
 
-                    # Check if it is truly an exact dup
+                    # Check if it is truly an exact dup (normalize before comparing)
                     try:
-                        is_exact = rows.astype(str).duplicated(keep=False).all()
+                        normed_rows = [_norm_row(rows.loc[i]) for i in idxs]
+                        is_exact = len(set(normed_rows)) == 1
                     except Exception:
                         is_exact = False
 
@@ -927,7 +1024,7 @@ with tab3:
                         for cc in contact_cols:
                             if cc in rows.columns:
                                 vals = rows[cc].astype(str).str.strip().str.lower().unique()
-                                non_empty = [v for v in vals if v not in ("", "nan", "none", "null")]
+                                non_empty = [v for v in vals if v not in NULL_REPRS_F]
                                 if len(non_empty) > 1:
                                     contact_differs = True
                                     break
@@ -943,9 +1040,7 @@ with tab3:
             # UI
             # ──────────────────────────────────────────────────────────
             st.markdown(
-                "Run a comprehensive scan: exact duplicates (via SQL), "
-                "fuzzy near-matches **Type 1** (name typo only) & "
-                "**Type 2** (name + contacts changed, Gov ID unchanged)."
+                "Initiate a deep diagnostic scan to uncover hidden data issues. The engine detects **Exact Duplicates** (100% row match), Fuzzy Duplicates: **Type 1 Near-Matches** (minor spelling or typo variations in names), and **Type 2 Hidden Duplicates** (matching identities with differing contact details)."
             )
 
             if st.button("🚀 Run Complete Health Check", key="run_health_check", type="primary"):
@@ -961,17 +1056,23 @@ with tab3:
                             profiler      = DatasetProfiler(df_sample)
                             profile_stats = profiler.profile()
 
-                            # ─── 2. SQL-accurate exact dup count ─────────
-                            sql_dup_count    = _count_exact_dupes_sql(connector, tbl)
-                            pandas_dup_count = profile_stats["exact_duplicate_rows"]
+                            # ─── 2. SQL-accurate exact dup count (non-PK cols only) ─────────
+                            sql_dup_count = _count_exact_dupes_sql(connector, tbl)
 
-                            # Also do type-safe pandas check
+                            # Pandas fallback: exclude PK cols, normalize values, then check
                             try:
-                                ts_dup_count = int(df_sample.astype(str).duplicated().sum())
+                                _non_pk = _get_non_pk_cols(connector, tbl)
+                                _non_pk_present = [c for c in _non_pk if c in df_sample.columns]
+                                if _non_pk_present:
+                                    _df_norm = _normalize_df_for_dedup(df_sample[_non_pk_present])
+                                    ts_dup_count = int(_df_norm.duplicated().sum())
+                                else:
+                                    ts_dup_count = 0
                             except Exception:
-                                ts_dup_count = pandas_dup_count
+                                ts_dup_count = 0
 
-                            accurate_dup_count = max(sql_dup_count, ts_dup_count)
+                            # SQL is the primary truth; pandas is a safety-net fallback
+                            accurate_dup_count = sql_dup_count if sql_dup_count > 0 else ts_dup_count
 
                             # ─── Overview metrics ────────────────────────
                             st.markdown("#### 📈 Overview Stats")
@@ -1228,9 +1329,8 @@ with tab4:
                 """, unsafe_allow_html=True)
 
                 # ── Chat history ─────────────────────────────────
-                chat_html = '<div class="chat-container" id="chat-box">'
                 if not st.session_state.chat_messages:
-                    chat_html += (
+                    st.markdown(
                         '<div style="text-align:center;color:#475569;padding:2rem;font-size:0.85rem">'
                         '💬 Ask anything in plain English about your data.<br>'
                         '<span style="font-size:0.75rem">'
@@ -1238,49 +1338,69 @@ with tab4:
                         '"Find duplicate emails" · "How many nulls in each column?"<br>'
                         '"Show rows where name is empty" · "Count total rows"'
                         '</span>'
-                        '</div>'
+                        '</div>', unsafe_allow_html=True
                     )
-                for msg in st.session_state.chat_messages:
-                    if msg["role"] == "user":
-                        chat_html += f'<div class="chat-bubble-user">{msg["content"]}</div>'
-                    else:
-                        conf = msg.get("confidence", "Medium")
-                        conf_cls = "chat-conf-high" if conf=="High" else "chat-conf-med" if conf=="Medium" else "chat-conf-low"
-                        chat_html += (
-                            f'<div class="chat-bubble-ai">'
-                            f'<div>{msg["content"]}</div>'
-                            f'<div class="chat-meta"><span class="{conf_cls}">● {conf}</span></div>'
-                            f'</div>'
-                        )
-                chat_html += '</div>'
-                st.markdown(chat_html, unsafe_allow_html=True)
+                else:
+                    for i, msg in enumerate(st.session_state.chat_messages):
+                        if msg["role"] == "user":
+                            st.markdown(f'<div class="chat-bubble-user" style="margin-bottom: 1rem;">{msg["content"]}</div>', unsafe_allow_html=True)
+                        else:
+                            conf = msg.get("confidence", "Medium")
+                            conf_cls = "chat-conf-high" if conf=="High" else "chat-conf-med" if conf=="Medium" else "chat-conf-low"
+                            st.markdown(
+                                f'<div class="chat-bubble-ai" style="margin-bottom: 10px;">'
+                                f'<div>{msg["content"]}</div>'
+                                f'<div class="chat-meta"><span class="{conf_cls}">● {conf}</span></div>'
+                                f'</div>', 
+                                unsafe_allow_html=True
+                            )
+                            
+                            # Result display inline
+                            if "success" in msg:
+                                if msg.get("success"):
+                                    rdf = msg.get("result_df")
+                                    if rdf is not None:
+                                        if len(rdf) > 0:
+                                            st.markdown(f'<div style="font-size:0.75rem;color:#64748b;margin-bottom:4px">'
+                                                        f'✓ {len(rdf)} rows returned · {msg.get("execution_time",0):.2f}s</div>',
+                                                        unsafe_allow_html=True)
+                                            st.dataframe(rdf, use_container_width=True, height=min(350, 35*len(rdf)+40))
+                                        else:
+                                            st.info(f"✅ Query executed successfully in {msg.get('execution_time',0):.2f}s, but returned 0 rows.")
+                                    else:
+                                        st.success(f"✅ Query executed successfully. {msg.get('rows_affected', 0)} rows affected.")
+                                else:
+                                    if msg.get("error"):
+                                        st.error(f"❌ {msg['error']}")
+                            
+                            # SQL Form inline
+                            if msg.get("sql"):
+                                is_error = not msg.get("success", True)
+                                msg_id = msg.get("id", str(i))
+                                with st.expander("👁 View Generated SQL", expanded=is_error):
+                                    with st.form(f"edit_sql_form_{msg_id}"):
+                                        edited_sql = st.text_area("SQL Query", value=msg["sql"], height=150, label_visibility="collapsed")
+                                        cols = st.columns([4, 1])
+                                        with cols[1]:
+                                            submit_edit = st.form_submit_button("▶ Run", type="primary", use_container_width=True)
+                                    if submit_edit and edited_sql.strip():
+                                        with st.spinner("⚡ Executing edited SQL..."):
+                                            query_meta = {
+                                                "sql": edited_sql,
+                                                "explanation": "Manually executed query.",
+                                                "confidence": "High",
+                                                "user_query": "Manual execution",
+                                            }
+                                            exec_res = agent.execute_with_backup(
+                                                conn, edited_sql, query_meta,
+                                                backup_dir=os.path.join(os.getcwd(), "exports"),
+                                                user_query=None,
+                                                table_schema=table_schema,
+                                            )
+                                        _handle_exec_result(exec_res, query_meta)
+                                        st.rerun()
 
-                # ── Query result display ─────────────────────────
-                last_result = st.session_state.get("last_result")
-                if last_result:
-                    rdf = last_result.get("result_df")
-                    if rdf is not None and len(rdf) > 0:
-                        st.markdown(f'<div style="font-size:0.75rem;color:#64748b;margin-bottom:4px">'
-                                    f'✓ {len(rdf)} rows returned · {last_result.get("execution_time",0):.2f}s</div>',
-                                    unsafe_allow_html=True)
-                        st.dataframe(rdf, use_container_width=True, height=min(350, 35*len(rdf)+40))
-                    if last_result.get("error"):
-                        st.error(f"❌ {last_result['error']}")
 
-                # ── SQL toggle ───────────────────────────────────
-                if st.session_state.get("last_sql"):
-                    with st.expander("👁 View Generated SQL"):
-                        st.code(st.session_state.last_sql, language="sql")
-
-                # ── Follow-up chips ──────────────────────────────
-                if st.session_state.followup_chips:
-                    st.markdown("**Follow-up suggestions:**")
-                    chip_cols = st.columns(len(st.session_state.followup_chips))
-                    for i, chip in enumerate(st.session_state.followup_chips):
-                        with chip_cols[i]:
-                            if st.button(f"💡 {chip[:40]}", key=f"chip_{i}", use_container_width=True):
-                                st.session_state._run_query_nl = chip
-                                st.rerun()
 
                 # ── Permission modal for destructive queries ──────
                 if st.session_state.pending_action:
@@ -1385,12 +1505,20 @@ with tab4:
 
                             # 2. Exact duplicates (SQL-level)
                             try:
+                                _pk_cols = set(table_schema.get("pk_columns", []))
+                                if not _pk_cols:
+                                    _pk_cols = {c for c in _col_names if c.lower() in ("id", "pk") or c.lower().endswith("_id") or c.lower().startswith("id_")}
+                                _dup_cols = [c for c in _col_names if c not in _pk_cols]
+                                if not _dup_cols:
+                                    _dup_cols = _col_names
+                                _dup_col_list = ", ".join([_q(c) for c in _dup_cols])
+
                                 if _db_t == "MySQL":
-                                    dup_sql = f"SELECT SUM(cnt-1) FROM (SELECT {_col_list}, COUNT(*) as cnt FROM {_qt(active_tbl)} GROUP BY {_col_list} HAVING COUNT(*) > 1) AS t"
+                                    dup_sql = f"SELECT SUM(cnt-1) FROM (SELECT {_dup_col_list}, COUNT(*) as cnt FROM {_qt(active_tbl)} GROUP BY {_dup_col_list} HAVING COUNT(*) > 1) AS t"
                                 else:
-                                    dup_sql = f"SELECT SUM(cnt-1) FROM (SELECT {_col_list}, COUNT(*) as cnt FROM {_qt(active_tbl)} GROUP BY {_col_list} HAVING COUNT(*) > 1) AS t"
+                                    dup_sql = f"SELECT SUM(cnt-1) FROM (SELECT {_dup_col_list}, COUNT(*) as cnt FROM {_qt(active_tbl)} GROUP BY {_dup_col_list} HAVING COUNT(*) > 1) AS t"
                                 r, e = _qc(dup_sql)
-                                dup_count = int(r.iloc[0, 0]) if (e is None and r is not None and len(r) > 0 and r.iloc[0, 0] is not None) else 0
+                                dup_count = int(r.iloc[0, 0]) if (e is None and r is not None and len(r) > 0 and pd.notnull(r.iloc[0, 0])) else 0
                                 analysis_summary.append(f"{'🔴' if dup_count > 0 else '✅'} **Exact duplicate rows**: {dup_count}")
                             except Exception:
                                 analysis_summary.append("ℹ️ **Exact duplicates**: Could not compute")
@@ -1536,7 +1664,24 @@ with tab5:
                 st.markdown('<div class="sec-hdr">📊 <span>Pre-Cleaning Profile</span></div>', unsafe_allow_html=True)
                 null_counts = preview_df.isna().sum()
                 total_nulls = int(null_counts.sum())
-                dup_count   = int(preview_df.duplicated().sum())
+                # Exact duplicate detection (exclude PKs + normalize)
+                try:
+                    _pk_cols = set(st.session_state.table_schema.get("pk_columns", [])) if hasattr(st.session_state, "table_schema") and st.session_state.table_schema else set()
+                    if not _pk_cols:
+                        _pk_cols = {c for c in preview_df.columns if c.lower() in ("id", "pk") or c.lower().endswith("_id") or c.lower().startswith("id_")}
+                    _dup_cols = [c for c in preview_df.columns if c not in _pk_cols]
+                    _dup_cols = _dup_cols if _dup_cols else list(preview_df.columns)
+                    
+                    # Normalize missing values for pandas comparison
+                    def _norm_val(v):
+                        s = str(v).strip().lower()
+                        return "__NULL__" if s in {"none", "nan", "nat", "null", "", "na", "n/a"} else s
+                    
+                    _norm_df = preview_df[_dup_cols].applymap(_norm_val)
+                    dup_count = int(_norm_df.duplicated().sum())
+                except Exception:
+                    dup_count = int(preview_df.duplicated().sum())
+                    
                 null_pct    = round(total_nulls / max(len(preview_df) * len(preview_df.columns), 1) * 100, 1)
 
                 p1, p2, p3, p4 = st.columns(4)

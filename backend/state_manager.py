@@ -64,3 +64,11 @@ class StateManager:
             except Exception as e:
                 print(f"Failed to load DB credentials: {e}")
         return {}
+
+    @classmethod
+    def clear_db_credentials(cls):
+        if os.path.exists(cls.DB_CREDS_CACHE_FILE):
+            try:
+                os.remove(cls.DB_CREDS_CACHE_FILE)
+            except Exception as e:
+                print(f"Failed to clear DB credentials: {e}")

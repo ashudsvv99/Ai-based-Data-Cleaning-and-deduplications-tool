@@ -25,10 +25,31 @@ class DatasetProfiler:
         missing_counts = temp_df.isnull().sum()
         missing_pct = (missing_counts / total_rows) * 100
 
-        # Type-safe exact duplicate detection — cast to str to handle mixed types
-        # (timestamps, Decimal objects, etc.) that come from live databases.
+        # Exact duplicate detection:
+        # - Exclude primary key columns (always unique — including them masks real dupes)
+        # - Normalize all values (strip, lowercase, unify null representations)
+        #   so "None"/"nan"/"NaT"/"" all compare equal, matching SQL NULL semantics.
         try:
-            exact_duplicates = int(self.df.astype(str).duplicated().sum())
+            _pk_patterns = {"id", "pk"}
+            _pk_cols = {
+                c for c in self.df.columns
+                if c.lower() in _pk_patterns or
+                   c.lower().endswith("_id") or
+                   c.lower().startswith("id_")
+            }
+            _data_cols = [c for c in self.df.columns if c not in _pk_cols]
+            # Fall back to all columns if filtering removes everything
+            _data_cols = _data_cols if _data_cols else list(self.df.columns)
+
+            _NULL_SENTINEL = "__NULL__"
+            _NULL_REPRS    = {"none", "nan", "nat", "null", "", "na", "n/a"}
+
+            def _norm(v):
+                s = str(v).strip().lower()
+                return _NULL_SENTINEL if s in _NULL_REPRS else s
+
+            _df_norm = self.df[_data_cols].applymap(_norm)
+            exact_duplicates = int(_df_norm.duplicated().sum())
         except Exception:
             try:
                 exact_duplicates = int(self.df.duplicated().sum())

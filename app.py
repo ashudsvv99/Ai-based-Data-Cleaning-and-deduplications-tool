@@ -409,8 +409,12 @@ ingest_method = st.radio(
 )
 
 uploaded_file = None
+has_cache = False
 
 if ingest_method == "📄 Local File (CSV / Excel)":
+    df_cache, meta_cache, _, logs_cache = StateManager.load_pipeline_state()
+    has_cache = df_cache is not None and meta_cache is not None
+
     uploaded_file = st.file_uploader(
         "Drop your CSV or Excel file here",
         type=["csv", "xlsx", "xls"],
@@ -418,7 +422,23 @@ if ingest_method == "📄 Local File (CSV / Excel)":
         on_change=lambda: [st.session_state.pop("pipeline_results_ready", None), StateManager.clear_pipeline_state()]
     )
 
-    if uploaded_file is None:
+    if uploaded_file is None and has_cache:
+        st.markdown("""
+        <div class="glass-panel info" style="display:flex;align-items:center;gap:16px;margin-bottom:1rem">
+          <div style="font-size:2rem">📦</div>
+          <div style="flex-grow:1">
+            <div style="font-weight:700;color:#22d3ee;font-size:0.95rem">Restored Session Cache</div>
+            <div style="font-size:0.78rem;color:#94a3b8;margin-top:2px">
+              Displaying results from your previous cleaning session. Upload a new file above to start fresh.
+            </div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown('<div class="section-header">⚡ <span>Pipeline Execution</span></div>', unsafe_allow_html=True)
+        from components.ui_components import render_cleaning_results
+        render_cleaning_results(st, df_cache, meta_cache, logs_cache)
+    elif uploaded_file is None:
         # Real drag-and-drop zone: injects JS that forwards drop events
         # to Streamlit's hidden <input type="file"> element
         st.markdown("""
@@ -484,7 +504,7 @@ else:
 
 
 
-if uploaded_file is None:
+if uploaded_file is None and not has_cache:
     st.markdown("""
     <div class="metric-grid" style="margin-top:1.5rem">
       <div class="metric-card purple">
@@ -593,11 +613,12 @@ else:
         StateManager.clear_pipeline_state()
         
     if not st.session_state.get("pipeline_results_ready"):
-        df_cache, meta_cache, _, _ = StateManager.load_pipeline_state()
+        df_cache, meta_cache, _, logs_cache = StateManager.load_pipeline_state()
         if df_cache is not None and meta_cache is not None:
             st.session_state["pipeline_results_ready"] = True
             st.session_state["cached_df"] = df_cache
             st.session_state["cached_meta"] = meta_cache
+            st.session_state["cached_logs"] = logs_cache
 
     if st.session_state.get("pipeline_results_ready"):
         # ── Section header ──
@@ -720,6 +741,7 @@ else:
             else:
                 cleaned_df = st.session_state["cached_df"]
                 metadata = st.session_state["cached_meta"]
+                logs = st.session_state.get("cached_logs", [])
 
 
             # ── DELEGATE UI RENDERING TO COMPONENTS ──

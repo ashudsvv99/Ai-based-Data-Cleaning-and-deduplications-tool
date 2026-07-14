@@ -178,14 +178,14 @@ class NLQueryAgent:
             f"Database dialect: {db_type}. {dialect_notes}\n\n"
             "TASK: Convert the user's natural language query into correct, optimized SQL.\n\n"
             "CRITICAL RULES:\n"
-            "1. ONLY reference columns that exist in the schema above. Never hallucinate columns.\n"
-            "2. GROUP BY: when using GROUP BY, always SELECT the grouped columns alongside aggregates.\n"
-            "   Example: SELECT col1, COUNT(*) FROM t GROUP BY col1\n"
+            "1. ONLY reference columns that exist in the schema above. Never hallucinate columns. CRITICAL: Do NOT use 'id' if it is not explicitly listed in the schema.\n"
+            "2. GROUP BY: when using GROUP BY, always SELECT the grouped columns alongside aggregates. Use valid syntax like COUNT(*) (never empty COUNT()).\n"
             "3. NULL checks: use 'IS NULL' or 'IS NOT NULL'. Use TRIM(col) = '' for empty strings.\n"
             "4. DESTRUCTIVE ops: always include a strict WHERE clause. Never modify entire tables.\n"
             "5. QUOTING: PostgreSQL/Oracle → double-quotes; MySQL → backticks; SQL Server → [].\n"
-            "6. DERIVED TABLES (CRITICAL): In MySQL, EVERY derived table (a subquery in the FROM clause) MUST have an alias! Example: SELECT id FROM (SELECT id FROM t) AS t1. DO NOT forget the 'AS t1'!\n"
-            "7. OUTPUT: Return ONLY a raw JSON object (no markdown, no code blocks).\n\n"
+            "6. DERIVED TABLES (CRITICAL): In MySQL, EVERY derived table (a subquery in the FROM clause) MUST have an alias! Example: SELECT col FROM (SELECT col FROM t) AS t1. DO NOT forget the 'AS t1'!\n"
+            "7. EXACT DUPLICATES: If asked to find exact duplicates, DO NOT include the Primary Key [PK] column in your SELECT or GROUP BY. Group by all other data columns and use HAVING COUNT(*) > 1.\n"
+            "8. OUTPUT: Return ONLY a raw JSON object (no markdown, no code blocks).\n\n"
             "Return this exact JSON:\n"
             '{\n'
             '  "sql": "<clean SQL statement>",\n'
@@ -202,6 +202,9 @@ class NLQueryAgent:
             num_expected_keys=4,
             enable_thinking=True,
         )
+
+        if isinstance(raw, list) and len(raw) > 0:
+            raw = raw[0]
 
         if not isinstance(raw, dict) or "sql" not in raw:
             sql = str(raw) if raw else f'SELECT * FROM "{table_name}" LIMIT 100'
@@ -298,15 +301,31 @@ class NLQueryAgent:
         # ── Step 2b: Auto-Retry on DB Error ─────────────────────
         if error is not None and _retry_count < 1 and user_query and table_schema:
             print(f"[NLQueryAgent] Execution failed: {error}. Attempting auto-retry...")
+            cols_list = ", ".join([c["name"] for c in table_schema.get("columns", [])]) if isinstance(table_schema, dict) else str(table_schema)
+            tbl_name = table_schema.get("table", "unknown") if isinstance(table_schema, dict) else "unknown"
+
             system_prompt = (
                 f"You previously generated this SQL:\n{sql}\n\n"
                 f"It failed with this error:\n{error}\n\n"
-                f"Fix the SQL using only these columns: {table_schema}\n"
-                "CRITICAL: If the error is about a derived table missing an alias, you MUST append 'AS t1' (or similar) immediately after the subquery's closing parenthesis.\n"
+                f"Fix the SQL using ONLY the valid columns from the '{tbl_name}' table:\n"
+                f"Valid columns: {cols_list}\n\n"
+                "CRITICAL RULES:\n"
+                "1. DO NOT use columns like 'id' if they are not explicitly listed in the valid columns list.\n"
+                "2. Ensure aggregate functions are valid (e.g. use COUNT(*), never COUNT()).\n"
+                "3. If the error is about a derived table missing an alias, you MUST append 'AS t1' immediately after the subquery's closing parenthesis.\n"
                 "Return ONLY the fixed SQL inside the JSON structure."
             )
             raw = self.llm_client.chat_completion_json(system_prompt, user_query, num_expected_keys=4)
-            fixed_sql = str(raw.get("sql", sql)).strip()
+            if isinstance(raw, dict):
+                fixed_sql = str(raw.get("sql", sql)).strip()
+            elif isinstance(raw, list) and len(raw) > 0:
+                item = raw[0]
+                if isinstance(item, dict):
+                    fixed_sql = str(item.get("sql", sql)).strip()
+                else:
+                    fixed_sql = str(item).strip()
+            else:
+                fixed_sql = str(raw) if raw else sql
             fixed_sql = self._auto_fix_group_by(fixed_sql)
             fixed_sql = self._auto_fix_derived_tables(fixed_sql)
             return self.execute_with_backup(
