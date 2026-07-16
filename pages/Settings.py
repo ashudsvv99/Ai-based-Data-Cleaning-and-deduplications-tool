@@ -23,6 +23,20 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Hide sidebar and set top nav
+st.markdown("""
+<style>
+/* Sidebar - Hide entirely */
+[data-testid="stSidebar"] { display: none !important; }
+[data-testid="collapsedControl"] { display: none !important; }
+section[data-testid="stSidebar"] { display: none !important; }
+button[kind="header"] { display: none !important; }
+</style>
+""", unsafe_allow_html=True)
+
+from components.navigation import render_top_nav
+render_top_nav()
+
 st.markdown('<div class="sec-hdr">⚙️ <span>Global Configuration & Settings</span></div>', unsafe_allow_html=True)
 st.markdown("Modify the core parameters of the AI Data Cleaner. Changes will automatically apply and refresh the application.")
 

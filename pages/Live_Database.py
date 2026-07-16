@@ -265,6 +265,8 @@ button[kind="header"] { display: none !important; }
 .anim { animation:fadeUp 0.3s ease forwards; }
 </style>
 """, unsafe_allow_html=True)
+from components.navigation import render_top_nav
+render_top_nav()
 
 # ─────────────────────────────────────────────────────────────
 # Imports

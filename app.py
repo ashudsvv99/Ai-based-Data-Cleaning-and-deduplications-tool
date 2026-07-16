@@ -2,6 +2,8 @@
 IntelliClean AI — Beautiful Streamlit Frontend
 Universal AI-Powered Data Cleaning & Deduplication Platform
 """
+from pages.Live_Database import col_config
+from pages.Live_Database import col_status
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -339,49 +341,10 @@ button[kind="header"] { display: none !important; }
 # ─────────────────────────────────────────────────────────────
 #  THEME TOGGLE & HEADER INDICATOR
 # ─────────────────────────────────────────────────────────────
-lm_url = os.environ.get("LM_STUDIO_URL", "http://localhost:1234/v1")
-os.environ["LM_STUDIO_URL"] = lm_url
+from components.navigation import render_top_nav
+render_top_nav()
 
-import requests
-@st.cache_data(ttl=5, show_spinner=False)
-def check_llm_status(url: str) -> bool:
-    try:
-        res = requests.get(f"{url}/models", timeout=0.5)
-        return res.status_code == 200
-    except Exception:
-        return False
 
-# Build inline LLM status HTML (no fixed position)
-if check_llm_status(lm_url):
-    indicator_html = """
-    <div style='display: flex; align-items: center; gap: 6px; font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.3);'>
-        <div style='width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981'></div>
-        <span style='color:#10b981; font-weight: 600;'>LLM Online</span>
-    </div>
-    """
-else:
-    indicator_html = """
-    <div style='display: flex; align-items: center; gap: 6px; font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(239, 68, 68, 0.3);'>
-        <div style='width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px #ef4444'></div>
-        <span style='color:#ef4444; font-weight: 600;'>LLM Offline</span>
-    </div>
-    """
-
-col_theme, col_config, col_spacer, col_status = st.columns([1, 1.5, 6.5, 1.5])
-with col_theme:
-    if st.button("☀️ Light" if st.session_state.theme == 'dark' else "🌙 Dark", use_container_width=True):
-        st.session_state.theme = 'light' if st.session_state.theme == 'dark' else 'dark'
-        st.rerun()
-
-with col_config:
-    if st.button("⚙️ Global Config", use_container_width=True):
-        from components.settings_modal import render_settings_modal
-        render_settings_modal()
-
-with col_status:
-    st.markdown(f"<div style='display:flex; justify-content:flex-end; padding-top:2px'>{indicator_html}</div>", unsafe_allow_html=True)
-
-st.markdown("<div style='margin-bottom: 1rem;'></div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────
 #  HERO HEADER

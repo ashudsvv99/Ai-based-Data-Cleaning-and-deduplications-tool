@@ -1,7 +1,7 @@
 """
 Pure-heuristic schema detector that classifies columns WITHOUT any LLM calls.
 This acts as the primary classifier; the LLM SchemaAgent is only consulted
-for columns where the heuristic confidence is low.
+for columns where the heuristic confidenc            e is low.
 """
 import re
 import unicodedata
