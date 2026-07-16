@@ -690,12 +690,43 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
                     ]
                     html_parts.append("".join(parts))
 
-            # Display scrollable wrapper
-            st.markdown(
-                '<div style="background:#090d16; border:1px solid #1e293b; border-radius:10px; padding:1.2rem; max-height:480px; overflow-y:auto; box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);">' +
-                "".join(html_parts) + '</div>',
-                unsafe_allow_html=True
-            )
+            # Helper to open full window report
+            def show_full_report():
+                now = __import__("datetime").datetime.now()
+                date_str = now.strftime("%A, %d %B %Y")
+                time_str = now.strftime("%I:%M %p")
+                
+                # Check for dialog support
+                if hasattr(st, "dialog"):
+                    dialog_dec = st.dialog("Detailed Audit & Changes Report", width="large")
+                else:
+                    def dialog_dec(f): return f
+                
+                @dialog_dec
+                def _dialog():
+                    st.markdown(f"### 📄 Comprehensive Change Report")
+                    st.markdown(f"**Date:** {date_str} &nbsp;&middot;&nbsp; **Time:** {time_str}")
+                    st.markdown("---")
+                    
+                    # Render all changes without fixed height restriction
+                    st.markdown(
+                        '<div style="background:#090d16; border:1px solid #1e293b; border-radius:10px; padding:1.2rem; box-shadow:inset 0 2px 8px rgba(0,0,0,0.5);">' +
+                        "".join(html_parts) + '</div>',
+                        unsafe_allow_html=True
+                    )
+                    
+                    st.markdown("---")
+                    col1, col2 = st.columns([1, 5])
+                    with col1:
+                        if st.button("Close Window", use_container_width=True):
+                            st.rerun()
+                
+                _dialog()
+
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button("📄 View Full Changes Report (Full Window)", type="primary"):
+                show_full_report()
+
         else:
             st.markdown("""
             <div class="glass-panel">
@@ -727,8 +758,37 @@ def render_cleaning_results(st, cleaned_df, metadata, logs=None):
             else:
                 log_lines.append(f'<span style="color:#64748b">{safe}</span>')
 
-        st.markdown(
-            '<div style="background:#090d16; border:1px solid #1e293b; border-radius:10px; padding:1.2rem; font-family:\'Courier New\', monospace; font-size:0.8rem; color:#94a3b8; max-height:350px !important; overflow-y:auto !important; line-height:1.6; white-space:pre-wrap; box-shadow:inset 0 2px 8px rgba(0,0,0,0.5); display:block !important;">' +
-            "<br>".join(log_lines) + '</div>',
-            unsafe_allow_html=True
-        )
+        # Helper to open full execution log dialog
+        def show_full_execution_log():
+            now = __import__("datetime").datetime.now()
+            date_str = now.strftime("%A, %d %B %Y")
+            time_str = now.strftime("%I:%M %p")
+            
+            if hasattr(st, "dialog"):
+                log_dialog_dec = st.dialog("Full Execution Log", width="large")
+            else:
+                def log_dialog_dec(f): return f
+            
+            @log_dialog_dec
+            def _log_dialog():
+                st.markdown(f"### 📝 Full Pipeline Execution Log")
+                st.markdown(f"**Date:** {date_str} &nbsp;&middot;&nbsp; **Time:** {time_str}")
+                st.markdown("---")
+                
+                st.markdown(
+                    '<div style="background:#090d16; border:1px solid #1e293b; border-radius:10px; padding:1.2rem; font-family:\'Courier New\', monospace; font-size:0.8rem; color:#94a3b8; line-height:1.6; white-space:pre-wrap; box-shadow:inset 0 2px 8px rgba(0,0,0,0.5); display:block !important;">' +
+                    "<br>".join(log_lines) + '</div>',
+                    unsafe_allow_html=True
+                )
+                
+                st.markdown("---")
+                col1, col2 = st.columns([1, 5])
+                with col1:
+                    if st.button("Close Window", key="close_log_dialog", use_container_width=True):
+                        st.rerun()
+            
+            _log_dialog()
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("📝 View Full Execution Log (Full Window)", type="secondary"):
+            show_full_execution_log()

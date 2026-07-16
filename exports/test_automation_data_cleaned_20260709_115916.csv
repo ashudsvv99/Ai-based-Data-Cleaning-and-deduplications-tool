@@ -1,9 +1,0 @@
-id,name,email,phone,address,category
-1,John Doe,john.doe@example.com,1234567890,123 Main St,Electronics
-3,Alice,alice.smith@example.com,5551112222,456 Oak Ave,Home
-4,A1Ice Smith,alice.smith@example.com,5551112222,456 Oak Ave,Home
-6,Bob Johnson,bob.j@example.com,5559998888,789 Pine Rd,Sports
-7,Charlie Brown,charlie.old@example.com,1112223333,321 Cedar Ln,Toys
-8,Charlie Brown,charlie.new@example.com,1112223333,321 Cedar Ln,Toys
-9,Diana Prince,diana@example.com,4445556666,100 Old St,Fashion
-13,Jane Doe,jane.doe@example.com,9998887777,555 Birch Ct,Auto

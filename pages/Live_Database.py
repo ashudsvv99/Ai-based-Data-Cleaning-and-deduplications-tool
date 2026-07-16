@@ -530,34 +530,9 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 # TAB 1 — CONNECT
 # ═══════════════════════════════════════════════════════════════
 with tab1:
-    if is_conn:
-        c = st.session_state.db_connector.get_connection_summary()
-        st.markdown(f"""
-        <div class="gpanel ok anim" style="padding:1.5rem;display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div style="font-weight:800;color:#4ade80;font-size:1.4rem">✅ Connected to {c['db_type']}</div>
-            <div style="color:#94a3b8;margin-top:4px">{c.get('host','') or ''} · DB: <b>{c['database']}</b></div>
-          </div>
-          <div style="text-align:right">
-            <div style="color:#64748b;font-size:0.8rem;text-transform:uppercase">Tables Found</div>
-            <div style="color:#a78bfa;font-weight:700;font-size:2rem">{len(st.session_state.db_tables)}</div>
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        col_refresh, col_disc = st.columns(2)
-        with col_refresh:
-            if st.button("🔄 Refresh Schema", use_container_width=True):
-                _refresh_schema()
-                st.rerun()
-        with col_disc:
-            if st.button("🔌 Disconnect", type="primary", use_container_width=True):
-                st.session_state.db_connector.disconnect()
-                StateManager.clear_db_credentials()
-                for k in ["db_connector","db_tables","all_schemas","active_table","table_schema","table_df","relationships","db_overview"]:
-                    st.session_state[k] = [] if isinstance(st.session_state.get(k), list) else None
-                st.rerun()
-    else:
+    col_left, col_right = st.columns([2.5, 1.5], gap="large")
+    
+    with col_left:
         # ── DB type selector ──
         st.markdown('<div class="sec-hdr">🔌 <span>Select Database</span></div>', unsafe_allow_html=True)
         db_names = list(DB_TYPES.keys())
@@ -567,14 +542,17 @@ with tab1:
             for i, db_name in enumerate(row_dbs):
                 meta = DB_TYPES[db_name]
                 is_sel = st.session_state.db_type_sel == db_name
+                is_connected_db = is_conn and st.session_state.db_connector.db_type == db_name
+                
                 cls = "db-card selected" if is_sel else "db-card"
                 with cols[i]:
+                    connected_badge = '<div style="margin-top:5px"><span class="conn-ok">✅ connected</span></div>' if is_connected_db else ''
                     st.markdown(f"""
                     <div class="{cls}">
                       <div class="db-icon">{meta['icon']}</div>
                       <div class="db-name">{db_name}</div>
                       <div class="db-desc">{meta['description']}</div>
-                      {"<div style='font-size:0.65rem;color:#334155'>Port "+str(meta['default_port'])+"</div>" if meta['default_port'] else ""}
+                      {connected_badge}
                     </div>
                     """, unsafe_allow_html=True)
                     if st.button("Select", key=f"sel_{db_name}", use_container_width=True):
@@ -583,80 +561,124 @@ with tab1:
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # ── Connection form ──
+    with col_right:
         db_type = st.session_state.db_type_sel
         meta    = DB_TYPES[db_type]
-        st.markdown(
-            f'<div class="sec-hdr">{meta["icon"]} <span>{db_type} Connection</span>'
-            f'<span class="sec-badge">CONFIGURE</span></div>',
-            unsafe_allow_html=True
-        )
+        is_connected_db = is_conn and st.session_state.db_connector.db_type == db_type
 
-        with st.form("db_connect_form"):
-            params = {}
+        if is_connected_db:
+            c = st.session_state.db_connector.get_connection_summary()
+            st.markdown(
+                f'<div class="sec-hdr">{meta["icon"]} <span>{db_type}</span>'
+                f'<span class="sec-badge">ACTIVE</span></div>',
+                unsafe_allow_html=True
+            )
+            st.markdown(f"""
+            <div class="gpanel ok anim" style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;">
+              <div>
+                <div style="font-weight:800;color:#4ade80;font-size:1.4rem">✅ Connected</div>
+                <div style="color:#94a3b8;margin-top:4px">{c.get('host','') or ''} · DB: <b>{c['database']}</b></div>
+              </div>
+              <div>
+                <div style="color:#64748b;font-size:0.8rem;text-transform:uppercase">Tables Found</div>
+                <div style="color:#a78bfa;font-weight:700;font-size:2rem">{len(st.session_state.db_tables)}</div>
+              </div>
+            </div>
+            """, unsafe_allow_html=True)
 
-            if db_type == "SQLite":
-                params["filepath"] = st.text_input(
-                    "Database File Path",
-                    value=st.session_state.db_params.get("filepath", ""),
-                    placeholder="C:/path/to/database.db  or  :memory:"
-                )
-            else:
-                c1, c2 = st.columns([3, 1])
-                with c1:
-                    params["host"] = st.text_input("Host",
-                        value=st.session_state.db_params.get("host", ""),
-                        placeholder="db.example.com or localhost")
-                with c2:
-                    params["port"] = st.text_input("Port",
-                        value=st.session_state.db_params.get("port", str(meta["default_port"] or "")))
-
-                params["database"] = st.text_input("Database Name",
-                    value=st.session_state.db_params.get("database", ""),
-                    placeholder="my_database")
-                params["username"] = st.text_input("Username",
-                    value=st.session_state.db_params.get("username", ""))
-                params["password"] = st.text_input("Password", type="password",
-                    value=st.session_state.db_params.get("password", ""))
-
-                if db_type == "PostgreSQL":
-                    params["ssl_mode"] = st.selectbox("SSL Mode",
-                        ["disable", "require", "verify-ca", "verify-full"],
-                        index=["disable","require","verify-ca","verify-full"].index(
-                            st.session_state.db_params.get("ssl_mode", "disable")))
-                if db_type == "SQL Server":
-                    params["odbc_driver"] = st.text_input("ODBC Driver",
-                        value=st.session_state.db_params.get("odbc_driver", "ODBC Driver 17 for SQL Server"))
-
-            with st.expander("⚙️ Advanced Options"):
-                params["pool_size"] = st.number_input("Connection Pool Size", 1, 20, 5)
-                params["timeout"]   = st.number_input("Query Timeout (s)", 5, 600, 30)
-                params["read_only"] = st.checkbox("Read-Only Mode (no write-back)", value=False)
-
-            c_test, c_save = st.columns(2)
-            with c_test:
-                test_btn = st.form_submit_button("⚡ Test Connection", use_container_width=True)
-            with c_save:
-                save_btn = st.form_submit_button("💾 Connect", type="primary", use_container_width=True)
-
-        if test_btn or save_btn:
-            st.session_state.db_params = params
-            connector = DatabaseConnector(db_type, params)
-            ok, msg = connector.connect()
-            if ok:
-                st.session_state.db_connector = connector
-                st.session_state.nl_agent     = NLQueryAgent(LMStudioClient())
-                _refresh_schema()
-                if save_btn:
-                    save_params = params.copy()
-                    save_params["db_type"] = db_type
-                    StateManager.save_db_credentials(save_params)
-                    st.success(f"✅ {msg}")
+            col_refresh, col_disc = st.columns(2)
+            with col_refresh:
+                if st.button("🔄 Refresh Schema", use_container_width=True):
+                    _refresh_schema()
                     st.rerun()
+            with col_disc:
+                if st.button("🔌 Disconnect", type="primary", use_container_width=True):
+                    st.session_state.db_connector.disconnect()
+                    StateManager.clear_db_credentials()
+                    for k in ["db_connector","db_tables","all_schemas","active_table","table_schema","table_df","relationships","db_overview"]:
+                        st.session_state[k] = [] if isinstance(st.session_state.get(k), list) else None
+                    st.rerun()
+        else:
+            # ── Connection form ──
+            st.markdown(
+                f'<div class="sec-hdr">{meta["icon"]} <span>{db_type} Connection</span>'
+                f'<span class="sec-badge">CONFIGURE</span></div>',
+                unsafe_allow_html=True
+            )
+
+            with st.form("db_connect_form"):
+                params = {}
+
+                if db_type == "SQLite":
+                    params["filepath"] = st.text_input(
+                        "Database File Path",
+                        value=st.session_state.db_params.get("filepath", ""),
+                        placeholder="C:/path/to/database.db  or  :memory:"
+                    )
                 else:
-                    st.success(f"✅ {msg} — click **Connect** to proceed.")
-            else:
-                st.error(f"❌ {msg}")
+                    c1, c2 = st.columns([3, 1])
+                    with c1:
+                        params["host"] = st.text_input("Host",
+                            value=st.session_state.db_params.get("host", ""),
+                            placeholder="db.example.com or localhost")
+                    with c2:
+                        params["port"] = st.text_input("Port",
+                            value=st.session_state.db_params.get("port", str(meta["default_port"] or "")))
+
+                    params["database"] = st.text_input("Database Name",
+                        value=st.session_state.db_params.get("database", ""),
+                        placeholder="my_database")
+                    params["username"] = st.text_input("Username",
+                        value=st.session_state.db_params.get("username", ""))
+                    params["password"] = st.text_input("Password", type="password",
+                        value=st.session_state.db_params.get("password", ""))
+
+                    if db_type == "PostgreSQL":
+                        params["ssl_mode"] = st.selectbox("SSL Mode",
+                            ["disable", "require", "verify-ca", "verify-full"],
+                            index=["disable","require","verify-ca","verify-full"].index(
+                                st.session_state.db_params.get("ssl_mode", "disable") if st.session_state.db_params.get("ssl_mode", "disable") in ["disable","require","verify-ca","verify-full"] else "disable"))
+                    if db_type == "SQL Server":
+                        params["odbc_driver"] = st.text_input("ODBC Driver",
+                            value=st.session_state.db_params.get("odbc_driver", "ODBC Driver 17 for SQL Server"))
+                    if db_type == "Snowflake":
+                        params["schema"] = st.text_input("Schema",
+                            value=st.session_state.db_params.get("schema", ""),
+                            placeholder="PUBLIC")
+                        params["warehouse"] = st.text_input("Warehouse",
+                            value=st.session_state.db_params.get("warehouse", ""))
+                        params["role"] = st.text_input("Role",
+                            value=st.session_state.db_params.get("role", ""))
+
+                with st.expander("⚙️ Advanced Options"):
+                    params["pool_size"] = st.number_input("Connection Pool Size", 1, 20, 5)
+                    params["timeout"]   = st.number_input("Query Timeout (s)", 5, 600, 30)
+                    params["read_only"] = st.checkbox("Read-Only Mode (no write-back)", value=False)
+
+                c_test, c_save = st.columns(2)
+                with c_test:
+                    test_btn = st.form_submit_button("⚡ Test", use_container_width=True)
+                with c_save:
+                    save_btn = st.form_submit_button("💾 Connect", type="primary", use_container_width=True)
+
+            if test_btn or save_btn:
+                st.session_state.db_params = params
+                connector = DatabaseConnector(db_type, params)
+                ok, msg = connector.connect()
+                if ok:
+                    st.session_state.db_connector = connector
+                    st.session_state.nl_agent     = NLQueryAgent(LMStudioClient())
+                    _refresh_schema()
+                    if save_btn:
+                        save_params = params.copy()
+                        save_params["db_type"] = db_type
+                        StateManager.save_db_credentials(save_params)
+                        st.success(f"✅ {msg}")
+                        st.rerun()
+                    else:
+                        st.success(f"✅ {msg} — click **Connect** to proceed.")
+                else:
+                    st.error(f"❌ {msg}")
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -666,41 +688,223 @@ with tab2:
     if not is_conn:
         st.info("🔌 Connect to a database first (Tab 1) to see the database map.")
     else:
-        schemas   = st.session_state.all_schemas
-        rels      = st.session_state.relationships
+        # ── Interactive Knowledge Graph ──
+        col_hdr, col_btn = st.columns([4, 1])
+        with col_hdr:
+            st.markdown('<div class="sec-hdr">🗺️ <span>Interactive Knowledge Graph</span></div>', unsafe_allow_html=True)
+        with col_btn:
+            if st.button("🔄 Refresh Graph", use_container_width=True):
+                st.session_state.extended_metadata = None
+                st.rerun()
 
-        st.markdown('<div class="sec-hdr">🗺️ <span>Database Overview</span>'
-                    f'<span class="sec-badge">{len(schemas)} TABLES · {len(rels)} RELATIONSHIPS</span></div>',
-                    unsafe_allow_html=True)
+        if "extended_metadata" not in st.session_state or st.session_state.extended_metadata is None:
+            with st.spinner("Discovering deep metadata (Keys, Views, Triggers, Functions)..."):
+                if hasattr(st.session_state.db_connector, "get_extended_metadata"):
+                    st.session_state.extended_metadata = st.session_state.db_connector.get_extended_metadata()
+                else:
+                    st.warning("⚠️ Application updated. Please click 'Connect' again in Tab 1 to refresh the connection object.")
+                    st.session_state.extended_metadata = {"error": "Connection object out of date due to hot-reload. Reconnect in Tab 1."}
 
-        # ── Relationship graph removed as requested ──────────────────────
-        # ── Relationship list ────────────────────────────────────
-        if rels:
-            st.markdown('<div class="sec-hdr">🔗 <span>Relationships Dictionary</span></div>', unsafe_allow_html=True)
-            
-            # Format relationships for a structured view
-            rel_data = []
-            for rel in rels:
-                rel_data.append({
-                    "Type": "🔑 Foreign Key" if rel["type"] == "FK" else "🔍 Inferred",
-                    "Source Table": rel["from_table"],
-                    "Source Column": rel["from_col"],
-                    "Target Table": rel["to_table"],
-                    "Target Column": rel["to_col"]
-                })
-            
-            st.dataframe(
-                pd.DataFrame(rel_data),
-                use_container_width=True,
-                hide_index=True,
-            )
-            st.markdown("<br>", unsafe_allow_html=True)
-        elif schemas:
-            st.info("No FK relationships detected. Naming heuristics found no matching columns.")
+        if "expanded_nodes" not in st.session_state:
+            st.session_state.expanded_nodes = set()
+
+        ext_meta = st.session_state.extended_metadata
+        if "error" in ext_meta:
+            st.error(f"Error fetching metadata: {ext_meta['error']}")
+        else:
+            try:
+                from streamlit_agraph import agraph, Node, Edge, Config
+                nodes = []
+                edges = []
+                
+                # Helper to safely add node and track IDs
+                node_ids = set()
+                def add_node(n):
+                    if n.id not in node_ids:
+                        nodes.append(n)
+                        node_ids.add(n.id)
+                
+                tables = ext_meta.get("tables", [])
+                table_names = {t["name"] for t in tables}
+                
+                # Extract PKs and FKs for quick lookup
+                pk_dict = {}
+                for pk in ext_meta.get("primary_keys", []):
+                    pk_dict[pk["table"]] = pk.get("columns", [])
+                
+                fk_dict = {}
+                dependencies = {t["name"]: [] for t in tables}
+                
+                for fk in ext_meta.get("foreign_keys", []):
+                    tname = fk["table"]
+                    if tname not in fk_dict:
+                        fk_dict[tname] = []
+                    fk_dict[tname].append(fk)
+                    
+                    target = fk["referred_table"]
+                    if target in table_names:
+                        dependencies[tname].append(target)
+                        
+                # Compute hierarchical levels for tables (Main vs Sub-main)
+                levels = {}
+                def get_level(t):
+                    if t in levels: return levels[t]
+                    deps = dependencies.get(t, [])
+                    if not deps:
+                        levels[t] = 0
+                        return 0
+                    levels[t] = 0 # break cycles
+                    max_dep = -1
+                    for d in deps:
+                        max_dep = max(max_dep, get_level(d))
+                    levels[t] = max_dep + 1
+                    return levels[t]
+                
+                for t in tables:
+                    get_level(t["name"])
+                
+                # Dynamic Colors for Main vs Sub-main (Option 1: Modern & Vibrant)
+                level_styles = [
+                    {"bg": "#3B82F6", "border": "#60A5FA"}, # Blue
+                    {"bg": "#8B5CF6", "border": "#A78BFA"}, # Purple
+                    {"bg": "#EC4899", "border": "#F472B6"}, # Pink
+                    {"bg": "#14B8A6", "border": "#5EEAD4"}  # Teal
+                ]
+                
+                # Helper for consistent fonts
+                white_font = {"color": "#FFFFFF"}
+                black_font = {"color": "#000000"}
+                col_font = {"color": "#F8FAFC"}
+                edge_font = {"color": "#94a3b8", "size": 11, "strokeWidth": 0} # No white stroke
+                
+                # 1. Base Nodes
+                for t in tables:
+                    t_id = f"TABLE_{t['name']}"
+                    lvl = levels.get(t['name'], 0)
+                    style = level_styles[min(lvl, len(level_styles)-1)]
+                    size = max(20, 35 - (lvl * 4)) # Main tables are larger
+                    
+                    add_node(Node(id=t_id, 
+                                  label=t['name'], 
+                                  size=size, 
+                                  shape="database", 
+                                  color={"background": style["bg"], "border": style["border"], "highlight": style["border"]},
+                                  font={"color": "#FFFFFF", "size": 16, "bold": True},
+                                  title=f"Table Level: {lvl} (Main)" if lvl == 0 else f"Table Level: {lvl} (Sub-main)"))
+                    
+                for v in ext_meta.get("views", []):
+                    add_node(Node(id=f"VIEW_{v['name']}", 
+                                  label=v['name'], 
+                                  size=25, 
+                                  shape="hexagon", 
+                                  color={"background": "#9333ea", "border": "#d8b4fe"}, 
+                                  font=white_font))
+                
+                # 3. Process each table for edges & expansions
+                for t in tables:
+                    tname = t["name"]
+                    t_id = f"TABLE_{tname}"
+                    is_expanded = t_id in st.session_state.expanded_nodes
+                    
+                    table_fks = fk_dict.get(tname, [])
+                    table_pks = pk_dict.get(tname, [])
+                    
+                    for fk in table_fks:
+                        fk_name = fk["name"]
+                        target_tname = fk["referred_table"]
+                        
+                        if is_expanded:
+                            fk_id = f"FK_{tname}_{fk_name}"
+                            # Add FK node (Emerald Green)
+                            add_node(Node(id=fk_id, label=f"FK: {target_tname}", title=f"Foreign Key referencing {target_tname}", 
+                                          size=15, shape="box", 
+                                          color={"background": "#10B981", "border": "#34D399"}, font=black_font))
+                            edges.append(Edge(source=t_id, target=fk_id, label="FK", color="#475569", font=edge_font))
+                            
+                            # Edge from FK node to Target Table
+                            if target_tname in table_names:
+                                target_id = f"TABLE_{target_tname}"
+                                edges.append(Edge(source=fk_id, target=target_id, label="ref", color="#475569", font=edge_font))
+                            elif target_tname:
+                                # Broken Reference! Red node
+                                missing_id = f"MISSING_{target_tname}"
+                                add_node(Node(id=missing_id, label=f"? {target_tname}", size=20, shape="database", 
+                                              color={"background": "#dc2626", "border": "#fca5a5"}, font=white_font, title="Broken Reference"))
+                                edges.append(Edge(source=fk_id, target=missing_id, label="broken", color="#ef4444", font=edge_font))
+                        else:
+                            # Not expanded, just draw direct Table -> Table edge
+                            if target_tname in table_names:
+                                target_id = f"TABLE_{target_tname}"
+                                edges.append(Edge(source=t_id, target=target_id, label="FK", color="#475569", font=edge_font))
+                            elif target_tname:
+                                missing_id = f"MISSING_{target_tname}"
+                                add_node(Node(id=missing_id, label=f"? {target_tname}", size=20, shape="database", 
+                                              color={"background": "#dc2626", "border": "#fca5a5"}, font=white_font, title="Broken Reference"))
+                                edges.append(Edge(source=t_id, target=missing_id, label="broken", color="#ef4444", font=edge_font))
+                                
+                    if is_expanded:
+                        # Show PKs (Amber/Gold)
+                        for c in table_pks:
+                            pk_id = f"PK_{tname}_{c}"
+                            add_node(Node(id=pk_id, label=f"PK: {c}", size=15, shape="box", 
+                                          color={"background": "#F59E0B", "border": "#FCD34D"}, font=black_font, title="Primary Key"))
+                            edges.append(Edge(source=t_id, target=pk_id, label="PK", color="#475569", font=edge_font))
+                            
+                        # Show regular columns (Slate Grey Ellipse)
+                        cols = [c for c in ext_meta.get("columns", []) if c["table"] == tname]
+                        for c in cols:
+                            cname = c["name"]
+                            if cname not in table_pks:
+                                col_id = f"COL_{tname}_{cname}"
+                                col_type = c.get("type", "unknown")
+                                add_node(Node(id=col_id, label=cname, title=f"Type: {col_type}", 
+                                              size=12, shape="ellipse", 
+                                              color={"background": "#334155", "border": "#475569"}, font=col_font))
+                                edges.append(Edge(source=t_id, target=col_id, label="col", color="#475569", font=edge_font))
+    
+                config = Config(width='100%', 
+                                height=800, 
+                                directed=True,
+                                physics=True, 
+                                hierarchical=False,
+                                nodeHighlightBehavior=True,
+                                highlightColor="#facc15",
+                                linkLength=120,
+                                **{
+                                    "interaction": {
+                                        "navigationButtons": True,
+                                        "zoomView": True,
+                                        "dragView": True
+                                    }
+                                })
+
+    
+                if len(nodes) == 0:
+                    st.info("No extended schema objects found to display. The database might be empty or missing permissions.")
+                else:
+                    return_value = agraph(nodes=nodes, edges=edges, config=config)
+                    
+                    if "last_clicked_node" not in st.session_state:
+                        st.session_state.last_clicked_node = None
+                        
+                    if return_value != st.session_state.last_clicked_node:
+                        st.session_state.last_clicked_node = return_value
+                        if return_value and isinstance(return_value, str) and return_value.startswith("TABLE_"):
+                            if return_value in st.session_state.expanded_nodes:
+                                st.session_state.expanded_nodes.remove(return_value)
+                            else:
+                                st.session_state.expanded_nodes.add(return_value)
+                            import time
+                            time.sleep(0.15) # Prevents iframe websocket crash
+                            st.rerun()
+                        
+            except ImportError:
+                st.error("Please install streamlit-agraph (`pip install streamlit-agraph`) to view the Knowledge Graph.")
 
         # ── Table summary cards ──────────────────────────────────
         st.markdown('<div class="sec-hdr">📋 <span>Table Summaries</span></div>', unsafe_allow_html=True)
         conn = st.session_state.db_connector
+        schemas = st.session_state.all_schemas
         for i in range(0, len(schemas), 3):
             row_schemas = schemas[i:i+3]
             cols = st.columns(len(row_schemas))
@@ -797,449 +1001,18 @@ with tab2:
 
 # ═══════════════════════════════════════════════════════════════
 # TAB 3 — DATA HEALTH PROFILE
-# ═══════════════════════════════════════════════════════════════
 with tab3:
     if not is_conn:
         st.info("🔌 Connect to a database first (Tab 1) to run the data health profile.")
     else:
-        st.markdown('<div class="sec-hdr">📊 <span>Data Health Profile</span></div>', unsafe_allow_html=True)
-
-        if st.session_state.db_tables:
-            hp_tbl = st.selectbox("Select table to profile:",
-                st.session_state.db_tables,
-                index=st.session_state.db_tables.index(st.session_state.active_table)
-                      if st.session_state.active_table in st.session_state.db_tables else 0,
-                key="hp_tbl_sel")
-        else:
-            st.warning("No tables found.")
-            hp_tbl = None
-
-        if hp_tbl:
-            tbl       = hp_tbl
-            connector = st.session_state.db_connector
-
-            # ──────────────────────────────────────────────────────────
-            # HELPER: Count exact duplicate rows via SQL
-            # Strategy: use a proper subquery with GROUP BY + HAVING.
-            # The SUM(cnt - 1) gives the number of EXTRA rows (i.e., dupes).
-            # ──────────────────────────────────────────────────────────
-            def _get_non_pk_cols(connector, tbl_name: str) -> list:
-                """Return column names excluding primary key columns."""
-                info = connector.get_table_info(tbl_name)
-                all_cols = [c["name"] for c in info.get("columns", [])]
-                pk_cols  = set(info.get("pk_columns", []))
-                # Also auto-detect common PK naming patterns if not declared
-                if not pk_cols:
-                    pk_cols = {
-                        c for c in all_cols
-                        if c.lower() in ("id", "pk") or
-                           c.lower().endswith("_id") or
-                           c.lower().startswith("id_")
-                    }
-                non_pk = [c for c in all_cols if c not in pk_cols]
-                # If filtering removed everything, fall back to all columns
-                return non_pk if non_pk else all_cols
-
-            def _normalize_df_for_dedup(df: pd.DataFrame) -> pd.DataFrame:
-                """Normalize all values for reliable exact-duplicate detection.
-                Converts to string, strips whitespace, lowercases, and unifies
-                all null/empty representations to a single sentinel value."""
-                NULL_SENTINEL = "__NULL__"
-                NULL_REPRS = {"none", "nan", "nat", "null", "", "na", "n/a"}
-                def _norm_val(v):
-                    s = str(v).strip().lower()
-                    return NULL_SENTINEL if s in NULL_REPRS else s
-                return df.applymap(_norm_val)
-
-            def _count_exact_dupes_sql(connector, tbl_name: str) -> int:
-                """Count exact duplicate rows, excluding PK columns, via SQL."""
-                try:
-                    cols = _get_non_pk_cols(connector, tbl_name)
-                    if not cols:
-                        return 0
-                    if connector.db_type == "MySQL":
-                        qc = lambda c: f"`{c}`"
-                        qt = lambda t: f"`{t}`"
-                    else:
-                        qc = lambda c: f'"{c}"'
-                        qt = lambda t: f'"{t}"'
-                    col_list = ", ".join([qc(c) for c in cols])
-                    # Counts extra copies: if a group has cnt=3, it contributes 2 dupes
-                    sql = (
-                        f"SELECT COALESCE(SUM(cnt - 1), 0) AS total_dupe_rows "
-                        f"FROM (SELECT {col_list}, COUNT(*) AS cnt "
-                        f"FROM {qt(tbl_name)} "
-                        f"GROUP BY {col_list} HAVING COUNT(*) > 1) AS grp"
-                    )
-                    res, err = connector.execute_query(sql)
-                    if err is None and res is not None and len(res) > 0:
-                        val = res.iloc[0, 0]
-                        return int(val) if val is not None else 0
-                except Exception:
-                    pass
-                return 0
-
-            # ──────────────────────────────────────────────────────────
-            # HELPER: Fetch rows that are part of exact-dup groups.
-            # Excludes PK columns from GROUP BY / JOIN so rows that are
-            # identical in all data columns are correctly detected.
-            # ──────────────────────────────────────────────────────────
-            def _fetch_exact_dupe_rows_sql(connector, tbl_name: str, limit: int = 500) -> pd.DataFrame:
-                try:
-                    cols = _get_non_pk_cols(connector, tbl_name)
-                    if not cols:
-                        return pd.DataFrame()
-                    if connector.db_type == "MySQL":
-                        qc = lambda c: f"`{c}`"
-                        qt = lambda t: f"`{t}`"
-                    else:
-                        qc = lambda c: f'"{c}"'
-                        qt = lambda t: f'"{t}"'
-
-                    col_list   = ", ".join([qc(c) for c in cols])
-                    join_conds = " AND ".join([
-                        f"(t.{qc(c)} = d.{qc(c)} OR (t.{qc(c)} IS NULL AND d.{qc(c)} IS NULL))"
-                        for c in cols
-                    ])
-                    # Join the original table against the group-by subquery to
-                    # retrieve the actual duplicate rows — works on all SQL dialects.
-                    sql = (
-                        f"SELECT t.{col_list} "
-                        f"FROM {qt(tbl_name)} t "
-                        f"JOIN (SELECT {col_list} FROM {qt(tbl_name)} "
-                        f"      GROUP BY {col_list} HAVING COUNT(*) > 1) AS d "
-                        f"ON {join_conds} "
-                        f"ORDER BY {col_list} "
-                        f"LIMIT {limit}"
-                    )
-                    res, err = connector.execute_query(sql)
-                    if err is None and res is not None:
-                        return res
-                except Exception:
-                    pass
-                # ── Pandas fallback: normalize then deduplicate ──
-                return pd.DataFrame()
-
-            # ──────────────────────────────────────────────────────────
-            # HELPER: Run fuzzy dedup keeping ALL columns so Gov-ID pass
-            # can link Type-1 (name typo, same IDs) and Type-2 (name typo
-            # + different phone/email but same PAN/Aadhaar) records.
-            # ──────────────────────────────────────────────────────────
-            def _run_fuzzy_dedup(df_full: pd.DataFrame):
-                from backend.schema_detector import classify_all_columns
-                from cleaning.deduplication import (
-                    DeduplicationEngine, _classify_col_tiers,
-                    _GOV_ID_PATTERNS, _name_similarity, NAME_MATCH_THRESHOLD,
-                )
-                import re
-
-                schema_mapping = classify_all_columns(df_full)
-
-                # Build strategies — keep ALL columns incl. Gov IDs.
-                # This ensures Pass 1 (Gov ID match) fires for Type-1 & Type-2.
-                dedup_strats = {}
-                for col, info in schema_mapping.items():
-                    stype = info.get("semantic_type", "")
-                    col_l = col.lower().replace(" ", "_")
-                    # Classify Gov IDs as exact_match so they go into gov_id_cols tier
-                    is_gov = any(
-                        re.search(fr'\b{re.escape(p)}\b', col_l.replace("_", " "))
-                        for p in _GOV_ID_PATTERNS
-                    )
-                    if is_gov or stype == "ID_Code":
-                        dedup_strats[col] = "exact_match"   # → Tier 1 (Gov ID)
-                    elif stype in ("Name", "Free_Text"):
-                        dedup_strats[col] = "fuzzy_name"
-                    elif stype in ("Location", "Categorical"):
-                        dedup_strats[col] = "blocking_key"
-                    else:
-                        dedup_strats[col] = "none"
-
-                # Ensure at least one name col is marked for fuzzy matching
-                if "fuzzy_name" not in dedup_strats.values():
-                    for col, strat in dedup_strats.items():
-                        col_l = col.lower()
-                        if "name" in col_l:
-                            dedup_strats[col] = "fuzzy_name"
-                            break
-
-                # Run in "Non-Predictive Business" mode so Rule 14
-                # (Gov ID supremacy) fires and overrides contact conflicts —
-                # critical for detecting Type-2 fuzzy dupes.
-                engine = DeduplicationEngine(
-                    df_full, dedup_strats,
-                    dataset_intent="Non-Predictive Business",
-                )
-                engine.execute()
-
-                # Classify clusters into Type 1 / Type 2 / Exact
-                gov_id_cols, _, _, _, name_cols, _ = _classify_col_tiers(
-                    df_full, dedup_strats
-                )
-                contact_cols = [
-                    c for c in df_full.columns
-                    if any(k in c.lower() for k in ["phone", "mobile", "email", "address", "addr"])
-                ]
-
-                # Non-PK columns only — used for exact-dup classification inside fuzzy engine
-                _all_fuzzy_cols = list(df_full.columns)
-                _fuzzy_pk_cols = {
-                    c for c in _all_fuzzy_cols
-                    if c.lower() in ("id", "pk") or
-                       c.lower().endswith("_id") or
-                       c.lower().startswith("id_")
-                }
-                _fuzzy_data_cols = [c for c in _all_fuzzy_cols if c not in _fuzzy_pk_cols] or _all_fuzzy_cols
-
-                NULL_SENTINEL = "__NULL__"
-                NULL_REPRS_F  = {"none", "nan", "nat", "null", "", "na", "n/a"}
-
-                def _norm_row(row_series):
-                    """Normalize a row for exact-dup comparison."""
-                    result = []
-                    for v in row_series:
-                        s = str(v).strip().lower()
-                        result.append(NULL_SENTINEL if s in NULL_REPRS_F else s)
-                    return tuple(result)
-
-                type1_clusters, type2_clusters, exact_clusters = [], [], []
-                for cluster in engine.cluster_report:
-                    idxs = cluster["row_indices"]
-                    rows = df_full.loc[idxs, _fuzzy_data_cols]
-
-                    # Check if it is truly an exact dup (normalize before comparing)
-                    try:
-                        normed_rows = [_norm_row(rows.loc[i]) for i in idxs]
-                        is_exact = len(set(normed_rows)) == 1
-                    except Exception:
-                        is_exact = False
-
-                    if is_exact:
-                        exact_clusters.append(cluster)
-                        continue
-
-                    # Check if contact fields differ (Type 2) vs same (Type 1)
-                    contact_differs = False
-                    if contact_cols:
-                        for cc in contact_cols:
-                            if cc in rows.columns:
-                                vals = rows[cc].astype(str).str.strip().str.lower().unique()
-                                non_empty = [v for v in vals if v not in NULL_REPRS_F]
-                                if len(non_empty) > 1:
-                                    contact_differs = True
-                                    break
-
-                    if contact_differs:
-                        type2_clusters.append(cluster)
-                    else:
-                        type1_clusters.append(cluster)
-
-                return engine, type1_clusters, type2_clusters, exact_clusters, name_cols, contact_cols
-
-            # ──────────────────────────────────────────────────────────
-            # UI
-            # ──────────────────────────────────────────────────────────
-            st.markdown(
-                "Initiate a deep diagnostic scan to uncover hidden data issues. The engine detects **Exact Duplicates** (100% row match), Fuzzy Duplicates: **Type 1 Near-Matches** (minor spelling or typo variations in names), and **Type 2 Hidden Duplicates** (matching identities with differing contact details)."
-            )
-
-            if st.button("🚀 Run Complete Health Check", key="run_health_check", type="primary"):
-                with st.spinner("Loading table and profiling…"):
-                    from backend.profiler import DatasetProfiler
-                    try:
-                        df_sample = connector.load_table(tbl, limit=10000)
-
-                        if df_sample.empty:
-                            st.warning("Table is empty.")
-                        else:
-                            # ─── 1. Base profile (pandas) ───────────────
-                            profiler      = DatasetProfiler(df_sample)
-                            profile_stats = profiler.profile()
-
-                            # ─── 2. SQL-accurate exact dup count (non-PK cols only) ─────────
-                            sql_dup_count = _count_exact_dupes_sql(connector, tbl)
-
-                            # Pandas fallback: exclude PK cols, normalize values, then check
-                            try:
-                                _non_pk = _get_non_pk_cols(connector, tbl)
-                                _non_pk_present = [c for c in _non_pk if c in df_sample.columns]
-                                if _non_pk_present:
-                                    _df_norm = _normalize_df_for_dedup(df_sample[_non_pk_present])
-                                    ts_dup_count = int(_df_norm.duplicated().sum())
-                                else:
-                                    ts_dup_count = 0
-                            except Exception:
-                                ts_dup_count = 0
-
-                            # SQL is the primary truth; pandas is a safety-net fallback
-                            accurate_dup_count = sql_dup_count if sql_dup_count > 0 else ts_dup_count
-
-                            # ─── Overview metrics ────────────────────────
-                            st.markdown("#### 📈 Overview Stats")
-                            c1, c2, c3, c4 = st.columns(4)
-                            c1.metric("Total Rows",       profile_stats["total_rows"])
-                            c2.metric("Total Columns",    profile_stats["total_columns"])
-                            c3.metric("Quality Score",    f"{profile_stats['quality_score']}/100")
-                            c4.metric("Exact Duplicates", accurate_dup_count,
-                                      delta=f"⚠️ {accurate_dup_count} extra rows" if accurate_dup_count > 0 else "✅ Clean",
-                                      delta_color="inverse")
-
-                            # ─── 3. Missing values ───────────────────────
-                            st.markdown("#### 🧩 Missing Values per Column")
-                            m_rows = [
-                                {"Column": col, "Missing Count": stats["null_count"],
-                                 "Missing %": f"{stats['null_percentage']}%"}
-                                for col, stats in profile_stats["column_statistics"].items()
-                                if stats["null_count"] > 0
-                            ]
-                            if m_rows:
-                                st.dataframe(pd.DataFrame(m_rows), use_container_width=True)
-                            else:
-                                st.success("✅ No missing values found!")
-
-                            # ─── 4. Exact Duplicates (SQL-backed) ────────
-                            st.markdown("#### 👯 Exact Duplicates")
-                            if accurate_dup_count > 0:
-                                st.error(
-                                    f"🔴 **{accurate_dup_count} exact duplicate row(s)** found in `{tbl}`. "
-                                    f"These are rows where every column is identical."
-                                )
-                                with st.spinner("Fetching duplicate rows…"):
-                                    exact_df = _fetch_exact_dupe_rows_sql(connector, tbl, limit=500)
-                                if not exact_df.empty:
-                                    st.caption(f"Showing up to 500 duplicate rows (sorted to group duplicates together):")
-                                    st.dataframe(exact_df, use_container_width=True, height=280)
-                                else:
-                                    # Pure pandas fallback
-                                    try:
-                                        mask = df_sample.astype(str).duplicated(keep=False)
-                                        pd_df = df_sample[mask]
-                                        if not pd_df.empty:
-                                            st.dataframe(pd_df.sort_values(list(pd_df.columns)).head(500),
-                                                         use_container_width=True, height=280)
-                                    except Exception:
-                                        st.warning("Could not display duplicate rows — check DB permissions.")
-                            else:
-                                st.success("✅ No exact duplicates found!")
-
-                            # ─── 5. Fuzzy Duplicates ─────────────────────
-                            st.markdown("#### 👥 Fuzzy Duplicate Detection")
-                            st.caption(
-                                "Detects near-matches: **Type 1** = name typo only (all other fields match). "
-                                "**Type 2** = name typo + contacts changed, but Gov IDs (PAN / Aadhaar) still match."
-                            )
-
-                            with st.spinner("Running fuzzy duplicate analysis (this may take a moment)…"):
-                                try:
-                                    (engine, type1_clusters, type2_clusters,
-                                     exact_clusters_f, name_cols, contact_cols) = _run_fuzzy_dedup(df_sample)
-
-                                    total_fuzzy_records = (
-                                        sum(c["cluster_size"] for c in type1_clusters) +
-                                        sum(c["cluster_size"] for c in type2_clusters)
-                                    )
-
-                                    if not type1_clusters and not type2_clusters:
-                                        st.success("✅ No fuzzy duplicates detected!")
-                                    else:
-                                        st.warning(
-                                            f"⚠️ Found **{total_fuzzy_records} records** in "
-                                            f"**{len(type1_clusters) + len(type2_clusters)} fuzzy duplicate clusters** "
-                                            f"({len(type1_clusters)} Type 1, {len(type2_clusters)} Type 2)"
-                                        )
-
-                                        # ── TYPE 1: Name typo, everything else matches ──
-                                        if type1_clusters:
-                                            with st.expander(
-                                                f"🟡 **Type 1 — Name Typo Only** ({len(type1_clusters)} clusters, "
-                                                f"{sum(c['cluster_size'] for c in type1_clusters)} records)",
-                                                expanded=True
-                                            ):
-                                                st.caption(
-                                                    "These records have a **typo in the name only**. "
-                                                    "All other fields (email, phone, address, PAN, Aadhaar) are identical."
-                                                )
-                                                rows_t1 = []
-                                                for cluster in type1_clusters:
-                                                    idxs      = cluster["row_indices"]
-                                                    canon     = cluster["canonical_name"]
-                                                    for idx in idxs:
-                                                        row = df_sample.loc[idx].to_dict()
-                                                        row["_cluster_canonical"] = canon
-                                                        row["_match_type"]        = "Type 1 — Name Typo"
-                                                        rows_t1.append(row)
-                                                if rows_t1:
-                                                    t1_df = pd.DataFrame(rows_t1)
-                                                    # Bring cluster info columns to front
-                                                    front = ["_match_type", "_cluster_canonical"]
-                                                    rest  = [c for c in t1_df.columns if c not in front]
-                                                    st.dataframe(t1_df[front + rest], use_container_width=True, height=280)
-
-                                        # ── TYPE 2: Name typo + contacts changed ──
-                                        if type2_clusters:
-                                            with st.expander(
-                                                f"🔴 **Type 2 — Name Typo + Changed Contacts** ({len(type2_clusters)} clusters, "
-                                                f"{sum(c['cluster_size'] for c in type2_clusters)} records)",
-                                                expanded=True
-                                            ):
-                                                st.caption(
-                                                    "These records have a **name typo AND different phone/email/address**, "
-                                                    "but share the same **Gov ID (PAN / Aadhaar)** — "
-                                                    "IntelliClean AI linked them via the static identifier."
-                                                )
-                                                rows_t2 = []
-                                                for cluster in type2_clusters:
-                                                    idxs      = cluster["row_indices"]
-                                                    canon     = cluster["canonical_name"]
-                                                    for idx in idxs:
-                                                        row = df_sample.loc[idx].to_dict()
-                                                        row["_cluster_canonical"] = canon
-                                                        row["_match_type"]        = "Type 2 — Name + Contacts Changed"
-                                                        rows_t2.append(row)
-                                                if rows_t2:
-                                                    t2_df = pd.DataFrame(rows_t2)
-                                                    front = ["_match_type", "_cluster_canonical"]
-                                                    rest  = [c for c in t2_df.columns if c not in front]
-                                                    st.dataframe(t2_df[front + rest], use_container_width=True, height=280)
-
-                                        # ── Summary table ──
-                                        st.markdown("##### 📋 Fuzzy Match Summary")
-                                        summary_rows = []
-                                        for cluster in type1_clusters + type2_clusters:
-                                            idxs       = cluster["row_indices"]
-                                            match_type = "Type 1" if cluster in type1_clusters else "Type 2"
-                                            canon      = cluster["canonical_name"]
-                                            name_col   = name_cols[0] if name_cols else None
-                                            variants   = []
-                                            if name_col and name_col in df_sample.columns:
-                                                variants = list(df_sample.loc[idxs, name_col].astype(str).unique())
-                                            summary_rows.append({
-                                                "Match Type":       match_type,
-                                                "Canonical Name":   canon,
-                                                "Variants Found":   " | ".join(variants),
-                                                "Cluster Size":     len(idxs),
-                                            })
-                                        if summary_rows:
-                                            st.dataframe(
-                                                pd.DataFrame(summary_rows),
-                                                use_container_width=True,
-                                            )
-
-                                except Exception as fe:
-                                    import traceback
-                                    st.error(f"Fuzzy analysis error: {fe}")
-                                    with st.expander("Show error details"):
-                                        st.code(traceback.format_exc())
-
-                    except Exception as e:
-                        import traceback
-                        st.error(f"Error during profiling: {e}")
-                        with st.expander("Show error details"):
-                            st.code(traceback.format_exc())
+        from components.data_health_ui import render_data_health_profile
+        render_data_health_profile(
+            st.session_state.db_connector,
+            st.session_state.db_tables if st.session_state.db_tables else [],
+            st.session_state.active_table
+        )
 
 
-
-# ═══════════════════════════════════════════════════════════════
 # TAB 4 — AI QUERY STUDIO (NLP Chat Console)
 # ═══════════════════════════════════════════════════════════════
 with tab4:
@@ -1869,3 +1642,7 @@ with tab6:
         if st.button("🗑️ Clear Audit Log"):
             st.session_state.audit_log = []
             st.rerun()
+
+# Render floating system monitor
+from components.system_monitor import render_system_monitor
+render_system_monitor()

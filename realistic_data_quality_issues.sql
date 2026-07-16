@@ -219,3 +219,68 @@ INSERT INTO CustomerData (first_name, last_name, email, phone, address, city, st
 ('Aditi', 'Patel', 'aditi.patel57@gmail.com', '9207064620', '68, Park Avenue', 'Thane', 'Maharashtra', '1970-09-09', '3361 7717 3529', 'BUGQK2315K'),
 ('Ayaan', 'Gupta', 'ayaan.gupta81@gmail.com', '9837071174', '7, Main Street', 'Lucknow', 'Uttar Pradesh', '1976-09-10', '5978 2395 5066', NULL),
 ('Rohan', 'Yadav', 'rohan.yadav25@gmail.com', '9675832441', '58, Main Street', 'Hyderabad', 'Telangana', '1988-12-04', '4006 5563 8579', 'GYLWO1828U');
+
+-- ==========================================
+-- Relational Tables (For Knowledge Graph ERD)
+-- ==========================================
+
+-- Products Table
+CREATE TABLE IF NOT EXISTS Products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(100),
+    category VARCHAR(50),
+    price DECIMAL(10,2)
+);
+
+INSERT INTO Products (product_name, category, price) VALUES
+('SmartPhone X', 'Electronics', 699.99),
+('Laptop Pro', ' Elctronics', 1299.50), -- Typo and leading space
+('Wireless Earbuds', 'Accessories', 149.00),
+('Coffee Maker', 'Home Appliances', -89.99), -- Invalid negative price
+('Ergonomic Chair', 'Furniture', 249.00),
+('SmartPhone X', 'electronics', 699.99), -- Duplicate row with inconsistent case
+(NULL, 'Accessories', NULL); -- Missing values
+
+-- Orders Table
+CREATE TABLE IF NOT EXISTS Orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    product_id INT,
+    order_date DATE,
+    status VARCHAR(50),
+    FOREIGN KEY (customer_id) REFERENCES CustomerData(record_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE SET NULL
+);
+
+INSERT INTO Orders (customer_id, product_id, order_date, status) VALUES
+(1, 1, '2023-01-15', 'Delivered'),
+(2, 3, '2023-01-16', ' SHIPPED '), -- Leading/trailing space, uppercase
+(3, 2, '2023-01-17', 'Delivered'),
+(4, 1, '2023-01-18', 'Processing'),
+(5, 5, '2023-01-19', 'Delivered'),
+(6, 4, '2023-01-20', 'Canceled'), -- Typo (usually Cancelled)
+(7, 1, '2023-01-21', 'delivered'), -- Lowercase
+(8, 2, '2099-01-22', 'Shipped'), -- Invalid future date
+(9, 3, NULL, 'Delivered'), -- Missing date
+(10, 5, '2023-01-24', 'Processing'),
+(10, 5, '2023-01-24', 'Processing'); -- Exact duplicate row
+
+-- Payments Table
+CREATE TABLE IF NOT EXISTS Payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    amount DECIMAL(10,2),
+    payment_method VARCHAR(50),
+    payment_date DATE,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE
+);
+
+INSERT INTO Payments (order_id, amount, payment_method, payment_date) VALUES
+(1, 699.99, 'Credit Card', '2023-01-15'),
+(2, 149.00, 'upi', '2023-01-16'), -- Lowercase
+(3, 1299.50, 'Net Banking', '2023-01-17'),
+(4, 699.99, ' Debit Card', '2023-01-18'), -- Leading space
+(5, 249.00, 'Credit card', '2023-01-19'), -- Case mismatch
+(7, -699.99, 'UPI', '2023-01-21'), -- Negative amount
+(8, 129999.50, 'Credit Card', '2023-01-22'), -- Extreme outlier amount
+(9, 149.00, NULL, '2023-01-23'); -- Missing payment method

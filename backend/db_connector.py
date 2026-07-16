@@ -69,6 +69,30 @@ DB_TYPES = {
         "driver": "ibm_db_sa",
         "pip_package": "ibm_db_sa",
     },
+    "Snowflake": {
+        "icon": "❄️",
+        "color": "#29b5e8",
+        "description": "Cloud Data Warehouse",
+        "default_port": 443,
+        "driver": "snowflake",
+        "pip_package": "snowflake-sqlalchemy",
+    },
+    "Amazon Redshift": {
+        "icon": "☁️",
+        "color": "#c92501",
+        "description": "AWS Data Warehouse",
+        "default_port": 5439,
+        "driver": "redshift+psycopg2",
+        "pip_package": "sqlalchemy-redshift",
+    },
+    "MariaDB": {
+        "icon": "🦭",
+        "color": "#003545",
+        "description": "Open-source RDBMS",
+        "default_port": 3306,
+        "driver": "mysql+pymysql",
+        "pip_package": "pymysql",
+    },
 }
 
 # SQL operations that are destructive and require a backup
@@ -152,6 +176,37 @@ def _make_engine(db_type: str, params: dict):
                 f"@{params['host']}:{params['port']}/{_q(params['database'])}"
             )
             engine = create_engine(url)
+
+        elif db_type == "Snowflake":
+            url = (
+                f"snowflake://{_q(params['username'])}:{_q(params['password'])}"
+                f"@{params['host']}/{_q(params['database'])}"
+            )
+            schema = params.get("schema", "")
+            if schema:
+                url += f"/{_q(schema)}"
+            query_params = []
+            if params.get("warehouse"):
+                query_params.append(f"warehouse={_q(params['warehouse'])}")
+            if params.get("role"):
+                query_params.append(f"role={_q(params['role'])}")
+            if query_params:
+                url += "?" + "&".join(query_params)
+            engine = create_engine(url)
+
+        elif db_type == "Amazon Redshift":
+            url = (
+                f"redshift+psycopg2://{_q(params['username'])}:{_q(params['password'])}"
+                f"@{params['host']}:{params['port']}/{_q(params['database'])}"
+            )
+            engine = create_engine(url)
+            
+        elif db_type == "MariaDB":
+            url = (
+                f"mysql+pymysql://{_q(params['username'])}:{_q(params['password'])}"
+                f"@{params['host']}:{params['port']}/{_q(params['database'])}"
+            )
+            engine = create_engine(url, pool_size=params.get("pool_size", 5))
 
         else:
             return None, f"Unknown DB type: {db_type}"
@@ -283,6 +338,113 @@ class DatabaseConnector:
         except Exception as e:
             return {"error": str(e)}
 
+    def get_extended_metadata(self) -> dict:
+        """
+        Fetch extended metadata for Knowledge Graph: 
+        schemas, tables, views, columns, keys, indexes, triggers, functions, etc.
+        """
+        if not self.engine:
+            return {}
+            
+        metadata = {
+            "schemas": [], "tables": [], "views": [], "materialized_views": [],
+            "columns": [], "primary_keys": [], "foreign_keys": [], "unique_keys": [],
+            "indexes": [], "constraints": [], "triggers": [], "functions": [], "stored_procedures": []
+        }
+        
+        try:
+            from sqlalchemy import inspect, text
+            inspector = inspect(self.engine)
+            
+            # Schemas
+            try:
+                metadata["schemas"] = [{"name": s} for s in inspector.get_schema_names()]
+            except: pass
+                
+            # Triggers / Functions (dialect specific)
+            try:
+                with self.engine.connect() as conn:
+                    if self.db_type == "PostgreSQL":
+                        res = conn.execute(text("SELECT trigger_name, event_object_table FROM information_schema.triggers"))
+                        for row in res:
+                            metadata["triggers"].append({"name": row[0], "table": row[1]})
+                        res = conn.execute(text("SELECT routine_name, routine_type FROM information_schema.routines WHERE routine_schema NOT IN ('pg_catalog', 'information_schema')"))
+                        for row in res:
+                            if row[1] == 'PROCEDURE': metadata["stored_procedures"].append({"name": row[0]})
+                            else: metadata["functions"].append({"name": row[0]})
+                    elif self.db_type in ("MySQL", "MariaDB"):
+                        res = conn.execute(text("SHOW TRIGGERS"))
+                        for row in res:
+                            metadata["triggers"].append({"name": row[0], "table": row[2]})
+                        res = conn.execute(text("SHOW FUNCTION STATUS WHERE Db = DATABASE()"))
+                        for row in res:
+                            metadata["functions"].append({"name": row[1]})
+                        res = conn.execute(text("SHOW PROCEDURE STATUS WHERE Db = DATABASE()"))
+                        for row in res:
+                            metadata["stored_procedures"].append({"name": row[1]})
+                    elif self.db_type == "SQL Server":
+                        res = conn.execute(text("SELECT name FROM sys.triggers"))
+                        for row in res:
+                            metadata["triggers"].append({"name": row[0]})
+                        res = conn.execute(text("SELECT name, type_desc FROM sys.objects WHERE type IN ('P', 'FN', 'IF', 'TF')"))
+                        for row in res:
+                            if row[1] == 'SQL_STORED_PROCEDURE': metadata["stored_procedures"].append({"name": row[0]})
+                            else: metadata["functions"].append({"name": row[0]})
+            except: pass
+            
+            # Tables & Views
+            try:
+                tables = inspector.get_table_names()
+                metadata["tables"] = [{"name": t} for t in tables]
+            except: tables = []
+                
+            try:
+                views = inspector.get_view_names()
+                metadata["views"] = [{"name": v} for v in views]
+            except: views = []
+                
+            try:
+                mviews = inspector.get_mview_names()
+                metadata["materialized_views"] = [{"name": mv} for mv in mviews]
+            except: pass
+                
+            # Detailed metadata per table
+            for tname in tables:
+                try:
+                    for c in inspector.get_columns(tname):
+                        metadata["columns"].append({"table": tname, "name": c["name"], "type": str(c["type"])})
+                except: pass
+                
+                try:
+                    pk = inspector.get_pk_constraint(tname)
+                    if pk and pk.get("constrained_columns"):
+                        metadata["primary_keys"].append({"table": tname, "name": pk.get("name") or f"PK_{tname}", "columns": pk["constrained_columns"]})
+                except: pass
+                
+                try:
+                    for fk in inspector.get_foreign_keys(tname):
+                        metadata["foreign_keys"].append({"table": tname, "name": fk.get("name") or f"FK_{tname}", "referred_table": fk["referred_table"]})
+                except: pass
+                
+                try:
+                    for uk in inspector.get_unique_constraints(tname):
+                        metadata["unique_keys"].append({"table": tname, "name": uk.get("name") or f"UK_{tname}", "columns": uk["column_names"]})
+                except: pass
+                
+                try:
+                    for idx in inspector.get_indexes(tname):
+                        metadata["indexes"].append({"table": tname, "name": idx["name"], "columns": idx["column_names"]})
+                except: pass
+                
+                try:
+                    for cc in inspector.get_check_constraints(tname):
+                        metadata["constraints"].append({"table": tname, "name": cc.get("name") or f"CHK_{tname}"})
+                except: pass
+                
+            return metadata
+        except Exception as e:
+            return {"error": str(e)}
+
     # ─────────────────────────────────────────────────────────────
     # Data loading
     # ─────────────────────────────────────────────────────────────
@@ -352,7 +514,7 @@ class DatabaseConnector:
             from sqlalchemy import text
             if self.db_type == "SQLite":
                 sql = f'CREATE TABLE "{backup_name}" AS SELECT * FROM "{table_name}"'
-            elif self.db_type == "MySQL":
+            elif self.db_type in ("MySQL", "MariaDB"):
                 sql = f'CREATE TABLE `{backup_name}` AS SELECT * FROM `{table_name}`'
             elif self.db_type == "PostgreSQL":
                 sql = f'CREATE TABLE "{backup_name}" AS SELECT * FROM "{table_name}"'
@@ -407,21 +569,21 @@ class DatabaseConnector:
                     # Instead of dropping the table (which breaks foreign keys),
                     # we delete all rows and append within a transaction.
                     with self.engine.connect() as conn:
-                        if self.db_type == "MySQL":
+                        if self.db_type in ("MySQL", "MariaDB"):
                             conn.execute(text("SET FOREIGN_KEY_CHECKS=0"))
                             conn.commit()
                         
                         with conn.begin():
-                            if self.db_type == "MySQL":
+                            if self.db_type in ("MySQL", "MariaDB"):
                                 conn.execute(text(f"DELETE FROM `{table_name}`"))
-                            elif self.db_type in ["PostgreSQL", "SQL Server", "Oracle DB", "SQLite"]:
+                            elif self.db_type in ["PostgreSQL", "SQL Server", "Oracle DB", "SQLite", "Amazon Redshift", "Snowflake"]:
                                 conn.execute(text(f'DELETE FROM "{table_name}"'))
                             else:
                                 conn.execute(text(f"DELETE FROM {table_name}"))
                             
                             df.to_sql(table_name, conn, if_exists="append", index=index)
                             
-                        if self.db_type == "MySQL":
+                        if self.db_type in ("MySQL", "MariaDB"):
                             conn.execute(text("SET FOREIGN_KEY_CHECKS=1"))
                             conn.commit()
                 else:

@@ -17,3 +17,6 @@ ibm_db_sa
 tabulate
 unidecode
 plotly
+snowflake-sqlalchemy
+sqlalchemy-redshift
+streamlit-agraph

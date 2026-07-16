@@ -504,32 +504,32 @@ else:
 
 
 
-if uploaded_file is None and not has_cache:
-    st.markdown("""
-    <div class="metric-grid" style="margin-top:1.5rem">
-      <div class="metric-card purple">
-        <div class="metric-label">Languages Supported</div>
-        <div class="metric-value">12+</div>
-        <div class="metric-sub">Hindi, Tamil, Telugu & more</div>
-      </div>
-      <div class="metric-card cyan">
-        <div class="metric-label">Pipeline Phases</div>
-        <div class="metric-value">12</div>
-        <div class="metric-sub">End-to-end automation</div>
-      </div>
-      <div class="metric-card pink">
-        <div class="metric-label">Cleaning Modules</div>
-        <div class="metric-value">8</div>
-        <div class="metric-sub">Specialized agents</div>
-      </div>
-      <div class="metric-card green">
-        <div class="metric-label">LLM Chunk Size</div>
-        <div class="metric-value">12</div>
-        <div class="metric-sub">Items per API call</div>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
-
+if uploaded_file is None:
+    if not has_cache:
+        st.markdown("""
+        <div class="metric-grid" style="margin-top:1.5rem">
+          <div class="metric-card purple">
+            <div class="metric-label">Languages Supported</div>
+            <div class="metric-value">12+</div>
+            <div class="metric-sub">Hindi, Tamil, Telugu & more</div>
+          </div>
+          <div class="metric-card cyan">
+            <div class="metric-label">Pipeline Phases</div>
+            <div class="metric-value">12</div>
+            <div class="metric-sub">End-to-end automation</div>
+          </div>
+          <div class="metric-card pink">
+            <div class="metric-label">Cleaning Modules</div>
+            <div class="metric-value">8</div>
+            <div class="metric-sub">Specialized agents</div>
+          </div>
+          <div class="metric-card green">
+            <div class="metric-label">LLM Chunk Size</div>
+            <div class="metric-value">12</div>
+            <div class="metric-sub">Items per API call</div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
 else:
     # ── File info banner ──
     file_size_kb = round(len(uploaded_file.getvalue()) / 1024, 1)
@@ -771,3 +771,7 @@ else:
             """, unsafe_allow_html=True)
             with st.expander("View full traceback"):
                 st.code(traceback.format_exc(), language="python")
+
+# Render floating system monitor
+from components.system_monitor import render_system_monitor
+render_system_monitor()
