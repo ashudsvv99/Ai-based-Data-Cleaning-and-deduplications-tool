@@ -1,0 +1,94 @@
+"""
+Dataset profiler: computes quality metrics, detects scripts, and
+identifies data quality issues before the cleaning pipeline runs.
+"""
+import pandas as pd
+from backend.schema_detector import column_non_ascii_ratio, column_script_distribution
+
+
+class DatasetProfiler:
+    """
+    Generates a comprehensive quality profile of a dataset including
+    missing values, duplicates, script distribution, and a quality score.
+    """
+
+    def __init__(self, df: pd.DataFrame):
+        self.df = df
+
+    def profile(self) -> dict:
+        total_rows = len(self.df)
+        total_cols = len(self.df.columns)
+
+        import config
+        temp_df = self.df.replace(config.MISSING_VALUE_MARKERS, pd.NA)
+        temp_df = temp_df.replace(r'^\s*$', pd.NA, regex=True)
+        missing_counts = temp_df.isnull().sum()
+        missing_pct = (missing_counts / total_rows) * 100
+
+        # Exact duplicate detection:
+        # - Exclude primary key columns (always unique — including them masks real dupes)
+        # - Normalize all values (strip, lowercase, unify null representations)
+        #   so "None"/"nan"/"NaT"/"" all compare equal, matching SQL NULL semantics.
+        try:
+            _pk_patterns = {"id", "pk"}
+            _pk_cols = {
+                c for c in self.df.columns
+                if c.lower() in _pk_patterns or
+                   c.lower().endswith("_id") or
+                   c.lower().startswith("id_")
+            }
+            _data_cols = [c for c in self.df.columns if c not in _pk_cols]
+            # Fall back to all columns if filtering removes everything
+            _data_cols = _data_cols if _data_cols else list(self.df.columns)
+
+            _NULL_SENTINEL = "__NULL__"
+            _NULL_REPRS    = {"none", "nan", "nat", "null", "", "na", "n/a"}
+
+            def _norm(v):
+                s = str(v).strip().lower()
+                return _NULL_SENTINEL if s in _NULL_REPRS else s
+
+            _df_norm = self.df[_data_cols].applymap(_norm)
+            exact_duplicates = int(_df_norm.duplicated().sum())
+        except Exception:
+            try:
+                exact_duplicates = int(self.df.duplicated().sum())
+            except Exception:
+                exact_duplicates = 0
+
+
+        column_stats = {}
+        for col in self.df.columns:
+            stats = {
+                "dtype": str(self.df[col].dtype),
+                "null_count": int(missing_counts[col]),
+                "null_percentage": round(float(missing_pct[col]), 2),
+                "unique_values": int(self.df[col].nunique()),
+            }
+
+            # Script analysis for string columns
+            if pd.api.types.is_string_dtype(self.df[col]) or pd.api.types.is_object_dtype(self.df[col]):
+                stats["non_ascii_ratio"] = round(column_non_ascii_ratio(self.df[col]), 4)
+                if stats["non_ascii_ratio"] > 0:
+                    stats["scripts"] = column_script_distribution(self.df[col])
+
+            column_stats[col] = stats
+
+        # Quality score: 0-100 (higher is better)
+        total_cells = total_rows * total_cols
+        total_missing = int(missing_counts.sum())
+        missing_penalty = (total_missing / max(total_cells, 1)) * 40
+        duplicate_penalty = (exact_duplicates / max(total_rows, 1)) * 30
+        quality_score = max(0, round(100 - missing_penalty - duplicate_penalty, 1))
+
+        return {
+            "total_rows": total_rows,
+            "total_columns": total_cols,
+            "exact_duplicate_rows": int(exact_duplicates),
+            "total_missing_cells": total_missing,
+            "memory_usage_mb": round(
+                self.df.memory_usage(deep=True).sum() / (1024 * 1024), 2
+            ),
+            "quality_score": quality_score,
+            "column_statistics": column_stats,
+        }

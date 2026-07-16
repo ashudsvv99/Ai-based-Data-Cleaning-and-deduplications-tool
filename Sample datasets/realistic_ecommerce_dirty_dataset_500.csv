@@ -1,0 +1,516 @@
+transaction_id,customer_id,customer_name,email,phone,order_date,delivery_date,city,state,pincode,category,product_name,quantity,unit_price,discount_percent,gst,shipping_cost,payment_method,payment_status,order_status,currency,total_amount
+TXN100000,CUST2144,Rahul Sharma,,7667424351,2024-07-13,2024-07-18,Bengaluru,Karnataka,560001,Electronics,Dell Inspiron 15,2.0,52967.0,0,19068.12,99,Debit Card,Success,Shipped,INR,125002.12
+TXN100001,CUST2199,Janani Kanda,narasimhandayamai@example.com,8295858994,2024-01-01,2024-01-05,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,4.0,1484.0,5,1068.48,0,Wallet,Refunded,Delivered,INR,6707.68
+TXN100002,CUST2203,ನೇಹಾ ರೆಡ್ಡಿ,tailorpratyush@example.com,7222184160,2024-03-13,2024-03-15,Bengaluru,Karnataka,560001,Electronics,Dell Inspiron 15,2.0,52910.0,0,19047.6,0,Debit Card,Refunded,Returned,INR,124966.6
+TXN100003,CUST2156,Rahul Sharma,bhavinimalhotra@example.net,4762070673,2024-04-15,2024-04-22,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,2.0,4986.0,20,1794.96,99,UPI,Refunded,Returned,INR,9821.56
+TXN100004,CUST2131,Hiral Ben,qsavant@example.org,7791966441,2024-08-02,2024-08-05,Ahmedabad,Gujarat,380001,Beauty,Mamaearth Face Wash,2.0,,20,116.28,0,Credit Card,Success,Returned,INR,732.08
+TXN100005,CUST2147,Amit Das,ssrivastava@example.org,6093345632,2024-08-21,2024-08-25,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,1.0,4999.0,0,899.82,99,,Pending,Delivered,INR,5997.82
+TXN100006,CUST2074,Amit Das,bkuruvilla@example.com,5227243268,2024-01-31,2024-02-06,Delhi,Delhi,110001,Grocery,Fortune Rice 10kg,4.0,902.0,20,649.44,149,Credit Card,Refunded,Shipped,INR,3634.84
+TXN100007,CUST2050,Neha Reddy,achakraborty@example.net,3391176941,2024-03-09,2024-03-13,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,2.0,1517.0,0,546.12,0,Debit Card,Failed,Cancelled,INR,3580.12
+TXN100008,CUST2023,ನೇಹಾ ರೆಡ್ಡಿ,aryanlanka@example.com,9733451792,2024-06-30,2024-07-06,Ahmedabad,Gujarat,380001,Books,Python Programming,,250000.0,0,154.26,0,COD, pending ,Returned,INR,1110.26
+TXN100009,CUST2144,ನೇಹಾ ರೆಡ್ಡಿ,bandiira@example.org,8906126098,2024-01-17,2024-01-24,Kolkata,West Bengal,700001,Electronics,Samsung Galaxy M35,1.0,18981.0,10,3416.58,99,COD,Failed,Delivered,INR,20548.48
+TXN100010,CUST2191,Rahul Sharma,cnair@example.org,98A6543210,2024-12-08,2024-12-10,Bangalore,Telangana,500001,Electronics,Boat Rockerz 450,2.0,1572.0,5,565.92,0,UPI,Refunded,Cancelled,INR,3601.72
+TXN100011,CUST2133,Amit Das,grewaltristan@example.org,5766619865,2024-09-30,2024-10-03,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,1.0,1498.0,10,269.64,0,Credit Card,refund,Returned,INR,1617.84
+TXN100012,CUST2116,Priya Patel,,1179899893,2024-12-30,2025-01-05,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,4.0,52904.0,10,38090.88,99,COD,Success,Shipped,INR,228594.28
+TXN100013,CUST2027,Gunbir Palla,jacob89@example.org,999999999999,2024-06-24,2024-06-29,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,1.0,330.0,20,59.4,99,Credit Card,Failed,Delivered,INR,323.4
+TXN100014,CUST2021,પ્રિયા પટેલ,ybumb@example.com,3370571717,2024-01-23,2024-01-28,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,1.0,4981.0,10,896.58,49,Wallet,Pending,Delivered,INR,5428.48
+TXN100015,CUST2088,Ekapad Banik,bhattandrew@example.org,0894943777,2024-06-11,2024-06-12,Bengaluru,Karnataka,560001,Fashion,Levi's Jeans,2.0,2158.0,0,776.88,49,Wallet,Pending,Returned,INR,5191.88
+TXN100016,CUST2235,Neha Reddy,garima88@example.org,8790260293,2024-06-23,2024-06-27,DELHI,Gujarat,380001,Appliances,LG Refrigerator,3.0,38964.0,20,21040.56,49,Wallet,Pending,Delivered,INR,114603.16
+TXN100017,CUST2246,Jackson Varty,janya94@example.org,9182154496,2024-08-23,2024-08-26,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,3.0,38930.0,0,21022.2,149,Debit Card,Failed,Shipped,INR,137861.2
+TXN100018,CUST2129,Priya Patel,manya28@example.net,0813965494,2024-07-31,2024-08-04,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,1.0,,15,7010.1,99,Credit Card,Refunded,Cancelled,INR,40113.35
+TXN100019,CUST2014,Rahul Sharma,leenatella@example.net,6337798326,2024-01-29,2024-02-02,Bengaluru,Karnataka,560001,Electronics,Samsung Galaxy M35,4.0,19027.0,20,13699.44,149,Debit Card,Success,Returned,INR,74634.84
+TXN100020,CUST2243,ನೇಹಾ ರೆಡ್ಡಿ,cyogi@example.net,5642795553,2024-06-25,2024-06-27,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,3.0,911.0,20,491.94,149,Wallet,Failed,Cancelled,INR,2777.34
+TXN100021,CUST2137,राहुल शर्मा,samarbhatia@example.org,9421558369,2024-03-08,2024-03-07,Mumbai,Maharashtra,400001,Electronics,Dell Inspiron 15,2.0,53068.0,15,19104.48,0,COD,Pending,Cancelled,INR,109419.08
+TXN100022,CUST2243,Kashish Yohannan,quincy86@example.com,0886917413,2024-11-03,2024-11-10,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,1.0,807.0,15,145.26,99,Wallet,Success,Cancelled,INR,930.21
+TXN100023,CUST2012,Rahul Sharma,cdeshpande@example.com,1778510595,2024-07-02,2024-07-06,Mumbai,Maharashtra,400001,Books,Python Programming,3.0,771.0,5,416.34,0,COD,Pending,Shipped,INR,2662.69
+TXN100024,CUST2222,William Bath,libni30@example.com,3157179398,2024-06-04,2024-06-08,Bengaluru,Karnataka,560001,Electronics,Dell Inspiron 15,2.0,52941.0,20,19058.76,149,,Failed,Delivered,INR,103764.36
+TXN100025,CUST2241,Hiral Choudhury,champakbasu@example.org,0611742419,2024-04-09,2024-04-14,Hyderabad,Telangana,500001,Electronics,Samsung Galaxy M35,,19038.0,20,3426.84,0,COD,Refunded,Returned,INR,18706.24
+TXN100026,CUST2127,Yuvraj Dasgupta,kevin16@example.net,1356744745,2024-07-01,2024-07-03,,Delhi,110001,Electronics,Samsung Galaxy M35,2.0,19009.0,15,6843.24,49,Credit Card,Pending,Shipped,INR,39257.54
+TXN100027,CUST2141,પ્રિયા પટેલ,omisha06@example.org,3760143695,2024-12-01,2024-12-04,DELHI,Maharashtra,400001,Electronics,Dell Inspiron 15,3.0,52905.0,0,28568.7,0,UPI,Pending,Returned,INR,187332.7
+TXN100028,CUST2192,অমিত দাস,chhabrabhavika@example.com,8757079649,2024-09-20,2024-09-21,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,1.0,5070.0,10,912.6,99,Credit Card,Refunded,Shipped,INR,5475.6
+TXN100029,CUST2100,Hritik Radhakrishnan,babuabdul@example.net,6915769679,2024-10-13,2024-10-15,Mumbai,Maharashtra,400001,Books,Python Programming,1.0,868.0,15,156.24,0,COD,Success,Cancelled,INR,943.04
+TXN100030,CUST2114,राहुल शर्मा,mitalidave@example.net,1545094365,2024-11-10,2024-11-11,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,4.0,1516.0,10,1091.52,99,Debit Card,Failed,Shipped,INR,6648.12
+TXN100031,CUST2189,Rahul Sharma,vartychatresh@example.com,8579330792,2024-12-06,2024-12-09,Delhi,Delhi,110001,Books,Python Programming,1.0,891.0,0,160.38,0,Credit Card,Refunded,Shipped,INR,1150.38
+TXN100032,CUST2026, ನೇಹಾ ರೆಡ್ಡಿ ,mohanyash@example.org,3244821500,2024-06-18,2024-06-19,Mumbai,Maharashtra,400001,Books,Python Programming,1.0,,5,126.0,49,Credit Card,Refunded,Returned,INR,791.0
+TXN100033,CUST2035,ನೇಹಾ ರೆಡ್ಡಿ,duttagirik@example.net,2233359035,2024-12-22,2024-12-23,Ahmedabad,Gujarat,380001,Fashion,Levi's Jeans,2.0,2137.0,0,769.32,0,Debit Card,Refunded,Shipped,INR,5092.32
+TXN100034,CUST2084,Neha Reddy,xmuni@example.org,6199876772,2024-01-05,2024-01-08,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2135.0,0,384.3,149,Debit Card,Pending,Delivered,INR,2618.3
+TXN100035,CUST2203,राहुल शर्मा,raoayush@example.org,5896460039,2024-03-05,2024-03-10,Kolkata,West Bengal,700001,Electronics,Dell Inspiron 15,1.0,52962.0,10,9533.16,0,Wallet,Failed,Returned,INR,57198.96
+TXN100036,CUST2081,Amit Das,alalla@example.org,3182100254,2024-05-28,2024-05-31,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,3.0,305.0,0,164.7,0,Debit Card,,Cancelled,INR,1178.7
+TXN100037,CUST2137,Priya Patel,anshwarrior@example.com,1931649221,2024-11-01,2024-11-07,Hyderabad,Telangana,500001,Electronics,Samsung Galaxy M35,2.0,19012.0,0,6844.32,49,COD,Success,Shipped,INR,44967.32
+TXN100038,CUST2042,Amit Das,harinakshi75@example.org,1738151802,2024-10-10,2024-10-15,Ahmedabad,Gujarat,380001,Fashion,Levi's Jeans,1.0,2222.0,10,399.96,149,UPI,Failed,Delivered,INR,2498.76
+TXN100039,CUST2229,অমিত দাস,abhiramvarghese@example.org,0008893849,2024-05-18,2024-05-19,Mumbai,Maharashtra,400001,Electronics,Boat Rockerz 450,3.0,1433.0,20,773.82,0,Debit Card,Success,Cancelled,INR,4213.02
+TXN100040,CUST2031,Amit Das,qpadmanabhan@example.com,4928402707,2024-10-10,2024-10-17,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,1.0,957.0,10,172.26,0,Debit Card,Failed,Cancelled,INR,1132.56
+TXN100041,CUST2100,राहुल शर्मा,poojagour@example.org,4185599374,2024-08-13,2024-08-20,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,3.0,38927.0,20,21020.58,99,Credit Card,Pending,Returned,INR,114445.38
+TXN100042,CUST2138,પ્રિયા પટેલ,aachalmohanty@example.com,9433094556,2024-02-12,2024-02-14,Hyderabad,Telangana,500001,Electronics,Dell Inspiron 15,3.0,52900.0,15,28566.0,99,COD,Pending,Returned,INR,163461.0
+TXN100043,CUST2164,राहुल शर्मा,edua@example.org,5811542629,2024-10-18,2024-10-19,Delhi,Delhi,110001,Fashion,Nike Running Shoes,3.0,5044.0,15,2723.76,49,Debit Card,Failed,Cancelled,INR,15634.96
+TXN100044,CUST2109,Priya Patel,tanvi49@example.org,7370839468,2024-09-11,2024-09-12,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,52950.0,15,9531.0,0,Credit Card,Pending,Delivered,INR,54538.5
+TXN100045,CUST2137,Rahul Sharma,harrison56@example.com,8045794373,2024-08-10,2024-08-16,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,2.0,247.0,15,88.92,99,UPI,,Delivered,INR,607.82
+TXN100046,CUST2040,Advik Shenoy,sathvik85@example.org,4784717172,2024-12-11,2024-12-12,Delhi,Delhi,110001,Appliances,LG Refrigerator,1.0,38978.0,0,7016.04,0,UPI,Refunded,Returned,INR,45994.04
+TXN100047,CUST2023,Priya Patel,laban77@example.net,5639285546,2024-12-14,2024-12-15,Bengaluru,Karnataka,560001,Books,Python Programming,2.0,802.0,15,288.72,0,Credit Card,Pending,Shipped,INR,1751.12
+TXN100048,CUST2048,Yash Dora,samaksh95@example.org,1081730156,2024-07-29,2024-08-05,Bengaluru,Karnataka,560001,Fashion,Nike Running Shoes,,5006.0,10,2703.24,0,UPI,Pending,Delivered,INR,16268.44
+TXN100049,CUST2207,Priya Patel,nrandhawa@example.org,2158307003,2024-07-09,2024-07-12,Ahmedabad,Gujarat,380001,Appliances,LG Refrigerator,2.0,39040.0,15,14054.4,149,Debit Card,Failed,Cancelled,INR,80422.4
+TXN100050,CUST2108,Rahul Sharma,test@ gmail.com,3390001237,2024-07-09,2024-07-16,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,2.0,2248.0,0,809.28,49,UPI,Success,Shipped,INR,5354.28
+TXN100051,CUST2060,Jai Shankar,jaisahni@example.org,4279722085,2024-09-26,2024-10-03,Mumbai,Maharashtra,400001,Books,Python Programming,2.0,872.0,0,313.92,149,Debit Card,Failed,Returned,INR,2106.92
+TXN100052,CUST2199,ನೇಹಾ ರೆಡ್ಡಿ,bachittarperi@example.com,3674701586,2024-09-21,2024-09-27,Bengaluru,Karnataka,560001,Fashion,Nike Running Shoes,1.0,4925.0,0,886.5,49,Debit Card,Success,Shipped,INR,5910.5
+TXN100053,CUST2244,Priya Patel,eta16@example.com,4503548421,2024-05-07,2024-05-12,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,4.0,1501.0,5,1080.72,49,COD,Success,Returned,INR,6883.52
+TXN100054,CUST2192,Amit Das,raysuhani@example.org,2293113508,2024-02-04,2024-02-08,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,2.0,1528.0,15,550.08,149,COD,Failed,Delivered,INR,3147.68
+TXN100123,CUST2183,Rahul Sharma,amol80@example.com,0186305156,2024-02-27,2024-02-28,Hyderabad,Telangana,500001,Books,Python Programming,4.0,812.0,15,584.64,99,Debit Card,Failed,Shipped,INR,3345.44
+TXN100056,CUST2060,Gagan Dyal,dbarad@example.org,0432845931,2024-06-23,2024-06-29,Ahmedabad,Gujarat,380001,Beauty,Mamaearth Face Wash,2.0,320.0,20,115.2,0,Credit Card,Pending,Returned,INR,726.2
+TXN100057,CUST2245,Neha Reddy,sachisom@example.com,3008192448,2024-03-05,2024-03-08,Ahmedabad,Gujarat,380001,Fashion,Levi's Jeans,3.0,2102.0,10,1135.08,99,Wallet,Failed,Delivered,INR,6909.48
+TXN100058,CUST2132,राहुल शर्मा,veerchanda@example.net,,2024-11-03,2024-11-07,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,1.0,831.0,20,149.58,149,COD,,Delivered,INR,814.38
+TXN100059,CUST2102,অমিত দাস,nnair@example.org,6799064840,2024-09-07,2024-09-08,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2277.0,15,409.86,0,Debit Card,Refunded,Delivered,INR,2444.31
+TXN100060,CUST2017,Rahul Sharma,bnaik@example.net,3132130435,2024-02-12,2024-02-11,Bengaluru,Karnataka,560001,Fashion,Levi's Jeans,2.0,2193.0,5,789.48,149,COD,Refunded,Returned,INR,4956.18
+TXN100061,CUST2217,राहुल शर्मा,nigamavi@example.org,2622856298,2024-07-11,2024-07-18,Hyderabad,Telangana,500001,Electronics,Dell Inspiron 15,2.0,52975.0,20,19071.0,99,Debit Card,Failed,Delivered,INR,103880.0
+TXN100062,CUST2212,પ્રિયા પટેલ,menonsuhani@example.org,4263377714,2024-06-13,2024-06-14,Kolkata,West Bengal,700001,Grocery,Fortune Rice 10kg,1.0,912.0,15,164.16,49,Debit Card,Failed,Cancelled,INR,1038.36
+TXN100063,CUST2222,Vanya Sathe,zansidhar@example.net,0618025523,2024-09-30,2024-10-07,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,3.0,1519.0,10,820.26,0,Wallet,Refunded,Shipped,INR,4921.56
+TXN100064,CUST2119,Priya Patel,,6583313890,2024-03-24,2024-03-26,Bengaluru,Karnataka,560001,Fashion,Levi's Jeans,3.0,2241.0,5,1210.14,149,Debit Card,Refunded,Returned,INR,7645.99
+TXN100065,CUST2120,Neha Reddy,gollafaraj@example.com,4041716052,2024-07-20,2024-07-27,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,1.0,,0,7015.32,0,Wallet,Failed,Returned,INR,46088.32
+TXN100066,CUST2157,Priya Patel,madanharinakshi@example.net,0838195954,2024-08-15,2024-08-21,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,2.0,240.0,15,86.4,99,Wallet,refund,Cancelled,INR,593.4
+TXN100067,CUST2017,Priya Patel,boraanvi@example.net,5750502706,2024-07-16,2024-07-21,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,1.0,1505.0,0,270.9,99,COD,Pending,Shipped,INR,1874.9
+TXN100068,CUST2042,Mahika Bhakta,niteshbaria@example.com,7941572301,2024-07-31,2024-08-02,Ahmedabad,Gujarat,380001,Grocery,Fortune Rice 10kg,4.0,831.0,5,598.32,149,Debit Card,Pending,Shipped,INR,3805.12
+TXN100069,CUST2115,Rachita Sengupta,prasadindrajit@example.com,9805095626,2024-04-08,2024-04-13,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,2.0,5051.0,0,1818.36,0,Credit Card,Pending,Cancelled,INR,11969.36
+TXN100070,CUST2234,राहुल शर्मा,rajanchandresh@example.com,0445574532,2024-02-12,2024-02-14,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,4.0,1409.0,10,1014.48,149,COD,Pending,Delivered,INR,6086.88
+TXN100071,CUST2173,Rahul Sharma,user@@gmail.com,999999999999,2024-03-20,2024-03-22,Kolkata,West Bengal,700001,Beauty,Mamaearth Face Wash,1.0,259.0,0,46.62,99,Credit Card,Refunded,Shipped,INR,354.62
+TXN100072,CUST2186,Neha Reddy,harinakshi28@example.com,5932125777,2024-08-09,2024-08-13,Ahmedabad,Gujarat,380001,Grocery,Fortune Rice 10kg,2.0,956.0,15,344.16,49,Wallet,refund,Shipped,INR,2018.36
+TXN100073,CUST2136,Neha Reddy,udyati94@example.org,1101578748,2024-04-11,2024-04-13,Bengaluru,Karnataka,560001,Fashion,Levi's Jeans,2.0,2272.0,20,817.92,49,Credit Card,Refunded,Delivered,INR,4552.12
+TXN100074,CUST2205,Priya Patel,samarsani@example.com,7609838056,2024-10-09,2024-10-15,Bengaluru,Karnataka,560001,Electronics,Samsung Galaxy M35,2.0,19026.0,15,6849.36,49,Wallet,Refunded,Delivered,INR,39193.56
+TXN100075,CUST2053,Shivansh Andra,sharmachaitanya@example.com,0447622791,2024-03-18,2024-03-23,Bengaluru,Karnataka,560001,Fashion,Nike Running Shoes,2.0,4975.0,10,1791.0,49,UPI,,Returned,INR,10746.0
+TXN100076,CUST2140,ನೇಹಾ ರೆಡ್ಡಿ,sainichaitaly@example.com,4603592365,2024-02-06,2024-02-10,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,1.0,318.0,10,57.24,99,UPI,Refunded,Delivered,INR,442.44
+TXN100077,CUST2127,অমিত দাস,cheemaumang@example.net,6235316331,2024-02-29,2024-03-06,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,1.0,1590.0,15,286.2,149,Debit Card,Failed,Delivered,INR,1686.7
+TXN100078,CUST2183,অমিত দাস,wardajaggi@example.com,2938784209,2024-01-05,2024-01-11,Bengaluru,Karnataka,560001,Fashion,Levi's Jeans,3.0,2233.0,0,1205.82,99,Debit Card,Refunded,Returned,INR,7904.82
+TXN100079,CUST2037,પ્રિયા પટેલ,,7593940983,2024-08-19,2024-08-26,Mumbai,Maharashtra,400001,Books,Python Programming,3.0,865.0,10,467.1,49,COD,Failed,Returned,INR,2802.6
+TXN100080,CUST2176,Urishilla Bhargava,robert10@example.net,3141363393,2024-12-25,2024-12-29,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,1.0,1492.0,15,268.56,0,Credit Card,Refunded,Shipped,INR,1635.76
+TXN100081,CUST2249,Onveer Sandhu,zkumer@example.com,1862107443,2024-11-09,2024-11-12,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,3.0,,15,1180.98,0,,Failed,Returned,INR,6856.83
+TXN100082,CUST2198, राहुल शर्मा ,,4622738931,2024-04-03,2024-04-09,Mumbai,Maharashtra,400001,Electronics,Dell Inspiron 15,3.0,52968.0,5,28602.72,49,Credit Card,Pending,Shipped,INR,179610.52
+TXN100083,CUST2067,Ijaya Sule,vanya09@example.org,2513099679,2024-10-15,2024-10-19,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,2.0,5020.0,0,1807.2,99,Credit Card,Success,Shipped,INR,11896.2
+TXN100084,CUST2118,Amit Das,satheyochana@example.org,7893545447,2024-05-22,2024-05-29,Ahmedabad,Gujarat,380001,Appliances,LG Refrigerator,2.0,38992.0,5,14037.12,149,Wallet,Success,Delivered,INR,88170.92
+TXN100085,CUST2233,Neha Reddy,dpandit@example.net,8118139054,2024-09-10,2024-09-11,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,3.0,2157.0,0,1164.78,99,Credit Card,Pending,Shipped,INR,7734.78
+TXN100086,CUST2128,राहुल शर्मा,eiravatimunshi@example.net,9231318238,2024-10-02,2024-10-08,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,53036.0,20,9546.48,99,Credit Card,Failed,Returned,INR,52024.28
+TXN100087,CUST2133,Pranit Devi,vidhi74@example.com,2919467999,2024-12-05,2024-12-11,Ahmedbad,West Bengal,700001,Fashion,Levi's Jeans,1.0,2153.0,5,387.54,49,Debit Card,Failed,Returned,INR,2432.89
+TXN100088,CUST2020,Naksh Mitra,cgarde@example.com,6233273148,2024-05-06,2024-05-08,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,2.0,4999.0,10,1799.64,99,Credit Card,Failed,Delivered,INR,10797.84
+TXN100089,CUST2101,Rahul Sharma,daksheshswaminathan@example.com,0405447113,2024-11-27,2024-12-02,Delhi,Delhi,110001,Appliances,LG Refrigerator,1.0,39093.0,20,7036.74,99,UPI,Fail,Shipped,INR,38311.14
+TXN100090,CUST2073,ನೇಹಾ ರೆಡ್ಡಿ,nomail,3707199806,2024-10-28,2024-10-31,Ahmedabad,Gujarat,380001,Fashion,Nike Running Shoes,1.0,5049.0,10,908.82,149,Wallet,Failed,Returned,INR,5452.92
+TXN100091,CUST2017,Chaitanya Aurora,chandranqadim@example.com,0756452703,2024-09-11,2024-09-16,Kolkata,West Bengal,700001,Grocery,Fortune Rice 10kg,2.0,892.0,5,321.12,49,Credit Card,Refunded,Delivered,INR,-100.0
+TXN100092,CUST2059,Neha Reddy,krishna70@example.net,7748518949,2024-04-17,2024-04-23,Hyderabad,Telangana,500001,Grocery,Fortune Rice 10kg,1.0,852.0,10,153.36,49,Wallet,Pending,Cancelled,INR,920.16
+TXN100093,CUST2017,Priya Patel,peter17@example.org,9760463132,2024-04-07,2024-04-08,Hyderabad,Telangana,500001,Fashion,Levi's Jeans,2.0,2230.0,15,802.8,49,Credit Card,Pending,Delivered,INR,4642.8
+TXN100094,CUST2250,অমিত দাস,chaman96@example.org,6337566350,2024-02-03,2024-02-08,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,2.0,38999.0,15,14039.64,99,COD,Pending,Returned,INR,80436.94
+TXN100095,CUST2048,Priya Patel,ekapadtalwar@example.org,6081652950,2024-12-14,2024-12-15,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,1.0,,20,285.12,149,Debit Card,Refunded,Delivered,INR,1651.32
+TXN100096,CUST2184,Rahul Sharma,garatanmayi@example.org,7538488896,2024-02-02,2024-02-04,Hyderabad,Telangana,500001,Electronics,Dell Inspiron 15,1.0,53076.0,0,9553.68,0,Credit Card,Failed,Shipped,INR,62678.68
+TXN100097,CUST2056,Priya Patel,deozayyan@example.net,4680860675,2024-02-05,2024-02-10,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,1.0,5012.0,0,902.16,149,Debit Card,Pending,Shipped,INR,5914.16
+TXN100098,CUST2028,Neha Reddy,abc@gmail,1793750356,2024-02-28,2024-03-03,Ahmedabad,Gujarat,380001,Appliances,LG Refrigerator,1.0,39070.0,20,7032.6,149,UPI,Failed,Delivered,INR,38288.6
+TXN100099,CUST2058,Zarna Kothari,alkasoni@example.net,7131246559,2024-03-12,2024-03-14,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,7.0,1535.0,5,1934.1,49,Credit Card,Success,Cancelled,INR,12240.85
+TXN100100,CUST2062,પ્રિયા પટેલ,liamdevan@example.com,2305961104,2024-07-04,2024-07-05,Delhi,Delhi,110001,Fashion,Nike Running Shoes,2.0,5073.0,10,1826.28,99,UPI,Success,Cancelled,INR,11006.68
+TXN100101,CUST2218,Aayush Choudhary,pauvasana@example.com,6172957568,2024-05-05,2024-05-08, delhi,Gujarat,380001,Electronics,Samsung Galaxy M35,2.0,19065.0,20,6863.4,99,COD,Pending,Returned,INR,37416.4
+TXN100102,CUST2051,Rahul Sharma,davidbhavsar@example.com,4851036197,2024-08-30,2024-09-03, delhi,Delhi,110001,Appliances,LG Refrigerator,1.0,38913.0,0,7004.34,0,Wallet,success,Cancelled,INR,45917.34
+TXN100103,CUST2078,Yashasvi Puri,rbora@example.net,2659953565,2024-11-24,2024-11-30,Mumbai,Maharashtra,400001,Electronics,Boat Rockerz 450,1.0,1440.0,20,259.2,99,UPI,Refunded,Delivered,INR,1510.2
+TXN100104,CUST2206,Yashawini Kumar,aryansunder@example.com,9629799019,2024-12-06,2024-12-12,Bengaluru,Karnataka,560001,Electronics,Samsung Galaxy M35,,,10,3405.24,149,Debit Card,Success,Shipped,INR,20480.44
+TXN100105,CUST2137,Priya Patel,lthaker@example.net,6942842705,2024-11-11,2024-11-14,Ahmedabad,Gujarat,380001,Appliances,LG Refrigerator,2.0,39058.0,20,14060.88,99,COD,Failed,Shipped,INR,76652.68
+TXN100106,CUST2061,Neha Reddy,xsathe@example.com,6613194884,2024-08-16,2024-08-20,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,2.0,2122.0,15,763.92,149,Debit Card,Failed,Cancelled,INR,4371.32
+TXN100107,CUST2113,Yash Kaul,chakradhar75@example.net,2624125108,2024-09-27,2024-09-28,Kolkata,West Bengal,700001,Beauty,Mamaearth Face Wash,2.0,386.0,0,138.96,49,,Refunded,Returned,INR,1009.96
+TXN100108,CUST2026,Neha Reddy,mohammed28@example.org,8911070904,2024-05-06,2024-05-07,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,3.0,1430.0,10,772.2,99,Debit Card,Pending,Cancelled,INR,4633.2
+TXN100109,CUST2109,राहुल शर्मा,vbali@example.com,6095972197,2024-07-20,2024-07-23,Bengaluru,Karnataka,560001,Books,Python Programming,3.0,844.0,0,455.76,0,Debit Card,Pending,Cancelled,INR,3086.76
+TXN100110,CUST2224,Aachal Ben,lalaidika@example.net,0032210974,2024-04-17,2024-04-19,Ahmedabad,Gujarat,380001,Appliances,LG Refrigerator,2.0,38954.0,15,14023.44,49,Wallet,Failed,Shipped,INR,80245.24
+TXN100111,CUST2041,অমিত দাস,sarkaryash@example.net,7177407367,2024-08-17,2024-08-24,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,1.0,890.0,5,160.2,0,Debit Card,Success,Shipped,INR,1054.7
+TXN100112,CUST2058,Priya Patel,dalajachandra@example.net,1722892994,2024-04-30,2024-05-04,Hyderabad,Telangana,500001,Appliances,LG Refrigerator,2.0,38978.0,10,14032.08,0,UPI,Failed,Cancelled,INR,84192.48
+TXN100113,CUST2209,Azaan Lad,menonkai@example.org,7249585560,2024-03-27,2024-03-28,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,,1415.0,5,254.7,49,UPI,Pending,Shipped,INR,1647.95
+TXN100114,CUST2120,Lipika Arya,muniatharv@example.net,8079372867,2024-02-16,2024-02-18,Kolkata,West Bengal,700001,Beauty,Mamaearth Face Wash,5.0,331.0,0,297.9,149,Wallet,Failed,Shipped,INR,1952.9
+TXN100115,CUST2099, राहुल शर्मा ,gdash@example.com,0418440228,2024-04-18,2024-04-24,Hyderabad,Telangana,500001,Books,Python Programming,2.0,876.0,20,315.36,99,Wallet,Success,Shipped,INR,1765.96
+TXN100116,CUST2157,Amit Das,,7708150297,2024-03-12,2024-03-15,,Maharashtra,400001,Electronics,Boat Rockerz 450,1.0,1526.0,0,274.68,149,Wallet,Refunded,Cancelled,INR,1849.68
+TXN100117,CUST2172,Priya Patel,brinda83@example.com,4920995819,2024-04-14,2024-04-17,Delhi,Delhi,110001,Electronics,Boat Rockerz 450,4.0,1519.0,10,1093.68,0,Credit Card,Failed,Returned,INR,6562.08
+TXN100118,CUST2219,Eshana Natt,agastya87@example.com,8968870546,2024-04-23,2024-04-25,Delhi,Delhi,110001,Books,Python Programming,1.0,891.0,15,160.38,149,UPI,Refunded,Cancelled,INR,966.73
+TXN100119,CUST2052,પ્રિયા પટેલ,iagrawal@example.org,6309493219,2024-09-28,2024-10-04,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,5.0,18955.0,20,17059.5,49,Debit Card,Refunded,Cancelled,INR,92978.5
+TXN100120,CUST2004, राहुल शर्मा ,eta46@example.net,1814234709,2024-12-06,2024-12-07,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,,1542.0,10,277.56,99,COD,Refunded,Cancelled,INR,1714.36
+TXN100121,CUST2023,Neha Reddy,fsathe@example.org,7593400210,2024-08-09,2024-08-15,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,1.0,5088.0,5,915.84,99,Credit Card,Success,Delivered,INR,5749.44
+TXN100122,CUST2094,Diya Pingle,riajohal@example.com,4802748205,2024-06-07,2024-06-13,Mumbai,Maharashtra,400001,Books,Python Programming,1.0,865.0,0,155.7,99,Wallet,Pending,Cancelled,INR,1020.7
+TXN100123,CUST2073,Sai Sundaram,pallavi14@example.org,0682300523,2024-06-03,2024-06-06,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,2.0,321.0,20,115.56,149,UPI,SUCCESS,Delivered,INR,629.16
+TXN100124,CUST2248,Rahul Sharma,rachita02@example.org,7081087492,2024-01-23,2024-01-28,Ahmedbad,Gujarat,380001,Grocery,Fortune Rice 10kg,1.0,817.0,20,147.06,149,Wallet,Success,Shipped,INR,800.66
+TXN100125,CUST2229,Amit Das,imaster@example.org,7770276097,2024-10-12,2024-10-14,Bengaluru,Karnataka,560001,Fashion,Nike Running Shoes,1.0,4968.0,20,894.24,49,,Refunded,Returned,INR,4868.64
+TXN100126,CUST2073,Priya Patel,balinidra@example.com,7853382180,2024-01-27,2024-01-30,Delhi,Delhi,110001,Fashion,Levi's Jeans,3.0,2205.0,20,1190.7,0,Credit Card,Refunded,Shipped,INR,6531.7
+TXN100127,CUST2164,Amit Das,vmutti@example.net,5447810760,2024-01-24,2024-01-25,Ahmedabad,Gujarat,380001,Grocery,Fortune Rice 10kg,3.0,939.0,10,507.06,49,Debit Card,Failed,Shipped,INR,3141.36
+TXN100128,CUST2139,Amit Das,prabhakarchandran@example.org,1008526708,2024-05-26,2024-06-01,Ahmedabad,Gujarat,380001,Beauty,Mamaearth Face Wash,2.0,386.0,5,138.96,49,Debit Card,Refunded,Cancelled,INR,921.36
+TXN100129,CUST2026,Amit Das,sai44@example.com,0532201398,2024-11-11,2024-11-17,Ahmedabad,Gujarat,380001,Books,Python Programming,3.0,824.0,0,444.96,149,Wallet,success,Cancelled,INR,3015.96
+TXN100130,CUST2247,অমিত দাস,chaitalytara@example.org,8316271863,2024-07-01,2024-07-03,Delhi,Delhi,110001,Appliances,LG Refrigerator,4.0,38930.0,5,28029.6,99,UPI,Pending,Cancelled,INR,176012.6
+TXN100131,CUST2246,Rahul Sharma,goyalpanini@example.com,6646599253,2024-12-27,2024-12-31,Hyderabad,Telangana,500001,Electronics,Samsung Galaxy M35,1.0,19069.0,15,3432.42,49,Wallet,Pending,Delivered,INR,19641.07
+TXN100132,CUST2031,પ્રિયા પટેલ,chandresh08@example.org,4967563881,2024-03-21,2024-03-28,Kolkata,West Bengal,700001,Fashion,Levi's Jeans,2.0,2264.0,0,815.04,49,Debit Card,Success,Shipped,INR,5442.04
+TXN100133,CUST2133,অমিত দাস,vanshadesai@example.com,3772981903,2024-05-01,2024-05-08,Hyderabad,Telangana,500001,Appliances,LG Refrigerator,1.0,38911.0,5,7003.98,0,Debit Card,,Delivered,INR,44018.43
+TXN100134,CUST2182,Garima Zacharia,nomail,2979225381,2024-12-13,2024-12-20,Kolkata,West Bengal,700001,Electronics,Dell Inspiron 15,3.0,52921.0,10,28577.34,149,Wallet,Refunded,Returned,INR,171464.04
+TXN100135,CUST2133,પ્રિયા પટેલ,jravel@example.net,7869124619,2024-04-06,2024-04-08,Delhi,Delhi,110001,Electronics,Dell Inspiron 15,1.0,52941.0,0,9529.38,0,Debit Card,Success,Returned,INR,62519.38
+TXN100136,CUST2247,Neha Reddy,jeevikasem@example.net,1241520638,2024-09-05,2024-09-11,Kolkata,West Bengal,700001,Appliances,LG Refrigerator,1.0,38922.0,5,7005.96,49,UPI,Refunded,Cancelled,INR,44030.86
+TXN100137,CUST2193,Neha Reddy,xitiacharya@example.net,0710815241,2024-11-23,2024-11-24,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,2.0,233.0,10,83.88,149,UPI,Refunded,Cancelled,INR,503.28
+TXN100138,CUST2048,Amit Das,schhabra@example.org,8491106363,2024-06-24,2024-06-25,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,3.0,343.0,0,185.22,149,COD,Refunded,Returned,INR,1313.22
+TXN100139,CUST2121,Amit Das,jagdishkunda@example.com,7068476643,2024-04-25,2024-04-30,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,3.0,294.0,20,158.76,99,COD,Success,Cancelled,INR,913.36
+TXN100140,CUST2180,Priya Patel,,,2024-10-21,2024-10-28,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,1.0,853.0,20,153.54,149,UPI,Refunded,Shipped,INR,884.94
+TXN100141,CUST2035,राहुल शर्मा,falakmadan@example.com,3792288916,2024-07-22,2024-07-27,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,3.0,38910.0,10,21011.4,99,Credit Card,Failed,Shipped,INR,126068.4
+TXN100142,CUST2157,Priya Patel,manthan35@example.net,1064284787,2024-09-21,2024-09-23,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,1.0,18917.0,10,3405.06,149,,Failed,Shipped,INR,20479.36
+TXN100143,CUST2231,Amit Das,semojasvi@example.net,9815047725,2024-10-23,2024-10-30,Delhi,Delhi,110001,Beauty,Mamaearth Face Wash,1.0,234.0,15,42.12,0,,Success,Shipped,INR,290.02
+TXN100144,CUST2031,પ્રિયા પટેલ,dmahal@example.org,1338282909,2024-06-12,2024-06-16,Delhi,Delhi,110001,Appliances,LG Refrigerator,2.0,39065.0,20,14063.4,99,UPI,Success,Shipped,INR,76567.4
+TXN100145,CUST2108,Zansi Parekh,ysagar@example.com,3641396071,2024-10-23,2024-10-26,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,5.0,1468.0,10,1321.2,149,Debit Card,Success,Delivered,INR,7976.2
+TXN100146,CUST2097,राहुल शर्मा,nishapanchal@example.net,,2024-06-22,2024-06-25,Bengaluru,Karnataka,560001,Books,Python Programming,2.0,763.0,15,274.68,49,Credit Card,Pending,Cancelled,INR,1571.78
+TXN100147,CUST2235, Neha Reddy ,bailarin@example.com,8468092798,2024-11-18,2024-11-23,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,1.0,4964.0,20,893.52,99,Debit Card,Failed,Shipped,INR,4963.72
+TXN100148,CUST2008,Amit Das,haritatailor@example.org,5015426891,2024-03-17,2024-03-23,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,52943.0,15,9529.74,0,Credit Card,Pending,Shipped,INR,54531.29
+TXN100149,CUST2004,Rahul Sharma,wdutt@example.org,2980473905,2024-09-15,2024-09-16,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,1.0,39090.0,5,7036.2,49,Credit Card,Success,Returned,INR,44270.7
+TXN100150,CUST2216,Priya Patel,test@ gmail.com,7551462024,2024-11-22,2024-11-25,Kolkata,West Bengal,700001,Fashion,Levi's Jeans,1.0,2108.0,0,379.44,49,UPI,Refunded,Returned,INR,2536.44
+TXN100151,CUST2226,Chaitaly Ravel,paladweta@example.com,3273743844,2024-01-10,2024-01-16,Bengaluru,Karnataka,560001,Grocery,Fortune Rice 10kg,2.0,808.0,0,290.88,99,Wallet,Refunded,Cancelled,INR,2005.88
+TXN100152,CUST2005,Ekaja Barad,benjamin64@example.org,7590940224,2024-07-14,2024-07-20,Hyderabad,Telangana,500001,Electronics,Dell Inspiron 15,2.0,53035.0,10,19092.6,99,Debit Card,,Returned,INR,114654.6
+TXN100153,CUST2249,Amit Das,jagattaneja@example.net,8443679517,2024-01-11,2024-01-13,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,1.0,4906.0,15,883.08,149,UPI,Refunded,Returned,INR,5152.18
+TXN100154,CUST2158,Neha Reddy,ydada@example.com,5149439699,2024-07-06,2024-07-12,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,3.0,299.0,20,161.46,149,Wallet,Failed,Cancelled,INR,978.06
+TXN100155,CUST2134,Lohit Bobal,ranganathanlibni@example.org,6461052924,2024-10-06,2024-10-09,Ahmedabad,Gujarat,380001,Grocery,Fortune Rice 10kg,1.0,874.0,20,157.32,99,COD,Pending,Shipped,INR,905.52
+TXN100156,CUST2071,Priya Patel,dixityagnesh@example.org,9905684011,2024-09-01,2024-09-07,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,,0,9536.4,0,Debit Card,Failed,Delivered,INR,62615.4
+TXN100157,CUST2017,Priya Patel,jkuruvilla@example.org,9593713499,2024-08-31,2024-09-03,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,4.0,4970.0,10,3578.4,99,Credit Card,Fail,Delivered,INR,21470.4
+TXN100158,CUST2042,Umang Balakrishnan,william78@example.com,5401025088,2024-11-15,2024-11-18,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,53005.0,0,9540.9,49,Wallet,Pending,Cancelled,INR,62644.9
+TXN100159,CUST2161,Amit Das,asagar@example.org,2401447632,2024-06-15,2024-06-19,Delhi,Delhi,110001,Appliances,LG Refrigerator,1.0,38899.0,15,7001.82,0,Wallet,Refunded,Shipped,INR,40164.97
+TXN100160,CUST2250,অমিত দাস,hsachdeva@example.com,4432616677,2024-08-10,2024-08-14,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,3.0,873.0,20,471.42,49,Debit Card,Pending,Delivered,INR,2665.62
+TXN100161,CUST2035,অমিত দাস,muttijason@example.org,4020234256,2024-06-11,2024-06-12,Ahmedbad,West Bengal,700001,Grocery,Fortune Rice 10kg,3.0,977.0,10,527.58,149,UPI,Failed,Shipped,INR,3165.48
+TXN100162,CUST2019,ನೇಹಾ ರೆಡ್ಡಿ,odika33@example.com,98A6543210,2024-07-11,2024-07-12,Kolkata,West Bengal,700001,Electronics,Dell Inspiron 15,1.0,52923.0,5,9526.14,49,Wallet,Failed,Cancelled,INR,59851.99
+TXN100163,CUST2192,Yashodhara Dani,abhimanyuraval@example.com,7776797944,2024-09-05,2024-09-10,Delhi,Delhi,110001,Books,Python Programming,1.0,750.0,15,135.0,149,Credit Card,Refunded,Cancelled,INR,821.5
+TXN100164,CUST2113,Rahul Sharma,ishanviravel@example.net,4932169693,2024-03-05,2024-03-11,DELHI,Telangana,500001,Books,Python Programming,2.0,822.0,10,295.92,149,Wallet,Refunded,Cancelled,INR,1775.52
+TXN100165,CUST2146,Gautami Purohit,mandalyatan@example.net,2576937838,2024-09-06,2024-09-13,Hyderabad,Telangana,500001,Electronics,Dell Inspiron 15,2.0,53054.0,20,19099.44,0,Debit Card,Refunded,Delivered,INR,104034.84
+TXN100166,CUST2137,राहुल शर्मा,advik93@example.org,5879823217,2024-05-05,2024-05-07,Delhi,Delhi,110001,Fashion,Nike Running Shoes,1.0,5075.0,0,913.5,0,Credit Card,refund,Shipped,INR,6037.5
+TXN100167,CUST2020,Rahul Sharma,psuresh@example.net,5441657921,2024-08-13,2024-08-15,,Gujarat,380001,Appliances,LG Refrigerator,2.0,38927.0,0,14013.72,0,Credit Card,Success,Cancelled,INR,-100.0
+TXN100168,CUST2128,राहुल शर्मा,miyengar@example.net,3241202218,2024-02-06,2024-02-09,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,3.0,1428.0,5,771.12,0,UPI,Pending,Cancelled,INR,4889.92
+TXN100169,CUST2215,Finn Sura,siddharth44@example.org,4484040179,2024-05-31,2024-06-01,Hyderabad,Telangana,500001,Books,Python Programming,,810.0,5,145.8,49,Wallet,Pending,Cancelled,INR,915.3
+TXN100170,CUST2096,Rahul Sharma,kacharya@example.net,7286475753,2024-08-10,2024-08-13,,Maharashtra,400001,Electronics,Samsung Galaxy M35,2.0,19076.0,15,6867.36,149,Wallet,Failed,Shipped,INR,39296.56
+TXN100171,CUST2221,Neha Reddy,advaithbandi@example.net,6088142497,2024-01-30,2024-02-03,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,3.0,38997.0,10,21058.38,99,Wallet,Failed,Cancelled,INR,126399.28
+TXN100172,CUST2044,પ્રિયા પટેલ,tsaxena@example.org,3141532958,2024-09-30,2024-10-02,Kolkata,West Bengal,700001,Books,Python Programming,1.0,798.0,0,143.64,149,Debit Card,Pending,Returned,INR,941.64
+TXN100173,CUST2150,ನೇಹಾ ರೆಡ್ಡಿ,okuruvilla@example.net,5718801421,2024-08-30,2024-09-06,Bengaluru,Karnataka,560001,Grocery,Fortune Rice 10kg,5.0,997.0,15,897.3,0,Debit Card,Success,Shipped,INR,5183.55
+TXN100174,CUST2108,પ્રિયા પટેલ,benaadi@example.org,2411897773,2024-04-27,2024-05-03,Kolkata,West Bengal,700001,Beauty,Mamaearth Face Wash,2.0,393.0,5,141.48,0,COD,Success,Returned,INR,888.18
+TXN100175,CUST2181,Amit Das,haritaatwal@example.org,0293520437,2024-05-05,2024-05-08,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,3.0,811.0,10,437.94,0,COD,Failed,Cancelled,INR,2676.64
+TXN100176,CUST2066,ನೇಹಾ ರೆಡ್ಡಿ,isavant@example.org,1672244633,2024-03-14,2024-03-16,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,5.0,870.0,20,783.0,0,UPI,Refunded,Returned,INR,4362.0
+TXN100177,CUST2122,অমিত দাস,calebvaidya@example.net,7923576989,2024-11-23,2024-11-29,Kolkata,West Bengal,700001,Beauty,Mamaearth Face Wash,2.0,261.0,20,93.96,0,Wallet,Success,Shipped,INR,511.56
+TXN100178,CUST2144,অমিত দাস,vborde@example.net,2017840790,2024-06-01,2024-06-03,Hyderabad,Telangana,500001,Books,Python Programming,3.0,812.0,0,438.48,99,COD,Pending,Returned,INR,2973.48
+TXN100179,CUST2016,Amit Das,varghesekamya@example.com,6902413229,2024-09-28,2024-09-29,Mumbai,Maharashtra,400001,Electronics,Boat Rockerz 450,2.0,1425.0,0,513.0,149,Debit Card,Success,Delivered,INR,3412.0
+TXN100180,CUST2048,Priya Patel,dkota@example.org,0524246448,2024-05-17,2024-05-22,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,1.0,19000.0,5,3420.0,99,UPI,SUCCESS,Cancelled,INR,21519.0
+TXN100181,CUST2017,Priya Patel,bakshivamakshi@example.com,7751077965,2024-05-28,2024-05-30,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,52902.0,15,9522.36,149,Debit Card,Pending,Shipped,INR,54489.06
+TXN100182,CUST2237,Harinakshi Borah,,3235820430,2024-10-10,2024-10-17,Ahmedabad,Gujarat,380001,Fashion,Levi's Jeans,2.0,2231.0,20,803.16,0,Wallet,Failed,Delivered,INR,4421.76
+TXN100123,CUST2058,Neha Reddy,dhruv39@example.org,0935189095,2024-11-26,2024-12-01,Delhi,Delhi,110001,Books,Python Programming,2.0,755.0,15,271.8,0,Debit Card,Refunded,Cancelled,INR,1654.3
+TXN100184,CUST2156,Amit Das,zdube@example.org,3975669623,2024-03-23,2024-03-30,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,2.0,1562.0,10,562.32,99,Credit Card,Success,Returned,INR,3472.92
+TXN100185,CUST2086,Priya Patel,anjaliupadhyay@example.org,8681497777,2024-06-06,2024-06-11,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,3.0,18923.0,0,10218.42,149,Credit Card,Pending,Delivered,INR,67086.42
+TXN100186,CUST2034,Neha Reddy,duajagdish@example.net,9276592525,2024-11-28,2024-12-04,Mumbai,Maharashtra,400001,Electronics,Boat Rockerz 450,3.0,1439.0,0,777.06,49,Credit Card,Pending,Cancelled,INR,5193.06
+TXN100187,CUST2009,Avi Varty,joshuahayer@example.com,9316178524,2024-05-28,2024-05-29,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,2.0,2118.0,20,762.48,49,COD,Success,Cancelled,INR,4250.28
+TXN100188,CUST2140,Amit Das,samarparsa@example.org,0000000000,2024-09-03,2024-09-05,Mumbai,Maharashtra,400001,Electronics,Dell Inspiron 15,3.0,52956.0,15,28596.24,0,UPI,Refunded,Cancelled,INR,163683.04
+TXN100189,CUST2247,राहुल शर्मा,masterkashish@example.com,1820802073,2024-12-31,2025-01-07,Delhi,Delhi,110001,Books,Python Programming,2.0,879.0,20,316.44,0,COD,Pending,Shipped,INR,1821.84
+TXN100190,CUST2089,પ્રિયા પટેલ,kashishrandhawa@example.net,4450847465,2024-12-29,2025-01-01,Kolkata,West Bengal,700001,Fashion,Levi's Jeans,2.0,2137.0,15,769.32,0,UPI,Failed,Returned,INR,4501.22
+TXN100191,CUST2146,Amit Das,varmachanchal@example.net,7336503235,2024-03-02,2024-03-09,Mumbai,Maharashtra,400001,Electronics,Samsung Galaxy M35,1.0,18941.0,5,3409.38,99,COD,Pending,Returned,INR,21502.33
+TXN100192,CUST2249,Rahul Sharma,salvinaveen@example.net,4093045473,2024-07-22,2024-07-26,Delhi,Delhi,110001,Beauty,Mamaearth Face Wash,1.0,383.0,5,68.94,0,COD,Success,Returned,INR,531.79
+TXN100193,CUST2062,Rahul Sharma,odevi@example.com,8868814361,2024-05-15,2024-05-16,Mumbai,Maharashtra,400001,Electronics,Dell Inspiron 15,4.0,52913.0,20,38097.36,49,Credit Card,Refunded,Shipped,INR,207517.96
+TXN100194,CUST2131,ನೇಹಾ ರೆಡ್ಡಿ,garimachoudhry@example.org,2927584134,2024-05-01,2024-05-05,Kolkata,West Bengal,700001,Beauty,Mamaearth Face Wash,1.0,256.0,10,46.08,99,Wallet,Pending,Delivered,INR,375.48
+TXN100195,CUST2241,પ્રિયા પટેલ,odoctor@example.org,8879309459,2024-08-17,2024-08-23,Delhi,Delhi,110001,Electronics,Boat Rockerz 450,2.0,1419.0,0,510.84,49,Wallet,Success,Returned,INR,3348.84
+TXN100196,CUST2013,ನೇಹಾ ರೆಡ್ಡಿ,sandhuzaitra@example.net,2841759621,2024-12-29,2024-12-30,Kolkata,West Bengal,700001,Fashion,Levi's Jeans,2.0,2236.0,15,804.96,0,UPI,Failed,Cancelled,INR,4705.16
+TXN100197,CUST2081,Priya Patel,uguha@example.org,6299788547,2024-01-28,2024-02-02,,Maharashtra,400001,Appliances,LG Refrigerator,8.0,39087.0,5,56285.28,49,Wallet,Pending,Returned,INR,353395.48
+TXN100198,CUST2141,Amit Das,idutta@example.org,5560605037,2024-09-14,2024-09-19,Bengaluru,Karnataka,560001,Books,Python Programming,2.0,702.0,0,252.72,49,COD,Failed,Cancelled,INR,1755.72
+TXN100199,CUST2080,Amit Das,jackson79@example.com,1633765501,2024-11-22,2024-11-25,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,2.0,1413.0,5,508.68,99,Wallet,Refunded,Delivered,INR,3242.38
+TXN100200,CUST2098, Ishita Sarkar ,spathak@example.org,8307273750,2024-02-25,2024-03-02,Delhi,Delhi,110001,Electronics,Dell Inspiron 15,2.0,53096.0,0,19114.56,99,UPI,Pending,Delivered,INR,125405.56
+TXN100201,CUST2241,অমিত দাস,ijayaraja@example.com,4263801167,2024-04-24,2024-04-29,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,1.0,1454.0,15,261.72,99,COD,Success,Returned,INR,1596.62
+TXN100202,CUST2208,પ્રિયા પટેલ,zkhatri@example.net,2873737690,2024-11-14,2024-11-19,Hyderabad,Telangana,500001,Appliances,LG Refrigerator,3.0,38935.0,15,21024.9,49,Debit Card,Failed,Delivered,INR,120309.15
+TXN100203,CUST2234,ನೇಹಾ ರೆಡ್ಡಿ,radhika59@example.net,98765,2024-09-15,2024-09-19,Ahmedabad,Gujarat,380001,Beauty,Mamaearth Face Wash,1.0,230.0,20,41.4,49,Credit Card,Refunded,Returned,INR,274.4
+TXN100204,CUST2082,राहुल शर्मा,surineel@example.com,0252388122,2024-07-14,2024-07-19,DELHI,Gujarat,380001,Beauty,Mamaearth Face Wash,1.0,306.0,15,55.08,149,Debit Card,Refunded,Shipped,INR,364.18
+TXN100123,CUST2103,પ્રિયા પટેલ,wramakrishnan@example.net,0768392166,2024-01-27,2024-02-03,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,5.0,,10,192.6,149,Debit Card,Refunded,Cancelled,INR,1155.6
+TXN100206,CUST2233,Ranbir Borde,chaitanyaparmar@example.com,9720872659,2024-11-05,2024-11-07,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,1.0,5035.0,10,906.3,49,Wallet,Pending,Shipped,INR,5437.8
+TXN100207,CUST2023,राहुल शर्मा,chatterjeedayamai@example.com,5142507548,2024-11-30,2024-12-03,Kolkata,West Bengal,700001,Appliances,LG Refrigerator,1.0,38976.0,20,7015.68,0,Credit Card,Failed,Returned,INR,38245.48
+TXN100208,CUST2133,Udarsh Yohannan,calebgoswami@example.net,6382827119,2024-09-19,2024-09-25,Kolkata,West Bengal,700001,Electronics,Samsung Galaxy M35,1.0,19004.0,15,3420.72,0,UPI,Failed,Shipped,INR,19623.12
+TXN100209,CUST2105,Adya Deshmukh,ymall@example.org,,2024-05-22,2024-05-23,Delhi,Delhi,110001,Appliances,LG Refrigerator,2.0,39074.0,10,14066.64,49,UPI,Refunded,Cancelled,INR,84399.84
+TXN100210,CUST2080,Neha Reddy,ayushman75@example.org,5756557905,2024-06-04,2024-06-08,Mumbai,Maharashtra,400001,Electronics,Samsung Galaxy M35,1.0,18969.0,15,3414.42,149,Wallet,Success,Delivered,INR,19538.07
+TXN100211,CUST2079,Priya Patel,ddave@example.com,9532100053,2024-07-04,2024-07-05,Ahmedabad,Gujarat,380001,Beauty,Mamaearth Face Wash,4.0,226.0,0,162.72,149,Credit Card,Pending,Returned,INR,1066.72
+TXN100212,CUST2052,Neha Reddy,radha76@example.com,1486347883,2024-11-24,2024-11-30,Delhi,Delhi,110001,Electronics,Samsung Galaxy M35,4.0,19008.0,5,13685.76,49,Wallet,,Shipped,INR,85965.16
+TXN100213,CUST2030,Rahul Sharma,,,2024-05-12,2024-05-13,Hyderabad,Telangana,500001,Electronics,Samsung Galaxy M35,2.0,19041.0,5,6854.76,49,Debit Card,Pending,Shipped,INR,43032.66
+TXN100214,CUST2143,Amit Das,januja32@example.org,1411760018,2024-03-23,2024-03-28,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,1.0,4974.0,0,895.32,99,Credit Card,Pending,Cancelled,INR,5968.32
+TXN100215,CUST2006,Neha Reddy,eshananigam@example.net,7658991056,2024-12-14,2024-12-20,Delhi,Delhi,110001,Books,Python Programming,3.0,874.0,20,471.96,99,Debit Card,Refunded,Delivered,INR,2569.56
+TXN100216,CUST2159,Amit Das,patlawilliam@example.org,4136778659,2024-07-14,2024-07-16,Delhi,Delhi,110001,Electronics,Samsung Galaxy M35,3.0,18919.0,5,10216.26,0,UPI,Success,Returned,INR,64234.41
+TXN100217,CUST2168,অমিত দাস,yashodharaparsa@example.net,8408060650,2024-08-14,2024-08-13,Bengaluru,Karnataka,560001,Electronics,Samsung Galaxy M35,1.0,19016.0,0,3422.88,149,COD,Success,Returned,INR,22487.88
+TXN100218,CUST2185,Rahul Sharma,pjohal@example.com,8341404534,2024-06-12,2024-06-15,DELHI,Gujarat,380001,Fashion,Levi's Jeans,3.0,2171.0,5,1172.34,49,Debit Card,Failed,Cancelled,INR,7458.69
+TXN100219,CUST2059,Amit Das,duanaksh@example.org,8414243390,2024-07-30,2024-08-05,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,3.0,1410.0,0,761.4,0,Wallet,Success,Returned,INR,4991.4
+TXN100220,CUST2191,Priya Patel,ryanyogi@example.org,2352487098,2024-02-28,2024-03-05,Hyderabad,Telangana,500001,Electronics,Dell Inspiron 15,1.0,52998.0,0,9539.64,49,UPI,Success,Returned,INR,62586.64
+TXN100221,CUST2237, પ્રિયા પટેલ ,farhanjayaraman@example.net,1291019676,2024-08-26,2024-09-01,Mumbai,Maharashtra,400001,Electronics,Dell Inspiron 15,1.0,53064.0,10,9551.52,49,Wallet,Refunded,Returned,INR,57358.12
+TXN100222,CUST2100,Neha Reddy,test@ gmail.com,5988420163,2024-01-04,2024-01-06,Hyderabad,Telangana,500001,Books,Python Programming,1.0,858.0,20,154.44,49,UPI,Failed,Returned,INR,889.84
+TXN100223,CUST2053,Amit Das,patrick94@example.org,6787639903,2024-01-24,2024-01-30,Kolkata,West Bengal,700001,Electronics,Samsung Galaxy M35,2.0,19050.0,20,6858.0,0,Credit Card,Success,Cancelled,INR,37338.0
+TXN100224,CUST2145,Priya Patel,triveni04@example.org,8931895525,2024-07-31,2024-08-07,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,2.0,822.0,15,295.92,0,COD,Pending,Shipped,INR,1693.32
+TXN100225,CUST2106,Priya Patel,mistryoeshi@example.net,2065663397,2024-11-14,2024-11-21,Delhi,Delhi,110001,Electronics,Boat Rockerz 450,1.0,1569.0,5,282.42,149,UPI,Pending,Returned,INR,1821.97
+TXN100226,CUST2120,ನೇಹಾ ರೆಡ್ಡಿ,mpatla@example.org,,2024-03-28,2024-03-31,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,2.0,335.0,15,120.6,99,Credit Card,Pending,Delivered,INR,789.1
+TXN100227,CUST2250,Neha Reddy,oakpraneel@example.net,2072934140,2024-08-23,2024-08-24,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,4.0,38967.0,10,28056.24,0,Credit Card,Success,Shipped,INR,168386.44
+TXN100228,CUST2183,Amit Das,fradodash@example.org,7213121588,2024-01-01,2024-01-04,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,1.0,4974.0,5,895.32,99,Wallet,Failed,Shipped,INR,5719.62
+TXN100229,CUST2205,Neha Reddy,meghawagle@example.com,5469960607,2024-02-20,2024-02-22,Hydrabad,Karnataka,560001,Electronics,Dell Inspiron 15,1.0,53018.0,10,9543.24,99,Credit Card,Pending,Delivered,INR,57308.44
+TXN100230,CUST2023,Amit Das,italwar@example.org,8615184317,2024-07-28,2024-07-31,,Gujarat,380001,Grocery,Fortune Rice 10kg,3.0,846.0,0,456.84,49,Credit Card,Pending,Cancelled,INR,3043.84
+TXN100123,CUST2023,Priya Patel,nachiketguha@example.org,4862705448,2024-03-31,2024-04-04,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,3.0,5027.0,0,2714.58,149,Credit Card,Refunded,Delivered,INR,17795.58
+TXN100232,CUST2050,Rahul Sharma,kashvi95@example.com,7055868151,2024-10-11,2024-10-15,Bengaluru,Karnataka,560001,Books,Python Programming,1.0,899.0,15,161.82,99,Debit Card,Failed,Shipped,INR,925.97
+TXN100233,CUST2091,राहुल शर्मा,manneharrison@example.com,8590724338,2024-12-03,2024-12-02,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,2.0,39017.0,5,14046.12,49,Debit Card,Refunded,Cancelled,INR,88277.42
+TXN100234,CUST2027,Harini Muni,sekhonijaya@example.com,4364765346,2024-08-26,2024-08-29,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,3.0,877.0,15,473.58,99,Debit Card,Success,Shipped,INR,2709.93
+TXN100235,CUST2081,Amit Das,lipika11@example.com,7171441734,2024-10-23,2024-10-28,Delhi,Delhi,110001,Fashion,Nike Running Shoes,1.0,5072.0,5,912.96,0,Credit Card,Pending,Shipped,INR,5830.36
+TXN100236,CUST2010,Neha Reddy,dakshabora@example.net,0442568229,2024-03-26,2024-03-27,Delhi,Delhi,110001,Electronics,Samsung Galaxy M35,2.0,19065.0,5,6863.4,149,,Pending,Cancelled,INR,43135.9
+TXN100237,CUST2118,ನೇಹಾ ರೆಡ್ಡಿ,sachigolla@example.com,0668530195,2024-05-28,2024-06-02,Hyderabad,Telangana,500001,Electronics,Samsung Galaxy M35,3.0,19066.0,0,10295.64,99,Debit Card,Refunded,Shipped,INR,67542.64
+TXN100238,CUST2005,Rahul Sharma,ianne@example.net,9937063743,2024-02-29,2024-03-03,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,4.0,39036.0,20,28105.92,0,Wallet,Pending,Shipped,INR,153120.12
+TXN100239,CUST2010,Pooja Madan,,9071192191,2024-10-23,2024-10-27,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,1.0,5041.0,10,907.38,99,COD,Refunded,Delivered,INR,5543.28
+TXN100240,CUST2117,অমিত দাস,,7472122358,2024-10-13,2024-10-14,Hyderabad,Telangana,500001,Beauty,Mamaearth Face Wash,1.0,349.0,15,62.82,149,Debit Card,Success,Shipped,INR,-100.0
+TXN100241,CUST2206,ನೇಹಾ ರೆಡ್ಡಿ,hiral65@example.net,0626569596,2024-08-23,2024-08-28,Mumbai,Maharashtra,400001,Electronics,Samsung Galaxy M35,3.0,18985.0,10,10251.9,99,Credit Card,Failed,Shipped,INR,61560.4
+TXN100242,CUST2087,Neha Reddy,anjalidutt@example.net,3269761428,2024-09-17,2024-09-24,Kolkata,West Bengal,700001,Books,Python Programming,3.0,722.0,5,389.88,149,,Refunded,Cancelled,INR,2447.58
+TXN100243,CUST2192,Priya Patel,nakul83@example.com,4321872040,2024-09-02,2024-09-03,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,,4995.0,20,1798.2,99,Wallet,Refunded,Returned,INR,9790.2
+TXN100244,CUST2110,Damyanti Sandhu,siddharthdara@example.net,4025290315,2024-01-08,2024-01-12,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,53091.0,15,9556.38,0,Credit Card,Success,Cancelled,INR,54683.73
+TXN100245,CUST2136,ನೇಹಾ ರೆಡ್ಡಿ,geetika52@example.com,7561437505,2024-12-06,2024-12-07,Mumbai,Maharashtra,400001,Electronics,Samsung Galaxy M35,1.0,18920.0,5,3405.6,0,COD,Failed,Shipped,INR,21428.6
+TXN100246,CUST2229,Ayaan Panchal,cchowdhury@example.org,5642477559,2024-11-29,2024-12-01,Hyderabad,Telangana,500001,Grocery,Fortune Rice 10kg,3.0,895.0,0,483.3,99,Wallet,Success,Delivered,INR,3267.3
+TXN100247,CUST2147,પ્રિયા પટેલ,lchawla@example.net,6962072811,2024-06-28,2024-06-29,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,3.0,1441.0,20,778.14,99,Credit Card,Success,Shipped,INR,4236.54
+TXN100248,CUST2162,ನೇಹಾ ರೆಡ್ಡಿ,nomail,3588485735,2024-08-16,2024-08-19,Delhi,Delhi,110001,Fashion,Nike Running Shoes,1.0,4952.0,20,891.36,0,UPI,Refunded,Delivered,INR,4852.96
+TXN100249,CUST2075,Amit Das,kannanpooja@example.com,5630259181,2024-06-20,2024-06-25,Kolkata,West Bengal,700001,Appliances,LG Refrigerator,2.0,38928.0,5,14014.08,49,Wallet,Pending,Shipped,INR,87977.28
+TXN100250,CUST2122,Rahul Sharma,vrindabanik@example.com,9131830074,2024-04-13,2024-04-18,Bengaluru,Karnataka,560001,Fashion,Levi's Jeans,3.0,2157.0,20,1164.78,149,Wallet,Success,Delivered,INR,6440.58
+TXN100251,CUST2238,Osha Pandya,sverma@example.net,4480843815,2024-09-28,2024-09-29,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,1.0,202.0,5,36.36,149,Credit Card,Refunded,Delivered,INR,277.26
+TXN100252,CUST2091,Neha Reddy,gaurav58@example.net,5134786190,2024-07-13,2024-07-16,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,3.0,19036.0,5,10279.44,0,Debit Card,Failed,Cancelled,INR,64532.04
+TXN100253,CUST2182,Yuvraj Dube,hemani11@example.org,0623460214,2024-03-04,2024-03-10,Kolkata,West Bengal,700001,Electronics,Samsung Galaxy M35,7.0,18930.0,15,23851.8,149,Wallet,Success,Delivered,INR,136534.3
+TXN100254,CUST2247,Amit Das,sampathfitan@example.net,5176723558,2024-06-10,2024-06-17,Bengaluru,Karnataka,560001,Grocery,Fortune Rice 10kg,1.0,926.0,5,166.68,49,COD,Success,Shipped,INR,1046.38
+TXN100255,CUST2066,પ્રિયા પટેલ,bshankar@example.org,6008134527,2024-06-06,2024-06-07,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,3.0,5014.0,5,2707.56,49,Debit Card,Failed,Returned,INR,17046.46
+TXN100256,CUST2225,Rahul Sharma,ekarajmisra@example.com,,2024-09-16,2024-09-19,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,4.0,394.0,5,283.68,99,COD,Pending,Shipped,INR,1829.88
+TXN100257,CUST2192,ನೇಹಾ ರೆಡ್ಡಿ,xbahri@example.org,,2024-01-13,2024-01-17,,Gujarat,380001,Appliances,LG Refrigerator,4.0,39062.0,20,28124.64,149,Wallet,Success,Cancelled,INR,153172.04
+TXN100258,CUST2031,Priya Patel,wmangal@example.com,0045846163,2024-06-23,2024-06-30,Bengaluru,Karnataka,560001,Electronics,Dell Inspiron 15,2.0,999999.0,0,19106.64,49,Wallet,Failed,Shipped,INR,125254.64
+TXN100259,CUST2206,Rahul Sharma,deoharita@example.org,8707170768,2024-08-23,2024-08-28,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,2.0,38992.0,20,14037.12,149,Debit Card,Success,Delivered,INR,76523.32
+TXN100260,CUST2026,Priya Patel,nidhi94@example.org,1213008510,2024-08-22,2024-08-23,Bengaluru,Karnataka,560001,Electronics,Dell Inspiron 15,3.0,53012.0,20,28626.48,149,Credit Card,Refunded,Cancelled,INR,155954.28
+TXN100261,CUST2126, Harrison Bajwa ,aahanasharma@example.net,3843112140,2024-12-30,2025-01-05,Kolkata,West Bengal,700001,Books,Python Programming,1.0,706.0,15,127.08,99,Wallet,Failed,Returned,INR,826.18
+TXN100262,CUST2153,Lavanya Kari,diyanayar@example.com,4152543687,2024-11-07,2024-11-14,Delhi,Delhi,110001,Books,Python Programming,4.0,780.0,10,561.6,149,Credit Card,Pending,Delivered,INR,3468.6
+TXN100263,CUST2020,অমিত দাস,vidhirattan@example.net,1499706694,2024-07-27,2024-08-02,Kolkata,West Bengal,700001,Beauty,Mamaearth Face Wash,1.0,387.0,20,69.66,149,Wallet,Failed,Delivered,INR,428.26
+TXN100264,CUST2176,Amit Das,kai26@example.com,6765154262,2024-02-06,2024-02-09,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,4.0,38924.0,20,28025.28,0,Credit Card,Refunded,Returned,INR,152631.08
+TXN100265,CUST2041,Rahul Sharma,ranveerbala@example.com,3764027733,2024-03-14,2024-03-21,Hyderabad,Telangana,500001,Books,Python Programming,1.0,830.0,5,149.4,149,COD,Refunded,Returned,INR,937.9
+TXN100266,CUST2222,Neha Reddy,vihaanganesh@example.org,1529767005,2024-05-30,2024-06-04,Hyderabad,Telangana,500001,Appliances,LG Refrigerator,2.0,39066.0,0,14063.76,49,Credit Card,Pending,Cancelled,INR,92195.76
+TXN100267,CUST2194,ನೇಹಾ ರೆಡ್ಡಿ,ssahota@example.org,,2024-12-23,2024-12-29,Ahmedabad,Gujarat,380001,Appliances,LG Refrigerator,1.0,38972.0,15,7014.96,99,COD,Success,Delivered,INR,40141.16
+TXN100268,CUST2148,Edhitha Nath,sai63@example.org,1612240267,2024-01-24,2024-01-26,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,2.0,5067.0,15,1824.12,99,UPI,Refunded,Cancelled,INR,10487.02
+TXN100269,CUST2042,Ekbal Memon,krishnasabharwal@example.com,6059323349,2024-05-24,2024-05-26,Hyderabad,Telangana,500001,Beauty,Mamaearth Face Wash,1.0,265.0,5,47.7,0,Credit Card,Failed,Delivered,INR,398.45
+TXN100270,CUST2040,Rahul Sharma,ekiyamohan@example.com,2445571962,2024-05-01,2024-05-02,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2257.0,5,406.26,149,COD,Pending,Delivered,INR,2599.41
+TXN100271,CUST2179,Raksha Virk,arin95@example.com,1678167704,2024-11-24,2024-11-25,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,3.0,1543.0,10,833.22,0,Wallet,Refunded,Cancelled,INR,5098.32
+TXN100272,CUST2192,राहुल शर्मा,bhavyamani@example.com,6393686799,2024-05-03,2024-05-09,Ahmedabad,Gujarat,380001,Books,Python Programming,4.0,721.0,0,519.12,149,Debit Card,Pending,Shipped,INR,3502.12
+TXN100273,CUST2024,Priya Patel,vidhiray@example.net,8212185384,2024-06-29,2024-07-06,Delhi,Delhi,110001,Fashion,Nike Running Shoes,2.0,5081.0,0,1829.16,0,UPI,Pending,Cancelled,INR,11991.16
+TXN100274,CUST2220,Priya Patel,cheemakavya@example.com,8050280070,2024-11-17,2024-11-20,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,1.0,1560.0,20,280.8,149,Credit Card,Pending,Delivered,INR,1577.8
+TXN100275,CUST2027,Priya Patel,yauvani28@example.com,6343605082,2024-08-15,2024-08-19,Hyderabad,Telangana,500001,Fashion,Levi's Jeans,2.0,2193.0,20,789.48,49,Credit Card,Pending,Delivered,INR,4298.28
+TXN100276,CUST2117,Neha Reddy,onveerdalia@example.com,4954220019,2024-05-04,2024-05-08,Kolkata,West Bengal,700001,Books,Python Programming,1.0,759.0,15,136.62,149,COD,SUCCESS,Shipped,INR,830.77
+TXN100277,CUST2111,Amit Das,odika10@example.com,98765,2024-01-14,2024-01-21,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,3.0,2126.0,10,1148.04,99,Credit Card,Pending,Returned,INR,6888.24
+TXN100278,CUST2026,Priya Patel,nomail,4267697134,2024-09-18,2024-09-23,Kolkata,West Bengal,700001,Books,Python Programming,1.0,839.0,20,151.02,149,COD,Failed,Delivered,INR,921.22
+TXN100123,CUST2005,Amit Das,saanvidevi@example.org,9838767297,2024-03-16,2024-03-21,Bengaluru,Karnataka,560001,Electronics,Dell Inspiron 15,3.0,52965.0,20,28601.1,99,Debit Card,Failed,Delivered,INR,155717.1
+TXN100280,CUST2198,Priya Patel,zarna86@example.com,4701133706,2024-06-19,2024-06-22,Delhi,Delhi,110001,Beauty,Mamaearth Face Wash,3.0,381.0,20,205.74,0,Wallet,Refunded,Returned,INR,1219.14
+TXN100281,CUST2037,Rahul Sharma,nathan22@example.com,7775268159,2024-10-19,2024-10-21,Kolkata,West Bengal,700001,Grocery,Fortune Rice 10kg,1.0,853.0,0,153.54,0,UPI,Success,Cancelled,INR,1105.54
+TXN100282,CUST2028,ನೇಹಾ ರೆಡ್ಡಿ,nbrar@example.net,6707519331,2024-11-28,2024-11-27,Kolkata,West Bengal,700001,Books,Python Programming,2.0,861.0,10,309.96,49,COD,success,Shipped,INR,1908.76
+TXN100283,CUST2205,Nilima Ahuja,triyanadkarni@example.net,7756750945,2024-06-24,2024-06-29,Hyderabad,Telangana,500001,Grocery,Fortune Rice 10kg,3.0,922.0,15,497.88,149,COD,Refunded,Cancelled,INR,2947.98
+TXN100284,CUST2055,Neha Reddy,jkhatri@example.org,4196680955,2024-05-27,2024-06-01,Ahmedabad,Gujarat,380001,Books,Python Programming,3.0,833.0,10,449.82,149,Credit Card,Success,Shipped,INR,2747.92
+TXN100285,CUST2026,Priya Patel,farhanvyas@example.net,8785399517,2024-08-06,2024-08-12,Hyderabad,Telangana,500001,Fashion,Levi's Jeans,1.0,2193.0,10,394.74,99,UPI,Refunded,Cancelled,INR,2368.44
+TXN100286,CUST2242,ನೇಹಾ ರೆಡ್ಡಿ,amblejagat@example.net,3966189856,2024-04-16,2024-04-18,Bangalore,Karnataka,560001,Books,Python Programming,3.0,773.0,20,417.42,99,Credit Card,Failed,Cancelled,INR,2321.62
+TXN100287,CUST2240,Amit Das,daksh10@example.net,5795078961,2024-04-18,2024-04-19,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,3.0,39046.0,0,21084.84,0,Credit Card,Success,Delivered,INR,138222.84
+TXN100288,CUST2113,राहुल शर्मा,ekani53@example.com,0110869677,2024-07-08,2024-07-10,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,6.0,4902.0,5,5294.16,49,COD,Success,Delivered,INR,33334.56
+TXN100289,CUST2084,Jonathan Ramesh,tswamy@example.com,,2024-10-18,2024-10-19,Delhi,Delhi,110001,Electronics,Samsung Galaxy M35,2.0,19013.0,10,6844.68,99,Debit Card,Failed,Returned,INR,41117.08
+TXN100290,CUST2139,Neha Reddy,wsastry@example.org,8938931580,2024-01-14,2024-01-20,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,2.0,1559.0,0,561.24,99,Wallet,Failed,Returned,INR,3778.24
+TXN100291,CUST2214,राहुल शर्मा,oni21@example.net,,2024-10-09,2024-10-15,Mumbai,Maharashtra,400001,Electronics,Dell Inspiron 15,2.0,53040.0,15,19094.4,149,Credit Card,Pending,Shipped,INR,-100.0
+TXN100292,CUST2220,Amit Das,lavanya08@example.net,5166632093,2024-08-10,2024-08-11,Ahmedabad,Gujarat,380001,Beauty,Mamaearth Face Wash,1.0,244.0,20,43.92,149,Wallet,Refunded,Returned,INR,338.12
+TXN100293,CUST2215,Hemani Bora,atidass@example.com,4478334874,2024-01-08,2024-01-13,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,2.0,5013.0,15,1804.68,99,Credit Card,Success,Delivered,INR,10425.78
+TXN100294,CUST2062,Neha Reddy,yadavidevan@example.org,9977588014,2024-01-31,2024-02-02,,West Bengal,700001,Fashion,Levi's Jeans,3.0,2163.0,15,1168.02,149,Wallet,Failed,Returned,INR,6683.67
+TXN100295,CUST2164, Neha Reddy ,aaravrao@example.net,5339526902,2024-05-16,2024-05-23,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,1.0,38953.0,20,7011.54,149,Credit Card,Pending,Cancelled,INR,38222.94
+TXN100296,CUST2046,Faras Datta,yashoda78@example.org,0086341167,2024-06-17,2024-06-18,Delhi,Delhi,110001,Fashion,Levi's Jeans,4.0,2251.0,0,1620.72,0,UPI,Pending,Shipped,INR,10673.72
+TXN100297,CUST2083,অমিত দাস,tristan55@example.org,3365339527,2024-03-31,2024-04-06,Hyderabad,Telangana,500001,Beauty,Mamaearth Face Wash,3.0,267.0,15,144.18,0,Credit Card,Success,Shipped,INR,924.03
+TXN100298,CUST2210,Krishna Vig,wmore@example.org,7366548286,2024-06-22,2024-06-28,DELHI,Maharashtra,400001,Appliances,LG Refrigerator,1.0,38899.0,15,7001.82,99,Credit Card,,Delivered,INR,40114.97
+TXN100299,CUST2080,Priya Patel,ndeo@example.org,1567221236,2024-02-09,2024-02-13,Bengaluru,Karnataka,560001,Electronics,Dell Inspiron 15,1.0,52952.0,20,9531.36,0,COD,Pending,Cancelled,INR,51941.96
+TXN100300,CUST2249,Neha Reddy,basakteerth@example.com,5071897267,2024-04-25,2024-04-29,Delhi,Delhi,110001,Electronics,Boat Rockerz 450,1.0,1499.0,0,269.82,149,UPI,Failed,Shipped,INR,1768.82
+TXN100301,CUST2213,Amit Das,bajajkiaan@example.net,8981849920,2024-07-18,2024-07-21,Bengaluru,Karnataka,560001,Grocery,Fortune Rice 10kg,2.0,912.0,5,328.32,49,COD,Pending,Cancelled,INR,2061.12
+TXN100302,CUST2214,অমিত দাস,galaoscar@example.org,5649905312,2024-05-18,2024-05-23,Kolkata,West Bengal,700001,Electronics,Dell Inspiron 15,2.0,53051.0,20,19098.36,99,UPI,Failed,Cancelled,INR,103979.96
+TXN100303,CUST2075,Rahul Sharma,detimothy@example.net,9722037123,2024-09-13,2024-09-18,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,2.0,1459.0,10,525.24,0,Debit Card,Success,Cancelled,INR,3151.44
+TXN100304,CUST2214,অমিত দাস,matthewpanchal@example.org,3998723443,2024-03-01,2024-03-08,Hyderabad,Telangana,500001,Electronics,Samsung Galaxy M35,4.0,18914.0,0,13618.08,0,Credit Card,Refunded,Returned,INR,89323.08
+TXN100305,CUST2181,Amit Das,kritikaray@example.com,9864250255,2024-03-29,2024-03-30,Hyderabad,Telangana,500001,Fashion,Levi's Jeans,4.0,2289.0,10,1648.08,49,UPI,Failed,Returned,INR,9888.48
+TXN100306,CUST2067,Ekapad Nazareth,anitasetty@example.com,8067749079,2024-08-01,2024-08-03,Bengaluru,Karnataka,560001,Grocery,Fortune Rice 10kg,4.0,999.0,0,719.28,149,Wallet,Success,Shipped,INR,4715.28
+TXN100307,CUST2066,Priya Patel,chakrika50@example.com,,2024-01-12,2024-01-16,Bengaluru,Karnataka,560001,Electronics,Dell Inspiron 15,1.0,53071.0,0,9552.78,99,Credit Card,Pending,Cancelled,INR,62623.78
+TXN100308,CUST2194,राहुल शर्मा,forumbhat@example.net,4193686989,2024-07-09,2024-07-11,Kolkata,West Bengal,700001,Appliances,LG Refrigerator,2.0,38899.0,10,14003.64,49,Debit Card,Pending,Cancelled,INR,84120.84
+TXN100309,CUST2165,પ્રિયા પટેલ,nakulgole@example.com,98765,2024-05-19,2024-05-24,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,1.0,202.0,15,36.36,149,UPI,Refunded,Returned,INR,307.06
+TXN100310,CUST2085,Rahul Sharma,naveendevi@example.org,2923431868,2024-05-17,2024-05-20,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2127.0,0,382.86,99,Wallet,Success,Returned,INR,2509.86
+TXN100311,CUST2081,પ્રિયા પટેલ,yoshita32@example.org,8841489067,2024-08-19,2024-08-25,Mumbai,Maharashtra,400001,Electronics,Samsung Galaxy M35,3.0,19058.0,10,10291.32,0,Wallet,Refunded,Cancelled,INR,61796.92
+TXN100312,CUST2210,Priya Patel,horanathan@example.com,0597654742,2024-10-03,2024-10-06,Bengaluru,Karnataka,560001,Grocery,Fortune Rice 10kg,1.0,800.0,5,144.0,99,Debit Card,Refunded,Shipped,INR,953.0
+TXN100313,CUST2224,Rahul Sharma,anjaligupta@example.org,5801694031,2024-06-05,2024-06-09,Delhi,Delhi,110001,Books,Python Programming,1.0,879.0,0,158.22,0,Wallet,Pending,Cancelled,INR,1037.22
+TXN100314,CUST2181,राहुल शर्मा,bawasiddharth@example.org,0615997906,2024-01-08,2024-01-09,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,2.0,1576.0,5,567.36,99,UPI,Fail,Shipped,INR,3660.76
+TXN100315,CUST2030,પ્રિયા પટેલ,oni77@example.org,7869494968,2024-03-22,2024-03-25,Mumbai,Maharashtra,400001,Books,Python Programming,1.0,770.0,20,138.6,149,UPI,Pending,Shipped,INR,754.6
+TXN100316,CUST2049,Prisha Vohra,omishasachdeva@example.org,4341494204,2024-11-30,2024-12-03,Delhi,Delhi,110001,Electronics,Dell Inspiron 15,1.0,52915.0,15,9524.7,149,Wallet,Failed,Shipped,INR,-100.0
+TXN100317,CUST2196,Amit Das,chanderrachana@example.net,0000000000,2024-05-03,2024-05-05,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,3.0,1574.0,5,849.96,49,COD,Pending,Cancelled,INR,5434.86
+TXN100318,CUST2100,Rahul Sharma,sheregirik@example.net,1009448505,2024-09-08,2024-09-09,Bengaluru,Karnataka,560001,Electronics,Samsung Galaxy M35,3.0,19091.0,10,10309.14,99,Credit Card,Pending,Delivered,INR,61953.84
+TXN100319,CUST2096,Priya Patel,rattanrudra@example.org,6879402236,2024-03-07,2024-03-12,,Karnataka,560001,Books,Python Programming,1.0,866.0,10,155.88,49,Debit Card,Failed,Shipped,INR,1034.28
+TXN100320,CUST2037,Priya Patel,advika14@example.org,0873089108,2024-09-04,2024-09-07,Kolkata,West Bengal,700001,Beauty,Mamaearth Face Wash,1.0,368.0,15,66.24,149,Debit Card,Refunded,Shipped,INR,428.04
+TXN100321,CUST2138,Amit Das,modiamrita@example.net,7123825407,2024-03-31,2024-04-07,Delhi,Delhi,110001,Electronics,Dell Inspiron 15,4.0,52969.0,20,38137.68,99,Wallet,Refunded,Delivered,INR,207737.48
+TXN100322,CUST2233,ನೇಹಾ ರೆಡ್ಡಿ,praneel49@example.org,0767684239,2024-12-07,2024-12-13,Ahmedabad,Gujarat,380001,Fashion,Levi's Jeans,1.0,2113.0,15,380.34,99,COD,Success,Returned,INR,2225.39
+TXN100323,CUST2028,Rahul Sharma,tanaywalla@example.com,4197696987,2024-05-04,2024-05-10,Hyderabad,Telangana,500001,Fashion,Levi's Jeans,1.0,2267.0,5,408.06,0,COD,Failed,Shipped,INR,2660.71
+TXN100324,CUST2120,Amit Das,xalak04@example.net,0409884246,2024-03-16,2024-03-20,Bengaluru,Karnataka,560001,Grocery,Fortune Rice 10kg,3.0,991.0,10,535.14,99,COD,Refunded,Shipped,INR,3259.84
+TXN100325,CUST2010,Neha Reddy,vansha56@example.org,0337545776,2024-10-30,2024-10-31,Ahmedabad,Gujarat,380001,Appliances,LG Refrigerator,2.0,38995.0,10,14038.2,0,COD,Failed,Cancelled,INR,84229.2
+TXN100326,CUST2052,Neha Reddy,wasonharinakshi@example.net,0907677821,2024-12-31,2025-01-05,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,2.0,38941.0,15,14018.76,49,Debit Card,Refunded,Shipped,INR,80218.46
+TXN100327,CUST2038,Priya Patel,qshroff@example.com,4077100475,2024-08-09,2024-08-16,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,2.0,39015.0,15,14045.4,49,Debit Card,refund,Shipped,INR,80419.9
+TXN100328,CUST2116,પ્રિયા પટેલ,user@@gmail.com,0819211175,2024-07-04,2024-07-09,Hyderabad,Telangana,500001,Grocery,Fortune Rice 10kg,1.0,953.0,20,171.54,49,COD,Failed,Cancelled,INR,982.94
+TXN100329,CUST2191,ನೇಹಾ ರೆಡ್ಡಿ,harrison40@example.org,6179304814,2024-09-21,2024-09-22,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,1.0,344.0,5,61.92,99,Wallet,Success,Cancelled,INR,487.72
+TXN100330,CUST2206,राहुल शर्मा,aachalkeer@example.com,6011760301,2024-02-14,2024-02-20,Kolkata,West Bengal,700001,Electronics,Samsung Galaxy M35,2.0,19054.0,0,6859.44,49,Wallet,Failed,Returned,INR,44967.44
+TXN100331,CUST2208,Wazir Shroff,mohammed51@example.org,4109224894,2024-10-01,2024-09-30,Hyderabad,Telangana,500001,Electronics,Dell Inspiron 15,1.0,53020.0,0,9543.6,149,Credit Card,Pending,Returned,INR,62662.6
+TXN100332,CUST2068,Priya Patel,mohini98@example.net,5675913152,2024-07-30,2024-08-06,Hyderabad,Telangana,500001,Appliances,LG Refrigerator,2.0,39048.0,20,14057.28,99,UPI,Failed,Delivered,INR,76583.08
+TXN100333,CUST2034,Priya Patel,rameshkai@example.com,0320205694,2024-03-25,2024-03-26,,West Bengal,700001,Appliances,LG Refrigerator,1.0,38983.0,15,7016.94,0,Wallet,Failed,Delivered,INR,40152.49
+TXN100334,CUST2087,ನೇಹಾ ರೆಡ್ಡಿ,nomail,8298775462,2024-02-29,2024-03-06,Delhi,Delhi,110001,Electronics,Samsung Galaxy M35,1.0,19000.0,0,3420.0,49,Wallet,Pending,Delivered,INR,22420.0
+TXN100335,CUST2095,Amol Mital,rsankaran@example.com,1162179861,2024-09-05,2024-09-12,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,1.0,5055.0,10,909.9,49,UPI,Refunded,Cancelled,INR,5508.4
+TXN100336,CUST2065,राहुल शर्मा,enadkarni@example.com,4625461993,2024-12-11,2024-12-15,Hyderabad,Telangana,500001,Books,Python Programming,1.0,728.0,5,131.04,0,Debit Card,Refunded,Returned,INR,871.64
+TXN100337,CUST2212,Amit Das,omlakshmi@example.net,1794416137,2024-11-23,2024-11-29,Ahmedabad,Gujarat,380001,Grocery,Fortune Rice 10kg,2.0,865.0,20,311.4,49,,Success,Shipped,INR,1744.4
+TXN100338,CUST2119,Neha Reddy,fiyazsani@example.net,2010589324,2024-05-19,2024-05-26,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2266.0,5,407.88,99,Wallet,Pending,Shipped,INR,2659.58
+TXN100339,CUST2229,Amit Das,xavier63@example.org,4441580479,2024-12-07,2024-12-12,Kolkata,West Bengal,700001,Fashion,Levi's Jeans,1.0,2123.0,20,382.14,99,UPI,Success,Cancelled,INR,2080.54
+TXN100340,CUST2143,Elijah Raval,michael21@example.com,6364492678,2024-12-21,2024-12-22,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,2.0,1403.0,5,505.08,0,COD,Refunded,Returned,INR,3170.78
+TXN100341,CUST2013,Zashil Edwin,ishwarshere@example.org,5063321545,2024-06-06,2024-06-12,Kolkata,West Bengal,700001,Grocery,Fortune Rice 10kg,1.0,980.0,20,176.4,149,Debit Card,Pending,Delivered,INR,1009.4
+TXN100342,CUST2188,Chaman Dhar,dakshesh61@example.net,9686844565,2024-05-18,2024-05-24,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,2.0,999999.0,10,1804.68,49,Wallet,Success,Shipped,INR,10927.08
+TXN100343,CUST2205,Rahul Sharma,nidra83@example.org,999999999999,2024-08-16,2024-08-17,Kolkata,West Bengal,700001,Grocery,Fortune Rice 10kg,1.0,801.0,15,144.18,49,COD,Success,Cancelled,INR,924.03
+TXN100344,CUST2200,Amit Das,tlall@example.net,,2024-06-24,2024-06-28,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,2.0,1572.0,20,565.92,0,COD,Refunded,Returned,INR,3081.12
+TXN100345,CUST2056,Neha Reddy,bansalchameli@example.org,7416475866,2024-02-11,2024-02-15,Mumbai,Maharashtra,400001,Grocery,Fortune Rice 10kg,1.0,988.0,20,177.84,99,Wallet,Pending,Shipped,INR,1017.24
+TXN100346,CUST2023,ನೇಹಾ ರೆಡ್ಡಿ,harinakshivaidya@example.com,4918758865,2024-10-29,2024-11-04,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,,1529.0,15,825.66,0,Wallet,Pending,Cancelled,INR,4773.61
+TXN100347,CUST2216,Rahul Sharma,zsaxena@example.org,8424088896,2024-07-11,2024-07-13,Hydrabad,Telangana,500001,Fashion,Levi's Jeans,3.0,2140.0,15,1155.6,99,COD,Failed,Cancelled,INR,6661.6
+TXN100348,CUST2061,પ્રિયા પટેલ,rushil75@example.net,7717566788,2024-12-22,2024-12-24,Ahmedabad,Gujarat,380001,Appliances,LG Refrigerator,3.0,38938.0,0,21026.52,0,Wallet,Refunded,Delivered,INR,137840.52
+TXN100349,CUST2131,Rahul Sharma,chanakya82@example.net,0645288465,2024-02-06,2024-02-09,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,1.0,4926.0,5,886.68,149,Debit Card,Failed,Shipped,INR,5566.38
+TXN100350,CUST2095,Amit Das,abc@gmail,4723017864,2024-06-06,2024-06-13,,Gujarat,380001,Grocery,Fortune Rice 10kg,3.0,,10,447.12,0,Credit Card,Pending,Returned,INR,2682.72
+TXN100351,CUST2196,Rahul Sharma,nidhisavant@example.com,0185199613,2024-07-02,2024-07-09,Hyderabad,Telangana,500001,Appliances,LG Refrigerator,1.0,38935.0,5,7008.3,49,UPI,Success,Shipped,INR,43996.55
+TXN100352,CUST2176,Rahul Sharma,manderpushti@example.net,9592113615,2024-01-10,2024-01-17,Bengaluru,Karnataka,560001,Fashion,Levi's Jeans,1.0,2226.0,20,400.68,99,UPI,Failed,Returned,INR,2280.48
+TXN100353,CUST2193,Priya Patel,test@ gmail.com,1650195283,2024-01-30,2024-02-01,Delhi,Delhi,110001,Books,Python Programming,2.0,841.0,15,302.76,49,COD,Pending,Shipped,INR,1732.46
+TXN100354,CUST2153,Amit Das,samraabhimanyu@example.net,2137392625,2024-05-20,2024-05-26,Delhi,Delhi,110001,Books,Python Programming,2.0,731.0,0,263.16,0,COD,Failed,Returned,INR,1725.16
+TXN100355,CUST2042, Rahul Sharma ,charnimrat@example.net,1010508754,2024-11-12,2024-11-17,Bengaluru,Karnataka,560001,Grocery,Fortune Rice 10kg,2.0,,5,349.56,99,Wallet,Pending,Returned,INR,2293.46
+TXN100356,CUST2018,Amit Das,ranbir83@example.org,9779958434,2024-07-30,2024-07-31,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,4.0,1416.0,5,1019.52,149,Debit Card,Refunded,Shipped,INR,6400.32
+TXN100357,CUST2173,Amit Das,damyanti00@example.net,1169022537,2024-03-05,2024-03-07,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2283.0,15,410.94,149,Credit Card,Pending,Returned,INR,2450.49
+TXN100358,CUST2153,Rahul Sharma,kritikamadan@example.org,8864444141,2024-12-27,2025-01-01,Mumbai,Maharashtra,400001,Books,Python Programming,1.0,723.0,20,130.14,0,Debit Card,Pending,Cancelled,INR,708.54
+TXN100359,CUST2079,પ્રિયા પટેલ,xkunda@example.org,0588497751,2024-01-08,2024-01-14,Hyderabad,Telangana,500001,Grocery,Fortune Rice 10kg,3.0,991.0,20,535.14,0,COD,Refunded,Delivered,INR,2962.54
+TXN100360,CUST2210,Neha Reddy,sharafsamesh@example.com,1052393253,2024-04-03,2024-04-07,Mumbai,Maharashtra,400001,Books,Python Programming,1.0,871.0,20,156.78,49,Debit Card,Pending,Shipped,INR,853.58
+TXN100361,CUST2082,Bishakha Choudhry,akapadia@example.com,1057459769,2024-02-15,2024-02-19,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,1.0,,5,883.8,49,UPI,Pending,Shipped,INR,5647.3
+TXN100362,CUST2182,राहुल शर्मा,oprabhakar@example.com,1090436734,2024-01-11,2024-01-15,,West Bengal,700001,Fashion,Levi's Jeans,4.0,2216.0,5,1595.52,99,COD,Refunded,Delivered,INR,10065.32
+TXN100363,CUST2191,Neha Reddy,xdas@example.net,4743852809,2024-12-13,2024-12-16,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,3.0,1468.0,20,792.72,0,COD,,Returned,INR,4414.92
+TXN100364,CUST2071,Max Mishra,bdey@example.org,5704062011,2024-09-17,2024-09-22,Hyderabad,Telangana,500001,Beauty,Mamaearth Face Wash,1.0,280.0,15,50.4,99,Credit Card,Pending,Returned,INR,288.4
+TXN100365,CUST2235,Neha Reddy,thomas48@example.org,8720865314,2024-06-13,2024-06-17,Delhi,Delhi,110001,Books,Python Programming,1.0,853.0,5,153.54,149,UPI,Refunded,Delivered,INR,1062.89
+TXN100366,CUST2219,Rahul Sharma,sprabhu@example.com,6866929214,2024-10-28,2024-10-30,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2216.0,5,398.88,49,Credit Card,Pending,Shipped,INR,2553.08
+TXN100367,CUST2029,Priya Patel,samiqarin@example.net,9695728941,2024-12-05,2024-12-11,Bengaluru,Karnataka,560001,Electronics,Samsung Galaxy M35,1.0,19014.0,15,3422.52,99,Credit Card,Success,Cancelled,INR,19584.42
+TXN100368,CUST2085,ನೇಹಾ ರೆಡ್ಡಿ,nitaraganguly@example.com,5432269930,2024-10-04,2024-10-08,Kolkata,West Bengal,700001,Electronics,Samsung Galaxy M35,4.0,19074.0,15,13733.28,0,UPI,Refunded,Cancelled,INR,78683.88
+TXN100369,CUST2088,Neha Reddy,balhaardhaliwal@example.org,0000000000,2024-01-10,2024-01-11,Hyderabad,Telangana,500001,Appliances,LG Refrigerator,3.0,38901.0,5,21006.54,49,COD,Refunded,Returned,INR,131923.39
+TXN100370,CUST2029,Amit Das,nomail,5273160230,2024-06-04,2024-06-09,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,,52910.0,10,9523.8,0,,Refunded,Cancelled,INR,57191.8
+TXN100371,CUST2202,Amit Das,osarma@example.net,9590567357,2024-01-29,2024-02-03,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,1.0,5077.0,10,913.86,149,COD,Failed,Cancelled,INR,5532.16
+TXN100372,CUST2056,Timothy Yohannan,arinupadhyay@example.org,2410253604,2024-01-16,2024-01-21,Bengaluru,Karnataka,560001,Electronics,Samsung Galaxy M35,2.0,18919.0,15,6810.84,49,Credit Card,Failed,Shipped,INR,39072.14
+TXN100373,CUST2072,Rahul Sharma,utkarsh71@example.com,5664008810,2024-11-15,2024-11-21,Kolkata,West Bengal,700001,Fashion,Levi's Jeans,2.0,2193.0,15,789.48,99,UPI,Refunded,Shipped,INR,4566.58
+TXN100374,CUST2132,Garima Mand,naveenkrish@example.com,1218419438,2024-06-22,2024-06-29,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,1.0,1410.0,5,253.8,0,Wallet,Success,Delivered,INR,1642.3
+TXN100375,CUST2089,राहुल शर्मा,nairaarna@example.net,1206740333,2024-04-12,2024-04-13,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,,392.0,20,70.56,99,Credit Card,Success,Cancelled,INR,483.16
+TXN100376,CUST2206,Amit Das,awarrior@example.com,7647848251,2024-12-23,2024-12-27,Hydrabad,Delhi,110001,Grocery,Fortune Rice 10kg,1.0,843.0,5,151.74,49,Debit Card,Success,Delivered,INR,952.59
+TXN100377,CUST2013,Anusha Khosla,chahalpraneel@example.org,2112960783,2024-07-02,2024-07-09,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,53009.0,0,9541.62,99,COD,Pending,Delivered,INR,62599.62
+TXN100378,CUST2126,Kamya Lad,wazir33@example.net,9308910429,2024-04-15,2024-04-18,Delhi,Delhi,110001,Fashion,Nike Running Shoes,2.0,5005.0,15,1801.8,49,Wallet,Failed,Delivered,INR,10359.3
+TXN100379,CUST2013,Priya Patel,lkala@example.org,0184334737,2024-03-06,2024-03-07,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,2.0,19062.0,20,6862.32,49,Credit Card,Pending,Returned,INR,37361.52
+TXN100380,CUST2021,Rahul Sharma,jaindaksha@example.net,3291898207,2024-05-21,2024-05-28,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,1.0,1411.0,10,253.98,49,Credit Card,Success,Delivered,INR,1622.88
+TXN100381,CUST2135,Dalbir Sekhon,jagvijani@example.com,7423828454,2024-06-24,2024-06-29,Kolkata,West Bengal,700001,Electronics,Dell Inspiron 15,1.0,53099.0,0,9557.82,99,UPI,Success,Shipped,INR,62705.82
+TXN100382,CUST2232,Neha Reddy,eshroff@example.com,7242231740,2024-09-28,2024-10-02,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,1.0,19052.0,10,3429.36,49,Credit Card,Refunded,Cancelled,INR,20576.16
+TXN100383,CUST2034,Amit Das,sarnaomya@example.com,5081297209,2024-10-25,2024-10-31,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,4.0,234.0,20,168.48,49,Debit Card,,Cancelled,INR,966.28
+TXN100384,CUST2143,Rahul Sharma,bishakha38@example.org,9220720724,2024-10-14,2024-10-19,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,1.0,5075.0,20,913.5,49,Wallet,Refunded,Returned,INR,5072.5
+TXN100385,CUST2006, Priya Patel ,santethan@example.net,0000000000,2024-11-14,2024-11-17,Kolkata,West Bengal,700001,Appliances,LG Refrigerator,3.0,38941.0,20,21028.14,149,Debit Card,Failed,Returned,INR,114535.54
+TXN100386,CUST2145,Abhiram Chandra,pahalsehgal@example.com,5245914090,2024-02-28,2024-03-06,,Karnataka,560001,Fashion,Nike Running Shoes,2.0,4935.0,15,1776.6,0,Wallet,Pending,Returned,INR,10166.1
+TXN100387,CUST2198,Rahul Sharma,max10@example.com,5125296956,2024-12-18,2024-12-23,Bengaluru,Karnataka,560001,Electronics,Boat Rockerz 450,1.0,1494.0,0,268.92,49,COD,Failed,Shipped,INR,1762.92
+TXN100388,CUST2220,પ્રિયા પટેલ,xtrivedi@example.net,6306057976,2024-10-15,2024-10-16,Delhi,Delhi,110001,Grocery,Fortune Rice 10kg,3.0,894.0,10,482.76,149,Wallet,Pending,Returned,INR,2995.56
+TXN100389,CUST2026,অমিত দাস,devika26@example.com,9587254272,2024-01-13,2024-01-17,Delhi,Delhi,110001,Appliances,LG Refrigerator,2.0,39081.0,10,14069.16,99,Credit Card,Success,Cancelled,INR,84513.96
+TXN100390,CUST2160,Priya Patel,dhruv19@example.org,1168723865,2024-08-30,2024-09-04,Hyderabad,Telangana,500001,Grocery,Fortune Rice 10kg,1.0,988.0,10,177.84,49,Credit Card,Failed,Shipped,INR,1166.04
+TXN100391,CUST2237,राहुल शर्मा,ethan90@example.net,4814109918,2024-02-19,2024-02-24,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,3.0,5030.0,10,2716.2,99,UPI,Failed,Delivered,INR,16346.2
+TXN100392,CUST2155,অমিত দাস,vedatank@example.net,0260821917,2024-10-08,2024-10-11,Hyderabad,Telangana,500001,Appliances,LG Refrigerator,5.0,38899.0,0,35009.1,49,COD, pending ,Cancelled,INR,229553.1
+TXN100393,CUST2154,Rahul Sharma,jairaj73@example.com,1390367080,2024-05-08,2024-05-09,Delhi,Delhi,110001,Appliances,LG Refrigerator,4.0,39079.0,20,28136.88,149,COD,Failed,Delivered,INR,153189.68
+TXN100394,CUST2064,Priya Patel,umanggoyal@example.org,9149763762,2024-07-15,2024-07-22,Delhi,Delhi,110001,Fashion,Levi's Jeans,1.0,2121.0,15,381.78,99,Debit Card,Refunded,Delivered,INR,2184.63
+TXN100395,CUST2071,राहुल शर्मा,abdul47@example.com,9147724290,2024-03-11,2024-03-16,Bengaluru,Karnataka,560001,Electronics,Samsung Galaxy M35,1.0,250000.0,5,3421.98,49,,Success,Cancelled,INR,21482.43
+TXN100396,CUST2156,પ્રિયા પટેલ,,98765,2024-08-08,2024-08-15,Mumbai,Maharashtra,400001,Electronics,Samsung Galaxy M35,2.0,19087.0,5,6871.32,149,Wallet,Failed,Delivered,INR,43185.62
+TXN100123,CUST2010,Rahul Sharma,tanejabhavani@example.com,2653240154,2024-10-05,2024-10-12,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2220.0,0,399.6,149,Debit Card,Pending,Cancelled,INR,2668.6
+TXN100398,CUST2228,Amit Das,amaradugar@example.org,2527583278,2024-08-13,2024-08-15,Bengaluru,Karnataka,560001,Books,Python Programming,1.0,893.0,5,160.74,49,Credit Card,Pending,Delivered,INR,1058.09
+TXN100123,CUST2122,પ્રિયા પટેલ,zchoudhry@example.org,6624524082,2024-11-26,2024-12-02,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,,2267.0,20,408.06,149,UPI,Success,Shipped,INR,2221.66
+TXN100400,CUST2107,Rahul Sharma,sanijyoti@example.com,3688423434,2024-03-13,2024-03-17,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,5.0,4909.0,5,4418.1,49,COD,Refunded,Delivered,INR,27735.85
+TXN100401,CUST2006,Priya Patel,jayaramanforum@example.net,0000000000,2024-03-09,2024-03-14,Delhi,Delhi,110001,Electronics,Samsung Galaxy M35,2.0,19084.0,5,6870.24,149,Credit Card,Failed,Shipped,INR,43178.84
+TXN100402,CUST2112,Amit Das,rehaanlalla@example.net,4692472199,2024-04-03,2024-04-04,Ahmedabad,Gujarat,380001,Grocery,Fortune Rice 10kg,1.0,999.0,10,179.82,149,UPI,Pending,Returned,INR,1127.92
+TXN100403,CUST2209, Rahul Sharma ,ishwar87@example.net,7596835582,2024-03-04,2024-03-05,Delhi,Delhi,110001,Electronics,Dell Inspiron 15,2.0,52920.0,15,19051.2,99,COD,Refunded,Cancelled,INR,109114.2
+TXN100404,CUST2192,Amit Das,bathhamsini@example.org,2788576285,2024-07-19,2024-07-26,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2284.0,5,411.12,0,Credit Card,Failed,Delivered,INR,2629.92
+TXN100405,CUST2192,অমিত দাস,shahadvaith@example.net,6168923052,2024-07-07,2024-07-11,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,1.0,203.0,20,36.54,49,Debit Card,Success,Returned,INR,297.94
+TXN100406,CUST2163,Rahul Sharma,aarnamalhotra@example.com,5598371020,2024-01-10,2024-01-11,Mumbai,Maharashtra,400001,Electronics,Samsung Galaxy M35,1.0,19044.0,10,3427.92,149,Debit Card,Success,Shipped,INR,20616.52
+TXN100407,CUST2193,राहुल शर्मा,wableaayush@example.com,8034578384,2024-08-06,2024-08-13,Ahmedabad,Gujarat,380001,Fashion,Levi's Jeans,3.0,2163.0,10,1168.02,149,Wallet,Failed,Returned,INR,7057.12
+TXN100408,CUST2165,Vihaan Datta,pradhanupma@example.org,4147226756,2024-07-02,2024-07-05,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,1.0,1571.0,0,282.78,49,Wallet,Success,Cancelled,INR,1952.78
+TXN100409,CUST2214,Neha Reddy,mukhopadhyayindrajit@example.net,6495891715,2024-01-02,2024-01-05, delhi,Karnataka,560001,Fashion,Nike Running Shoes,1.0,5022.0,20,903.96,149,Wallet,Refunded,Delivered,INR,4970.56
+TXN100410,CUST2164,Rahul Sharma,pahal74@example.com,7283962542,2024-09-22,2024-09-28,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,1.0,1507.0,5,271.26,49,UPI,Refunded,Cancelled,INR,1801.91
+TXN100411,CUST2240,પ્રિયા પટેલ,hredhaan41@example.net,8917149025,2024-12-24,2024-12-31,Delhi,Delhi,110001,Electronics,Samsung Galaxy M35,1.0,18967.0,10,3414.06,149,COD,Failed,Delivered,INR,20583.36
+TXN100412,CUST2094,Neha Reddy,sratti@example.net,5307009062,2024-01-31,2024-02-01,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,1.0,38998.0,5,7019.64,0,COD,Pending,Cancelled,INR,44067.74
+TXN100413,CUST2171,Priya Patel,shivanilad@example.net,8062933204,2024-11-20,2024-11-23,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,1.0,4994.0,15,898.92,149,Credit Card,Failed,Cancelled,INR,5143.82
+TXN100414,CUST2133,Keya Bhatt,teerthkota@example.net,1551103223,2024-10-16,2024-10-21,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,2.0,,10,14029.92,99,Credit Card,Refunded,Shipped,INR,84278.52
+TXN100415,CUST2235,Neha Reddy,moommen@example.com,5800674229,2024-08-06,2024-08-13,Kolkata,West Bengal,700001,Fashion,Levi's Jeans,2.0,2141.0,0,770.76,49,UPI,Success,Delivered,INR,5101.76
+TXN100416,CUST2085,Kala Lad,tahuja@example.com,0784771439,2024-10-28,2024-11-04,Bangalore,Telangana,500001,Grocery,Fortune Rice 10kg,1.0,838.0,5,150.84,99,UPI,Success,Returned,INR,1045.94
+TXN100417,CUST2108,Neha Reddy,laban53@example.com,4087256093,2024-01-22,2024-01-29,Ahmedabad,Gujarat,380001,Books,Python Programming,4.0,999999.0,15,516.24,99,Credit Card,Success,Shipped,INR,3053.04
+TXN100418,CUST2221,Ganga Sood,mugdhasankaran@example.net,9854477868,2024-09-12,2024-09-13,Delhi,Delhi,110001,Appliances,LG Refrigerator,5.0,38907.0,15,35016.3,149,Debit Card,Failed,Delivered,INR,200470.05
+TXN100419,CUST2189,Sai Kamdar,,3292215884,2024-02-28,2024-03-04,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,4.0,38938.0,15,28035.36,49,Credit Card,SUCCESS,Cancelled,INR,160424.56
+TXN100420,CUST2203,પ્રિયા પટેલ,xdhaliwal@example.com,1644474199,2024-08-19,2024-08-24,Mumbai,Maharashtra,400001,Electronics,Dell Inspiron 15,4.0,52910.0,20,38095.2,0,Credit Card,Refunded,Cancelled,INR,207407.2
+TXN100421,CUST2225,ನೇಹಾ ರೆಡ್ಡಿ,bmand@example.com,8838009094,2024-11-06,2024-11-11,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,1.0,39010.0,15,7021.8,0,Credit Card,Failed,Shipped,INR,40229.3
+TXN100422,CUST2013,Yatin Koshy,fradotella@example.net,8698867107,2024-08-01,2024-08-08,Kolkata,West Bengal,700001,Electronics,Samsung Galaxy M35,4.0,18955.0,5,13647.6,0,Credit Card,Refunded,Returned,INR,85676.6
+TXN100423,CUST2167,Tanveer Som,adityasaini@example.org,4247467868,2024-04-14,2024-04-19,Ahmedabad,Gujarat,380001,Books,Python Programming,2.0,808.0,10,290.88,0,Wallet,Success,Returned,INR,1745.28
+TXN100424,CUST2213,অমিত দাস,vihaan92@example.com,1893153666,2024-06-29,2024-07-01,Delhi,Delhi,110001,Books,Python Programming,,873.0,20,785.7,49,Debit Card,Pending,Cancelled,INR,4376.7
+TXN100425,CUST2238,Priya Patel,wkapadia@example.org,1241376680,2024-06-08,2024-06-10,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,4.0,4970.0,20,3578.4,149,Debit Card,Success,Returned,INR,19482.4
+TXN100426,CUST2081,ನೇಹಾ ರೆಡ್ಡಿ,bhavika22@example.net,8545510353,2024-03-20,2024-03-22,Delhi,Delhi,110001,Electronics,Boat Rockerz 450,1.0,1410.0,10,253.8,0,Credit Card,Success,Returned,INR,1522.8
+TXN100427,CUST2106,Rahul Sharma,falakghose@example.net,5717475589,2024-04-29,2024-05-05,,Delhi,110001,Fashion,Levi's Jeans,3.0,2272.0,15,1226.88,0,Credit Card,Failed,Returned,INR,7119.48
+TXN100428,CUST2119,Priya Patel,comarwriddhish@example.org,5323554848,2024-07-07,2024-07-09,Ahmedabad,Gujarat,380001,Grocery,Fortune Rice 10kg,1.0,980.0,10,176.4,149,COD,Success,Delivered,INR,1107.4
+TXN100429,CUST2157, Amit Das ,devikarege@example.net,1417563522,2024-12-02,2024-12-03,Ahmedabad,Gujarat,380001,Fashion,Levi's Jeans,1.0,2261.0,5,406.98,49,Credit Card,Failed,Shipped,INR,2554.93
+TXN100430,CUST2135,Ethan Halder,kalayagnesh@example.net,1907252569,2024-04-16,2024-04-15,Kolkata,West Bengal,700001,Electronics,Samsung Galaxy M35,3.0,18932.0,10,10223.28,49,Credit Card,Pending,Cancelled,INR,61339.68
+TXN100431,CUST2168,Neha Reddy,mallickpahal@example.org,3693599672,2024-07-19,2024-07-26,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,2.0,53060.0,0,19101.6,99,,Pending,Delivered,INR,125270.6
+TXN100432,CUST2121,Neha Reddy,boraanita@example.com,3456088685,2024-01-25,2024-01-29,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,1.0,18987.0,5,3417.66,0,Debit Card,Pending,Delivered,INR,21554.31
+TXN100433,CUST2091, Rahul Sharma ,dhingrasara@example.net,8375532227,2024-04-15,2024-04-20,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,52962.0,10,9533.16,49,UPI,Pending,Shipped,INR,57297.96
+TXN100434,CUST2008,Rahul Sharma,sainiekani@example.net,4176474717,2024-06-01,2024-06-07,DELHI,Telangana,500001,Appliances,LG Refrigerator,2.0,38990.0,0,14036.4,99,Credit Card,Success,Cancelled,INR,92016.4
+TXN100435,CUST2232,Priya Patel,karianmol@example.net,9738899764,2024-09-20,2024-09-25,Bengaluru,Karnataka,560001,Grocery,Fortune Rice 10kg,3.0,964.0,20,520.56,49,Debit Card,Pending,Shipped,INR,2883.16
+TXN100436,CUST2118,Neha Reddy,bhavika59@example.org,8092434743,2024-04-28,2024-05-04,Bengaluru,Karnataka,560001,Electronics,Samsung Galaxy M35,1.0,250000.0,15,3422.52,99,Wallet,Success,Shipped,INR,19584.42
+TXN100437,CUST2058,Rahul Sharma,aryavarenya@example.org,8239656922,2024-05-02,2024-05-09,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,3.0,2278.0,20,1230.12,99,Credit Card,Refunded,Cancelled,INR,6796.32
+TXN100438,CUST2120,Neha Reddy,snehamandal@example.net,7774415305,2024-07-12,2024-07-19,Kolkata,West Bengal,700001,Grocery,Fortune Rice 10kg,4.0,800.0,0,576.0,49,Wallet,Failed,Cancelled,INR,3825.0
+TXN100439,CUST2032,Priya Patel,idass@example.net,4429670758,2024-08-13,2024-08-15,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,6.0,5079.0,0,5485.32,0,Wallet,Success,Shipped,INR,36058.32
+TXN100440,CUST2055,राहुल शर्मा,nikitawagle@example.com,4616205037,2024-05-21,2024-05-25,Mumbai,Maharashtra,400001,Electronics,Boat Rockerz 450,,1492.0,5,537.12,149,UPI,Pending,Delivered,INR,3371.92
+TXN100441,CUST2043,Isha Bhatti,zansisodhi@example.net,0859352138,2024-09-30,2024-10-02,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,1.0,39096.0,0,7037.28,99,Wallet,Refunded,Cancelled,INR,46182.28
+TXN100442,CUST2137,પ્રિયા પટેલ,sainiansh@example.com,3595752003,2024-08-26,2024-08-27,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,2.0,1465.0,10,527.4,149,Wallet,Refunded,Delivered,INR,3213.4
+TXN100443,CUST2079,Mohammed Kalita,sathvik85@example.org,6424938123,2024-10-13,2024-10-19,Mumbai,Maharashtra,400001,Electronics,Samsung Galaxy M35,1.0,19033.0,20,3425.94,49,UPI,Refunded,Cancelled,INR,18751.34
+TXN100444,CUST2017,Priya Patel,,4439803532,2024-09-20,2024-09-22,Delhi,Delhi,110001,Appliances,LG Refrigerator,3.0,38899.0,10,21005.46,0,COD,Failed,Cancelled,INR,126032.76
+TXN100445,CUST2122,Rahul Sharma,nomail,4791857777,2024-12-21,2024-12-24,Delhi,Delhi,110001,Electronics,Dell Inspiron 15,3.0,53045.0,10,28644.3,99,Wallet,Success,Cancelled,INR,171914.8
+TXN100446,CUST2055,Amit Das,balendra12@example.org,2954211930,2024-10-20,2024-10-22,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,2.0,5097.0,15,1834.92,149,Wallet,Success,Returned,INR,10499.82
+TXN100447,CUST2081,Rahul Sharma,aggarwalsai@example.net,999999999999,2024-10-20,2024-10-23,Kolkata,West Bengal,700001,Grocery,Fortune Rice 10kg,2.0,984.0,15,354.24,49,UPI,Success,Cancelled,INR,2076.04
+TXN100448,CUST2135,Neha Reddy,ayaan39@example.org,3558483873,2024-07-01,2024-07-05,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,2.0,53088.0,10,19111.68,0,COD,Refunded,Cancelled,INR,114719.08
+TXN100449,CUST2112,অমিত দাস,shankerkashvi@example.com,3553332182,2024-01-22,2024-01-28,Kolkata,West Bengal,700001,Beauty,Mamaearth Face Wash,3.0,280.0,5,151.2,49,Debit Card,Success,Delivered,INR,998.2
+TXN100450,CUST2217,राहुल शर्मा,darsh08@example.com,8298432643,2024-09-16,2024-09-23,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,1.0,38979.0,10,7016.22,0,COD,Pending,Cancelled,INR,42146.32
+TXN100451,CUST2054,Priya Patel,kmander@example.org,5183163123,2024-05-10,2024-05-16,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,4.0,1434.0,5,1032.48,149,Wallet,,Delivered,INR,6580.68
+TXN100452,CUST2109,অমিত দাস,tarak38@example.com,7203599949,2024-10-20,2024-10-21,Bengaluru,Karnataka,560001,Fashion,Levi's Jeans,2.0,2228.0,10,802.08,49,,Refunded,Shipped,INR,4861.48
+TXN100453,CUST2035,Priya Patel,ayushmandeep@example.net,7492599973,2024-12-25,2024-12-29,Delhi,Delhi,110001,Fashion,Nike Running Shoes,1.0,999999.0,10,889.2,149,Wallet,Pending,Shipped,INR,5335.2
+TXN100454,CUST2092,Priya Patel,wakeeta06@example.com,0125668527,2024-10-27,2024-11-01,Bengaluru,Karnataka,560001,Fashion,Levi's Jeans,2.0,2280.0,10,820.8,149,COD,,Delivered,INR,4924.8
+TXN100455,CUST2076,Neha Reddy,settyaditya@example.org,4781098595,2024-04-15,2024-04-19,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,1.0,5050.0,10,909.0,149,COD,Success,Cancelled,INR,5553.0
+TXN100456,CUST2141,Amit Das,samaisaac@example.org,8542143805,2024-09-15,2024-09-18,Delhi,Delhi,110001,Electronics,Dell Inspiron 15,2.0,52989.0,5,19076.04,149,UPI,Pending,Cancelled,INR,119755.14
+TXN100457,CUST2059, Rahul Sharma ,,7359660240,2024-01-06,2024-01-12,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,1.0,53063.0,20,9551.34,99,Wallet,Refunded,Delivered,INR,52001.74
+TXN100458,CUST2167,Amit Das,yastiom@example.org,,2024-12-31,2025-01-02,Delhi,Delhi,110001,Grocery,Fortune Rice 10kg,4.0,843.0,0,606.96,149,Credit Card,,Cancelled,INR,4027.96
+TXN100459,CUST2123, Priya Patel ,rpatel@example.org,,2024-06-16,2024-06-23,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,1.0,1447.0,0,260.46,99,COD,Refunded,Delivered,INR,1756.46
+TXN100460,CUST2082,राहुल शर्मा,mugdha44@example.com,9225882567,2024-06-23,2024-06-28,Hyderabad,Telangana,500001,Fashion,Levi's Jeans,3.0,2251.0,5,1215.54,149,COD,Refunded,Cancelled,INR,7679.89
+TXN100461,CUST2117,પ્રિયા પટેલ,ideol@example.com,9972370806,2024-08-12,2024-08-19,Hyderabad,Telangana,500001,Electronics,Samsung Galaxy M35,2.0,19012.0,10,6844.32,49,UPI,Failed,Returned,INR,41164.92
+TXN100462,CUST2178,Neha Reddy,vbhakta@example.net,0119000902,2024-10-07,2024-10-10,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,3.0,18980.0,5,10249.2,99,Wallet,SUCCESS,Delivered,INR,64342.2
+TXN100463,CUST2236,Priya Patel,gmorar@example.com,9046291101,2024-02-07,2024-02-14,Mumbai,Maharashtra,400001,Electronics,Dell Inspiron 15,7.0,52991.0,20,66768.66,49,Debit Card,Pending,Delivered,INR,363567.26
+TXN100464,CUST2048,Jacob Deep,charita64@example.net,6616568419,2024-11-20,2024-11-21,Delhi,Delhi,110001,Beauty,Mamaearth Face Wash,1.0,232.0,0,41.76,0,Debit Card,Refunded,Shipped,INR,273.76
+TXN100123,CUST2224,Daniel Sani,desaijagdish@example.org,8378557875,2024-10-20,2024-10-24,Bengaluru,Karnataka,560001,Books,Python Programming,1.0,850.0,0,153.0,149,Debit Card,Success,Delivered,INR,1003.0
+TXN100466,CUST2161, Amit Das ,balhaar24@example.net,6154217092,2024-08-28,2024-08-29,Ahmedabad,Gujarat,380001,Appliances,LG Refrigerator,,38985.0,5,14034.6,49,Debit Card,Failed,Shipped,INR,88106.1
+TXN100467,CUST2202,Amit Das,kamyapai@example.net,6456562567,2024-02-02,2024-02-08,Ahmedabad,Gujarat,380001,Fashion,Nike Running Shoes,1.0,4907.0,0,883.26,99,UPI,Refunded,Delivered,INR,5839.26
+TXN100468,CUST2124,Rahul Sharma,qsen@example.net,2692528616,2024-12-07,2024-12-12,Mumbai,Maharashtra,400001,Books,Python Programming,2.0,762.0,20,274.32,149,Wallet,Success,Delivered,INR,1542.52
+TXN100469,CUST2148,Priya Patel,banjeetkumar@example.org,3895696201,2024-07-16,2024-07-20,Ahmedabad,Gujarat,380001,Beauty,Mamaearth Face Wash,1.0,296.0,10,53.28,99,,Pending,Shipped,INR,319.68
+TXN100470,CUST2244,Rahul Sharma,unaik@example.org,2427817847,2024-05-02,2024-05-04,Hyderabad,Telangana,500001,Beauty,Mamaearth Face Wash,2.0,337.0,15,121.32,99,UPI,Success,Cancelled,INR,694.22
+TXN100471,CUST2174,Rahul Sharma,moreanya@example.net,5487662190,2024-10-20,2024-10-27,Bengaluru,Karnataka,560001,Appliances,LG Refrigerator,2.0,38999.0,10,14039.64,149,Wallet,Pending,Returned,INR,84237.84
+TXN100472,CUST2105,Hema Sathe,george29@example.net,8080162037,2024-05-07,2024-05-14,Mumbai,Maharashtra,400001,Fashion,Nike Running Shoes,1.0,5046.0,0,908.28,149,UPI,Pending,Cancelled,INR,5954.28
+TXN100123,CUST2020,Neha Reddy,omishaghose@example.com,7371767167,2024-11-23,2024-11-27,Bengaluru,Karnataka,560001,Beauty,Mamaearth Face Wash,3.0,348.0,20,187.92,49,Debit Card,Success,Shipped,INR,1122.12
+TXN100474,CUST2103, Rahul Sharma ,isaac26@example.net,3922599684,2024-02-13,2024-02-16,Ahmedabad,Gujarat,380001,Books,Python Programming,2.0,,20,311.4,99,COD,Failed,Returned,INR,1794.4
+TXN100475,CUST2023,राहुल शर्मा,kdugar@example.net,2960865961,2024-02-22,2024-02-24,Bengaluru,Karnataka,560001,Electronics,Dell Inspiron 15,2.0,53012.0,20,19084.32,49,Wallet,Failed,Cancelled,INR,103903.52
+TXN100476,CUST2120,Rahul Sharma,xbora@example.com,2006123997,2024-09-03,2024-09-09,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,2.0,1500.0,15,540.0,49,COD,Success,Shipped,INR,3139.0
+TXN100477,CUST2080,Priya Patel,sandhucharan@example.com,5825736161,2024-07-18,2024-07-20,Ahmedabad,Gujarat,380001,Electronics,Dell Inspiron 15,2.0,52933.0,5,19055.88,0,Wallet,Success,Cancelled,INR,119727.58
+TXN100478,CUST2066,પ્રિયા પટેલ,guptaaryan@example.org,0724862862,2024-04-04,2024-04-11,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,2.0,4980.0,10,1792.8,99,UPI,Pending,Delivered,INR,10855.8
+TXN100479,CUST2146,Lila Pandey,johalshaurya@example.org,0558726045,2024-04-04,2024-04-07,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,5.0,19080.0,15,17172.0,99,COD,Refunded,Returned,INR,98361.0
+TXN100480,CUST2191,Neha Reddy,merchantoviya@example.net,0364955943,2024-12-19,2024-12-21,Delhi,Delhi,110001,Books,Python Programming,1.0,802.0,0,144.36,49,Credit Card,success,Delivered,INR,946.36
+TXN100481,CUST2120, Amit Das ,ytoor@example.org,5488160935,2024-11-09,2024-11-10,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,3.0,1475.0,15,796.5,99,Wallet,Refunded,Returned,INR,4656.75
+TXN100482,CUST2205,राहुल शर्मा,ranbirvirk@example.org,5008193641,2024-03-16,2024-03-23,Ahmedabad,Gujarat,380001,Fashion,Nike Running Shoes,2.0,4961.0,0,1785.96,0,Credit Card,Failed,Returned,INR,11806.96
+TXN100483,CUST2184,Priya Patel,ekalingapurohit@example.org,5893064189,2024-01-10,2024-01-14,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,4.0,4948.0,5,3562.56,149,Debit Card,Failed,Returned,INR,22413.96
+TXN100484,CUST2038,Jeevika Desai,qmutti@example.org,7336077837,2024-07-22,2024-07-25,Hyderabad,Telangana,500001,Electronics,Boat Rockerz 450,1.0,1586.0,15,285.48,149,Credit Card,Failed,Returned,INR,1732.58
+TXN100485,CUST2046,Simon Krishnamurthy,pthakkar@example.org,3050336101,2024-01-23,2024-01-30,Hyderabad,Telangana,500001,Grocery,Fortune Rice 10kg,3.0,998.0,0,538.92,49,Wallet,Refunded,Returned,INR,3581.92
+TXN100486,CUST2110,Priya Patel,atak@example.org,9378176870,2024-12-31,2025-01-01,Ahmedabad,Gujarat,380001,Beauty,Mamaearth Face Wash,2.0,215.0,20,77.4,0,COD,Success,Shipped,INR,421.4
+TXN100487,CUST2024,Rahul Sharma,avi03@example.net,3091250993,2024-02-02,2024-02-08,Hyderabad,Telangana,500001,Books,Python Programming,3.0,699.0,20,377.46,0,Credit Card,Success,Cancelled,INR,2154.06
+TXN100488,CUST2019,Sara Tara,bwason@example.net,0777801595,2024-11-01,2024-11-06,Bangalore,Karnataka,560001,Appliances,LG Refrigerator,1.0,39085.0,0,7035.3,149,Credit Card,Failed,Cancelled,INR,46120.3
+TXN100489,CUST2118, অমিত দাস ,kkant@example.net,0468949122,2024-05-29,2024-06-03,,Delhi,110001,Books,Python Programming,1.0,,0,137.88,49,UPI,Refunded,Cancelled,INR,1002.88
+TXN100123,CUST2179,Sara Parikh,ranveerben@example.com,2903227341,2024-06-19,2024-06-20,Hyderabad,Telangana,500001,Beauty,Mamaearth Face Wash,1.0,268.0,15,48.24,99,Debit Card,Pending,Delivered,INR,325.04
+TXN100491,CUST2058,Amit Das,reddyvasatika@example.net,6656469369,2024-09-23,2024-09-29,Delhi,Delhi,110001,Fashion,Nike Running Shoes,3.0,5016.0,0,2708.64,0,Credit Card,Refunded,Delivered,INR,17855.64
+TXN100492,CUST2086,Sai Devan,gaurangborra@example.org,6390577422,2024-06-20,2024-06-23,Kolkata,West Bengal,700001,Fashion,Nike Running Shoes,3.0,4938.0,5,2666.52,0,Wallet,Failed,Returned,INR,16739.82
+TXN100493,CUST2065,Amit Das,butalasamuel@example.org,0812677876,2024-04-22,2024-04-23,Delhi,Delhi,110001,Electronics,Samsung Galaxy M35,1.0,18962.0,20,3413.16,149,UPI,Success,Delivered,INR,18681.76
+TXN100494,CUST2192,ನೇಹಾ ರೆಡ್ಡಿ,dashpatrick@example.net,3700359573,2024-09-10,2024-09-17,Hyderabad,Telangana,500001,Fashion,Nike Running Shoes,4.0,4912.0,20,3536.64,0,Debit Card,Success,Cancelled,INR,19354.04
+TXN100495,CUST2097,Rahul Sharma,qsankaran@example.com,0840082381,2024-06-03,2024-06-06,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,1.0,38925.0,10,7006.5,0,UPI,Refunded,Delivered,INR,42039.0
+TXN100496,CUST2004,Priya Patel,anika20@example.com,3402672357,2024-04-07,2024-04-10,Bengaluru,Karnataka,560001,Fashion,Nike Running Shoes,2.0,5045.0,15,1816.2,0,COD,Failed,Delivered,INR,10441.7
+TXN100497,CUST2082,राहुल शर्मा,khuranasamar@example.com,0457991606,2024-04-09,2024-04-13,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,4.0,276.0,10,198.72,0,Wallet,Failed,Shipped,INR,1241.32
+TXN100498,CUST2129,Rahul Sharma,bbora@example.com,9712377207,2024-12-02,2024-12-08,Delhi,Delhi,110001,Electronics,Samsung Galaxy M35,2.0,19022.0,20,6847.92,99,Debit Card,Failed,Returned,INR,37332.12
+TXN100499,CUST2168,অমিত দাস,jacksonkurian@example.org,8995303173,2024-09-30,2024-10-04,Mumbai,Maharashtra,400001,Appliances,LG Refrigerator,1.0,38959.0,20,7012.62,149,Debit Card,Pending,Delivered,INR,38278.82
+TXN100304,CUST2214,অমিত দাস,matthewpanchal@example.org,3998723443,2024-03-01,2024-03-08,Hyderabad,Telangana,500001,Electronics,Samsung Galaxy M35,4.0,18914.0,0,13618.08,0,Credit Card,Refunded,Returned,INR,89323.08
+TXN100340,CUST2143,Elijah Raval,michael21@example.com,6364492678,2024-12-21,2024-12-22,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,2.0,1403.0,5,505.08,0,COD,Refunded,Returned,INR,3170.78
+TXN100047,CUST2023,Priya Patel,laban77@example.net,5639285546,2024-12-14,2024-12-15,Bengaluru,Karnataka,560001,Books,Python Programming,2.0,802.0,15,288.72,0,Credit Card,Pending,Shipped,INR,1751.12
+TXN100067,CUST2017,Priya Patel,boraanvi@example.net,5750502706,2024-07-16,2024-07-21,Kolkata,West Bengal,700001,Electronics,Boat Rockerz 450,1.0,1505.0,0,270.9,99,COD,Pending,Shipped,INR,1874.9
+TXN100479,CUST2146,Lila Pandey,johalshaurya@example.org,0558726045,2024-04-04,2024-04-07,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,5.0,19080.0,15,17172.0,99,COD,Refunded,Returned,INR,98361.0
+TXN100485,CUST2046,Simon Krishnamurthy,pthakkar@example.org,3050336101,2024-01-23,2024-01-30,Hyderabad,Telangana,500001,Grocery,Fortune Rice 10kg,3.0,998.0,0,538.92,49,Wallet,Refunded,Returned,INR,3581.92
+TXN100310,CUST2085,Rahul Sharma,naveendevi@example.org,2923431868,2024-05-17,2024-05-20,Mumbai,Maharashtra,400001,Fashion,Levi's Jeans,1.0,2127.0,0,382.86,99,Wallet,Success,Returned,INR,2509.86
+TXN100031,CUST2189,Rahul Sharma,vartychatresh@example.com,8579330792,2024-12-06,2024-12-09,Delhi,Delhi,110001,Books,Python Programming,1.0,891.0,0,160.38,0,Credit Card,Fail,Shipped,INR,1150.38
+TXN100249,CUST2075,Amit Das,kannanpooja@example.com,5630259181,2024-06-20,2024-06-25,Kolkata,West Bengal,700001,Appliances,LG Refrigerator,2.0,38928.0,5,14014.08,49,Wallet,Pending,Shipped,INR,87977.28
+TXN100090,CUST2073,ನೇಹಾ ರೆಡ್ಡಿ,btiwari@example.com,3707199806,2024-10-28,2024-10-31,Ahmedabad,Gujarat,380001,Fashion,Nike Running Shoes,1.0,5049.0,10,908.82,149,Wallet,Failed,Returned,INR,5452.92
+TXN100322,CUST2233,ನೇಹಾ ರೆಡ್ಡಿ,praneel49@example.org,0767684239,2024-12-07,2024-12-13,Ahmedabad,Gujarat,380001,Fashion,Levi's Jeans,1.0,2113.0,15,380.34,99,COD,Success,Returned,INR,2225.39
+TXN100168,CUST2128,राहुल शर्मा,miyengar@example.net,3241202218,2024-02-06,2024-02-09,Ahmedabad,Gujarat,380001,Electronics,Boat Rockerz 450,3.0,1428.0,5,771.12,0,UPI,Pending,Cancelled,INR,4889.92
+TXN100119,CUST2052,પ્રિયા પટેલ,iagrawal@example.org,6309493219,2024-09-28,2024-10-04,Ahmedabad,Gujarat,380001,Electronics,Samsung Galaxy M35,5.0,18955.0,20,17059.5,49,Debit Card,Refunded,Cancelled,INR,92978.5
+TXN100066,CUST2157,Priya Patel,madanharinakshi@example.net,0838195954,2024-08-15,2024-08-21,Mumbai,Maharashtra,400001,Beauty,Mamaearth Face Wash,2.0,999999.0,15,86.4,99,Wallet,Pending,Cancelled,INR,593.4
+TXN100305,CUST2181,Amit Das,kritikaray@example.com,9864250255,2024-03-29,2024-03-28,Hyderabad,Telangana,500001,Fashion,Levi's Jeans,4.0,2289.0,10,1648.08,49,UPI,Failed,Returned,INR,9888.48

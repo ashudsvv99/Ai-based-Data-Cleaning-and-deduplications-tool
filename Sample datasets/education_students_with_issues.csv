@@ -1,0 +1,551 @@
+Student_ID,Name,Phone,Email,Course,Grade
+STU00220,Tina Huffman,5997918084,tina.huffman@brandt-lawrence.info,Computer Science,6.0
+STU00018,BRADLEY BROWN,0627612674,bradley.brown@arellano-chandler.org,,59.0
+,Nicole Macias,5911126048,nicole.macias@flores.com,History,34.0
+STU00141,Robert King,9256508334,robert.king@klein.com,Biology,54.0
+STU00354,,3468991206,nicole.liu@newton.com,Art,66.0
+STU00116,Joshua David,7465377480,joshua.david@marshall-hoffman.com,Computer Science,19.0
+STU00313,,7170938565,shelly.garcia@boyd-velasquez.com,Computer Science,69.0
+STU00138,,8657405287,kelly.barnett@moon.info,Computer Science,96.0
+STU00065,Dana Douglas,1755749684,dana.douglas@burton-christensen.com,Computer Science,12.0
+STU00360,Frank Andrade,8084057384,frank.andrade@galvan-nunez.com,Art,94.0
+STU00236,JOHN LANE,8254289896,john.lane@martin.info,Computer Science,3.0
+ID-CQmR-5150,Amanda Cook,2455660381,amanda.cook@hernandez.com,Art,27.0
+ID-XQUt-8073,Sarah Phillips,3417107174,sarah.phillips@lawrence.com,,12.0
+ID-rMJT-0696,Zachary Mason,,zachary.mason@abbott-fisher.com,,16.0
+STU00039,Jacqueline Brown,9024353711,jacqueline.brown@soto.com,Economics,12.0
+STU00277,Micheal Green,9838515891,micheal.green@morris-smith.com,Art,6.0
+STU00055,Teresa Shaw,3463216397,teresa.shaw@welch.com,History,7.0
+STU00171,Elizabeth Hill,2264555692,elizabeth.hill@torres.com,,69.0
+STU00228,Christopher Walker,0131559546,christopher.walker@hernandez-ramirez.biz,Economics,55.0
+STU00413,vincent castillo,7975860912,vincent.castillo@rivera.biz,History,35.0
+STU00269,Paul Calhoun,6766158611,paul.calhoun@johnson.com,Literature,13.0
+STU00290,Sally Powers,0075043895,sally.powers@rivera.info,History,54.0
+,Jennifer Butler,4035381332,,,39.0
+STU00083,Steven Walker,3576765078,steven.walker@sawyer.biz,Chemistry,32.0
+STU00048,Emily Sanchez,5687104675,emily.sanchez@wolfe-jacobs.info,Chemistry,90.0
+STU00350,Dawn Malone,1645288037,dawn.malone@vincent.com,Literature,6.0
+STU00156,Sharon Collins,1281712144,sharon.collins@wells.com,Economics,69.0
+STU00317,Judy Calderon,2871472794,judy.calderon@wilson.biz,Literature,72.0
+STU00147,Scott Andrade,0549292939,scott.andrade@miller-barrett.com,Art,8.0
+STU00377,Tracy Peck,4966343014,tracy.peck@carter.info,Chemistry,28.0
+STU00114,KELLY HERNANDEZ,1278754980,kelly.hernandez@walker-yu.info,Mathematics,51.0
+STU00186,Caleb Patterson,0184043612,caleb.patterson@ponce-thomas.info,Physics,61.0
+STU00118,,8684696160,ricardo.shields@thornton.com,Computer Science,19.0
+STU00032,EMILY HOLMES,3600453352,emily.holmes@mccann.com,Art,85.0
+STU00117,,3550340192,robin.lee@mcguire.biz,Literature,64.0
+STU00291,Matthew Sanchez,4596108429,matthew.sanchez@travis-gray.com,Economics,109.0
+ID-ydVb-6152,jessica bond,0387321113,,Chemistry,22.0
+STU00400,Dale Walker,0805196136,dale.walker@brennan.org,Biology,41.0
+STU00427,Devin Duffy,3916519499,devin.duffy@olson.com,Economics,114.0
+STU00218,Joseph Kim,2960197942,joseph.kim@fox.org,Biology,66.0
+STU00485,Elizabeth Smith,8116812029,elizabeth.smith@gonzalez.info,Computer Science,66.0
+STU00000,Bianca Lee,8570839347,bianca.lee@logan.com,Biology,69.0
+STU00107,Jessica Benson,2918993349,jessica.benson@garcia.com,Physics,33.0
+STU00004,Thomas Jimenez,,thomas.jimenez@shah.com,Biology,81.0
+STU00139,Kristin King,,kristin.king@vasquez.com,Art,22.0
+STU00179,DAVID MILLER,6132647037,david.miller@bailey-perry.com,History,29.0
+STU00283,Jack Adams,3618432141,jack.adams@wilkerson.com,Mathematics,50.0
+STU00265,Brandon Roberts,0089933996,brandon.roberts@paul-cook.com,History,52.0
+STU00179,DAVID MILLER,6132647037,david.miller@bailey-perry.com,History,29.0
+STU00450,Jenna Barnett,0122822111,jenna.barnett@watson.com,Biology,84.0
+STU00100,Nicholas Jordan,8213002817,nicholas.jordan@wilson-evans.info,Computer Science,85.0
+STU00255,Cole Berry,7338662935,cole.berry@moore-knight.com,History,78.0
+,Joshua Walton,3728324747,joshua.walton@lopez.com,,18.0
+STU00405,Chris Leonard,8656371489,chris.leonard@thomas.com,,23.0
+STU00002,Erin Ortega,4663616607,erin.ortega@nichols.com,Biology,-38.0
+STU00489,John Bullock,5130050175,john.bullock@hayes.com,Computer Science,132.0
+STU00181,Steven Lester,0306567340,steven.lester@thompson.com,Economics,
+STU00039,Jacqueline Brown,9024353711,jacqueline.brown@soto.com,Economics,12.0
+STU00201,amy barker,7691912578,amy.barker@graham-hood.org,History,-3.0
+STU00081,Jose Lopez,6188085341,jose.lopez@walton.com,Economics,54.0
+STU00237,MATTHEW DAVIS,9888140534,matthew.davis@garcia-anderson.org,Economics,77.0
+STU00098,Curtis Benton,2672261643,curtis.benton@nelson.com,Literature,88.0
+STU00243,Peter Chang,9514135680,peter.chang@murray-parker.com,Physics,89.0
+STU00024,HAROLD SMITH,5024326335,harold.smith@barton.com,Literature,42.0
+STU00031,Xavier Adams,9125902965,xavier.adams@campbell.biz,Biology,6.0
+STU00205,Carol Vaughn,2009715377,carol.vaughn@evans.com,Economics,37.0
+STU00272,Destiny Strong,7415056918,destiny.strong@ray.info,,78.0
+STU00230,DAISY KELLY,7447594596,daisy.kelly@acosta.com,,87.0
+ID-eXhO-5626,holly wood,4385028498,holly.wood@cisneros.com,Mathematics,12.0
+STU00064,Paul Gomez,3231870868,paul.gomez@gregory.com,Art,31.0
+STU00478,adam weber,0209337206,adam.weber@davenport-curtis.com,History,92.0
+STU00261,,6713654474,john.fletcher@banks.info,Economics,23.0
+STU00062,Theresa Greer,5369115856,theresa.greer@miller.net,Economics,145.0
+STU00012,Jennifer Butler,4035381332,jennifer.butler@blair.com,Economics,39.0
+STU00333,Justin Martin,7684886453,,Biology,-20.0
+ID-QNIP-9975,Katherine Garza,1998277912,katherine.garza@lee-dixon.biz,Art,100.0
+ID-qJkS-5436,patrick diaz,1451962967,patrick.diaz@bradshaw-smith.biz,Biology,87.0
+STU00490,Jeremy Chang,1943067567,jeremy.chang@cherry.com,Art,2.0
+STU00415,William Wright,7130654376,william.wright@baird-wilson.org,Art,4.0
+STU00423,DEBORAH BRYANT,3439139783,,Literature,79.0
+STU00263,Ryan Richardson,9177056984,ryan.richardson@jones.com,Literature,29.0
+STU00130,Jennifer Schultz,0897670763,jennifer.schultz@miller-diaz.biz,Physics,99.0
+STU00019,Justin Sanders,2874368008,justin.sanders@marquez.info,Physics,35.0
+STU00240,Carrie Miller,5676767074,carrie.miller@williams.com,Literature,8.0
+ID-tLpD-3848,Karen Flowers,3196537311,karen.flowers@maldonado-conway.biz,Mathematics,-21.0
+STU00141,Robert King,9256508334,robert.king@klein.com,Biology,54.0
+STU00178,Kari Mason,6231861766,kari.mason@smith.com,Art,42.0
+STU00104,Gabrielle Mayer,5460276659,gabrielle.mayer@solis.com,Biology,30.0
+,Michael Kline,1444312331,,History,8.0
+STU00420,Glenn Owens,3525277619,glenn.owens@smith-cooper.com,Art,148.0
+STU00033,Kyle Nelson,5033080496,kyle.nelson@stevens.biz,Mathematics,98.0
+STU00246,Rita Jones,4053662104,rita.jones@french.com,Computer Science,84.0
+STU00089,Sherri Newman,0598960637,sherri.newman@lopez-bass.com,Economics,25.0
+STU00454,JUSTIN MAXWELL,8213141369,justin.maxwell@adams.info,Physics,35.0
+,Michael Ramsey,3840473460,michael.ramsey@jennings.com,Art,65.0
+STU00106,Margaret Moran,4019516963,margaret.moran@peterson.com,Computer Science,49.0
+STU00369,Elaine Thompson,8837630464,elaine.thompson@brown-bender.com,Biology,30.0
+ID-EHgi-6105,Katherine Becker,9044207737,katherine.becker@reyes.com,Computer Science,6.0
+STU00072,Leah Robinson,4786855473,leah.robinson@watson.info,Biology,70.0
+STU00241,Jessica Smith,5603631999,jessica.smith@chang-morgan.com,Chemistry,65.0
+STU00426,MARY MILLER,0090981951,mary.miller@stone.biz,Art,36.0
+STU00403,KENNETH CARTER,9684438733,kenneth.carter@kennedy-wood.net,Literature,133.0
+STU00491,Felicia Jones,8032613156,felicia.jones@brown.com,,69.0
+STU00060,shelia haley,4568899673,shelia.haley@hendricks-knox.com,History,50.0
+STU00304,Mary Wright,2428845536,mary.wright@stewart.com,Physics,51.0
+STU00128,Meredith Mcguire,,meredith.mcguire@davis.com,Computer Science,36.0
+STU00188,William Evans,9593196597,william.evans@jones.org,Biology,58.0
+STU00361,Kevin Vasquez,8802655166,kevin.vasquez@caldwell-hayden.com,Art,
+STU00479,joel foster,3878434436,joel.foster@perez.biz,Physics,21.0
+STU00065,Dana Douglas,1755749684,dana.douglas@burton-christensen.com,Computer Science,12.0
+STU00056,Natalie Evans,2454784893,natalie.evans@webb.com,Mathematics,47.0
+STU00257,Christopher Palmer,1932893418,christopher.palmer@ferrell.com,Mathematics,48.0
+STU00124,Stephanie Page,2429448232,stephanie.page@shaffer.com,Art,71.0
+STU00496,Alan Spencer,2432160796,,Chemistry,40.0
+STU00352,Jeanne Thomas,7951108379,jeanne.thomas@costa.org,Art,39.0
+STU00281,Hannah Baker,7582095079,hannah.baker@bailey-jackson.com,Chemistry,51.0
+STU00483,Katherine Murphy,1827478684,katherine.murphy@gonzalez.info,Physics,81.0
+STU00302,michael glover,4445389853,michael.glover@coleman-meza.com,Computer Science,56.0
+STU00281,Hannah Baker,7582095079,hannah.baker@bailey-jackson.com,Chemistry,51.0
+STU00204,Kathy Hernandez,,kathy.hernandez@gaines.info,Literature,44.0
+STU00396,Thomas Smith,9788765412,thomas.smith@gomez-carroll.com,Chemistry,29.0
+STU00202,Michelle Kelly,3820698417,michelle.kelly@larsen.org,Economics,49.0
+STU00481,Tammy Mckee,7673960443,tammy.mckee@morales-fitzpatrick.biz,Mathematics,82.0
+STU00267,lisa reyes,4729918991,lisa.reyes@sanders-randall.net,History,41.0
+STU00211,Gwendolyn Moore,2687378965,gwendolyn.moore@nelson.com,History,88.0
+STU00390,Jason Coleman,6184172803,jason.coleman@king-murphy.com,Literature,48.0
+STU00331,Stanley Shaw,9006646151,stanley.shaw@lewis-taylor.com,History,-13.0
+STU00195,Daniel Werner,2053356147,daniel.werner@ramirez.com,Physics,13.0
+STU00406,Kelly Wilson,1180391205,kelly.wilson@morris.com,Biology,28.0
+STU00161,Michael Rivera,5232089467,michael.rivera@reyes.com,Computer Science,87.0
+STU00189,,6059853628,jennifer.rivera@hunter-townsend.com,Physics,
+STU00095,John Phillips,7266410387,john.phillips@sexton.net,Art,48.0
+STU00469,Kent Burton,8078538107,kent.burton@stout.com,Computer Science,-14.0
+STU00227,Kevin Brown,7266771690,kevin.brown@williams.org,Art,4.0
+,Joshua Cobb,4072637576,joshua.cobb@page-strickland.com,Physics,16.0
+STU00417,Stephanie Price,7236227160,stephanie.price@chambers.com,Biology,-7.0
+STU00111,Gabriel Camacho,5785705066,gabriel.camacho@hernandez-campos.com,Physics,20.0
+STU00157,Jacob Vance,9084603746,jacob.vance@roberts.com,History,66.0
+STU00241,Jessica Smith,5603631999,jessica.smith@chang-morgan.com,Chemistry,65.0
+STU00467,Richard Holmes,2070701903,richard.holmes@crawford.com,Physics,87.0
+STU00431,Lynn House,1427098663,lynn.house@ramirez.com,Biology,80.0
+STU00127,Christine Rogers,7843829913,christine.rogers@burns.com,Mathematics,-42.0
+STU00038,Willie Ortiz,8724898712,willie.ortiz@santiago.com,Computer Science,13.0
+STU00472,Christy Ford,6857612609,christy.ford@ryan.com,Mathematics,39.0
+STU00064,Paul Gomez,3231870868,paul.gomez@gregory.com,Art,31.0
+STU00365,Donald Warner,0000643053,donald.warner@johnson.com,Computer Science,38.0
+STU00091,Brittany Flores,9069831293,brittany.flores@cruz-brown.biz,Mathematics,63.0
+STU00205,Carol Vaughn,2009715377,carol.vaughn@evans.com,Economics,37.0
+STU00194,Amy Bolton,8163227985,amy.bolton@mcgee-dodson.info,Physics,
+STU00156,Sharon Collins,1281712144,sharon.collins@wells.com,Economics,
+STU00057,Sean Smith,5756340430,sean.smith@odom.info,Computer Science,5.0
+STU00170,Michaela Moore,4852823348,michaela.moore@greene.net,Mathematics,95.0
+,Justin Sanders,2874368008,justin.sanders@marquez.info,Physics,35.0
+STU00286,Megan Church,9267375750,megan.church@blankenship-ferguson.com,History,
+STU00474,Christopher Blanchard,7122825879,christopher.blanchard@lyons-estrada.biz,Biology,32.0
+STU00069,BRENDAN BAILEY,5022816937,brendan.bailey@tate.com,Chemistry,88.0
+STU00287,MARK FRENCH,2522839972,,Art,58.0
+STU00455,Gregory Maldonado,5996835132,gregory.maldonado@thomas-garcia.com,Biology,1.0
+STU00414,Roger Allen,1292437137,roger.allen@murray.info,Biology,66.0
+STU00070,Jonathan Allen,3384946102,jonathan.allen@conway-hansen.biz,Mathematics,21.0
+STU00312,Joanne Wright,0284213922,,Computer Science,41.0
+STU00367,Joseph Wood,1039936774,joseph.wood@leach.net,Mathematics,29.0
+STU00425,Jasmine Bush,6630224445,jasmine.bush@rush.com,Chemistry,85.0
+STU00043,Angela Stephens,1745446365,angela.stephens@carlson.com,Economics,16.0
+STU00036,Christopher Gonzalez,9402590602,christopher.gonzalez@bates-sharp.com,History,77.0
+STU00384,Jonathan Lewis,0410088448,,History,20.0
+STU00297,Mark Yang,7092058477,mark.yang@schneider-reynolds.info,Chemistry,-17.0
+STU00323,Jason Davis,0352938964,jason.davis@anderson-stevenson.info,Computer Science,45.0
+STU00458,Laura Wood,9205239581,laura.wood@jackson.com,,
+STU00209,MARGARET AVILA,3646954739,margaret.avila@roy-gaines.info,Economics,75.0
+STU00143,James Reed,0920990554,james.reed@russell.info,Economics,50.0
+STU00467,Richard Holmes,2070701903,richard.holmes@crawford.com,Physics,87.0
+STU00225,Ann Pineda,8304976102,ann.pineda@roach.com,History,63.0
+STU00318,Kenneth Armstrong,1539521326,kenneth.armstrong@williams-mccarthy.info,Physics,99.0
+STU00216,shannon lawson,0479555418,shannon.lawson@mccann.com,Computer Science,75.0
+STU00053,Adrian Cobb,0347494715,adrian.cobb@taylor.com,Computer Science,16.0
+STU00165,Timothy Fitzgerald,7638237535,timothy.fitzgerald@hicks.biz,Mathematics,-10.0
+STU00074,Richard Williams,1421373139,richard.williams@ball-carey.com,Art,63.0
+STU00213,Christopher Villanueva,7342965416,christopher.villanueva@torres.com,History,19.0
+STU00051,Shaun Page,7085896264,shaun.page@jackson-hunt.biz,Biology,35.0
+STU00132,Trevor Porter,9311570103,trevor.porter@horton.biz,Chemistry,23.0
+STU00044,Stacy White,3169898725,stacy.white@young-warren.com,Physics,5.0
+STU00233,Jennifer Moore,0418034430,jennifer.moore@madden.org,Literature,56.0
+STU00459,Jennifer Cherry,7165783862,jennifer.cherry@juarez-marquez.org,Mathematics,86.0
+STU00412,Kelly Johnson,2371975409,kelly.johnson@jones-hamilton.com,Chemistry,94.0
+,John Bullock,5130050175,john.bullock@hayes.com,Computer Science,132.0
+STU00439,Rose Gross,9646538026,rose.gross@powers-roberts.com,,11.0
+STU00320,AMBER TYLER,,amber.tyler@sanchez.com,Art,32.0
+STU00350,Dawn Malone,1645288037,dawn.malone@vincent.com,Literature,6.0
+STU00148,christopher williams,4430487476,christopher.williams@curtis.com,Computer Science,19.0
+STU00154,Maria Holt,6527783347,maria.holt@martin.com,Literature,16.0
+STU00081,Jose Lopez,6188085341,jose.lopez@walton.com,Economics,54.0
+STU00321,George Johnson,1150934060,george.johnson@watson-anderson.com,History,73.0
+STU00133,Dawn Garrett,1260213802,dawn.garrett@ray.com,Mathematics,70.0
+STU00162,Sarah Ortiz,6725766335,sarah.ortiz@brooks.org,Economics,82.0
+STU00341,Christina Cross,9439031975,christina.cross@young.com,Computer Science,72.0
+STU00363,Joan Reyes,4343031048,joan.reyes@proctor.com,Literature,-12.0
+STU00176,Stephanie Fleming,8473313078,stephanie.fleming@tucker.org,Biology,96.0
+,MARY HUFF,7287688544,mary.huff@christian.info,Biology,18.0
+STU00015,valerie phillips,3268625034,valerie.phillips@hurst-harrison.com,Art,81.0
+STU00198,Jeffrey Rose,7463535607,jeffrey.rose@long-harmon.com,Mathematics,69.0
+STU00013,SHANE JOHNSON,3883198058,shane.johnson@ray.com,Mathematics,10.0
+STU00175,Matthew Johnson,4938473044,matthew.johnson@marks.info,History,44.0
+,Jennifer Pineda,1524508802,jennifer.pineda@smith.com,History,19.0
+STU00288,Jamie Holmes,,jamie.holmes@berry.com,Computer Science,57.0
+STU00212,Harry Woods,,harry.woods@collins.com,Chemistry,15.0
+STU00326,karen moore,8395675912,karen.moore@gordon.com,Chemistry,12.0
+STU00160,April Ramos,3748483849,april.ramos@munoz-miller.com,Economics,59.0
+STU00017,David Watkins,9579407412,david.watkins@smith.biz,Chemistry,-15.0
+STU00308,ARTHUR THOMAS,2328000635,arthur.thomas@miller.com,Biology,5.0
+STU00293,april aguilar,6636172089,april.aguilar@thomas-clark.com,Computer Science,
+STU00153,Gene Kirk,9054998742,gene.kirk@smith.info,Literature,89.0
+STU00271,Maria Braun,1360287346,,Mathematics,51.0
+STU00416,,7083262386,diana.lucas@williams.biz,Literature,66.0
+STU00464,CHRISTOPHER BROWN,4896971681,christopher.brown@ho-wheeler.com,Economics,94.0
+STU00086,Mark Perez,0438518259,mark.perez@baker-munoz.com,Computer Science,
+STU00073,benjamin parrish,2586151162,benjamin.parrish@hoffman.org,Mathematics,71.0
+STU00471,Mary Lopez,2990956219,mary.lopez@sutton-henderson.com,Art,32.0
+STU00168,Miranda Nielsen,,miranda.nielsen@lee.com,,18.0
+STU00007,JOHN RAMIREZ,2006979053,john.ramirez@ruiz-gonzalez.org,Biology,54.0
+STU00361,Kevin Vasquez,8802655166,kevin.vasquez@caldwell-hayden.com,Art,56.0
+STU00187,,6174756459,samuel.walker@klein.info,Computer Science,66.0
+STU00109,Denise Johnson,3558211652,denise.johnson@collier-king.com,Physics,66.0
+,Tommy Hawkins,0724838015,tommy.hawkins@salas.com,Chemistry,77.0
+STU00387,Lisa Moreno,3215862079,lisa.moreno@pena-mccall.net,Mathematics,16.0
+STU00372,Christina Anderson,1419861042,,,44.0
+STU00211,Gwendolyn Moore,2687378965,gwendolyn.moore@nelson.com,History,88.0
+STU00093,,6783229211,nancy.webster@gross.biz,Mathematics,89.0
+STU00296,Debra Gardner,,debra.gardner@becker.com,Economics,
+STU00452,Shelby Anderson,0490377152,shelby.anderson@giles.net,History,98.0
+STU00376,Sharon Bradley,1454839582,sharon.bradley@marshall.com,Art,86.0
+STU00344,Megan Thompson,7930529579,megan.thompson@brooks-munoz.net,Mathematics,95.0
+STU00466,David Gonzalez,1137786330,david.gonzalez@lang.info,Economics,42.0
+STU00121,Russell Flores,1011171697,russell.flores@harris.com,Biology,7.0
+STU00268,Marissa Watts,8057724429,marissa.watts@bishop.org,Biology,37.0
+STU00288,Jamie Holmes,4705530806,jamie.holmes@berry.com,Computer Science,57.0
+STU00215,brian moore,3637015622,brian.moore@martinez-fernandez.biz,Mathematics,23.0
+STU00009,Emily Morrow,8832788544,emily.morrow@scott.com,Literature,1.0
+ID-ZRww-4435,Anna Gomez,4811793013,anna.gomez@ramirez.com,Art,50.0
+STU00266,george sanders,2856954787,george.sanders@beck.com,Literature,-6.0
+STU00474,Christopher Blanchard,7122825879,christopher.blanchard@lyons-estrada.biz,Biology,32.0
+STU00421,Colton Gross,2383307376,colton.gross@baker-mendoza.com,Economics,13.0
+STU00224,Paul Boone,5993544378,paul.boone@lucero.com,Economics,92.0
+STU00330,,5539352704,jason.brandt@davenport.com,Physics,43.0
+STU00256,Darlene Robertson,9704471923,,Mathematics,49.0
+STU00016,Ricky George,7773403503,ricky.george@fox-johnson.biz,Economics,57.0
+STU00315,Shari Klein,5458073277,shari.klein@colon-shaw.com,,64.0
+STU00104,Gabrielle Mayer,5460276659,gabrielle.mayer@solis.com,Biology,30.0
+STU00041,lauren singleton,1112964002,lauren.singleton@hawkins.com,Biology,57.0
+STU00368,STEPHANIE LEE,9312184500,stephanie.lee@ramirez.com,,34.0
+,Angela Ferrell,0939017113,angela.ferrell@schwartz-palmer.info,History,53.0
+STU00231,michael fox,1524949384,michael.fox@smith.com,Chemistry,14.0
+STU00381,Jamie Burns,7619360736,jamie.burns@moon.com,Literature,81.0
+STU00278,Andrew Hunt,6686269947,andrew.hunt@davis-pittman.com,Economics,96.0
+,,0442212537,lisa.mcconnell@jordan.com,Art,60.0
+STU00351,Daniel Burke,9669055231,daniel.burke@brock.com,Art,17.0
+STU00382,Mackenzie Friedman,8434667800,mackenzie.friedman@spencer.info,Computer Science,
+STU00314,,1660128544,jasmine.robinson@rose-jenkins.net,Computer Science,85.0
+STU00234,Cameron Sweeney,0261791400,cameron.sweeney@barry.biz,Physics,55.0
+STU00169,Jeffrey Pena,,jeffrey.pena@jackson.com,Art,51.0
+STU00227,Kevin Brown,7266771690,kevin.brown@williams.org,Art,4.0
+ID-YJgj-5462,Tara Hays,3879569769,tara.hays@contreras-adams.info,History,
+STU00045,Stacie Haynes,3681427042,stacie.haynes@norton.com,Physics,35.0
+STU00325,Leah Weaver,,leah.weaver@cisneros.org,Economics,18.0
+STU00112,Brittney Merritt,6654650065,brittney.merritt@smith-mitchell.com,Chemistry,11.0
+STU00090,Victoria Jennings,5416526729,victoria.jennings@garcia.com,Economics,61.0
+STU00126,Scott Harrington,6005615089,scott.harrington@adams-conley.com,,23.0
+STU00078,Amber Oneill,1506942347,amber.oneill@kane.info,Chemistry,92.0
+,NICHOLAS YOUNG,4691019603,nicholas.young@peterson.com,Physics,46.0
+STU00447,JOSHUA FRENCH,9601642241,joshua.french@bryant.com,History,25.0
+STU00319,Gina Waters,9333100224,gina.waters@brown-campbell.com,Computer Science,93.0
+STU00355,Carlos Gallagher,3512588745,carlos.gallagher@roach-sparks.com,Economics,5.0
+STU00134,Pamela Taylor,9538654470,pamela.taylor@johnson-bright.com,Mathematics,23.0
+STU00274,Nicole Schaefer,7654705248,nicole.schaefer@ray.com,Physics,10.0
+STU00487,George Hutchinson,2749172400,george.hutchinson@west-williams.com,Mathematics,87.0
+STU00029,Tyler Chang,3475167505,tyler.chang@williams-jones.com,Economics,
+STU00375,John Kelly,0244279613,john.kelly@casey-jones.com,Physics,15.0
+STU00102,patrick kelly,6103238726,patrick.kelly@miller-patton.com,Literature,100.0
+STU00295,Anna Cox,3977660445,anna.cox@taylor.org,Art,82.0
+STU00238,RYAN PIERCE,8570628059,,History,84.0
+STU00289,JULIE SEXTON,4187933504,julie.sexton@miller.org,Chemistry,89.0
+STU00429,Tamara David,1994034683,tamara.david@duffy-johnson.org,Art,3.0
+STU00484,Shane Black,3375108902,shane.black@cook.org,Economics,5.0
+,Samuel Roberson,9362060225,samuel.roberson@burton.com,Literature,28.0
+STU00158,Danielle Hoover,8802696842,danielle.hoover@le.com,Biology,47.0
+STU00210,Jeffrey Meyer,5360235172,jeffrey.meyer@sharp-parker.net,Economics,
+STU00020,Justin Garrett,9425732716,justin.garrett@howell.com,Physics,67.0
+STU00336,Holly Mcintosh,4165073012,,Biology,44.0
+STU00206,Sara Miranda,0902159952,sara.miranda@smith-austin.com,Art,99.0
+STU00446,Jessica Brown,8669502585,jessica.brown@taylor-steele.biz,Literature,94.0
+STU00123,Tamara Russell,7655866261,tamara.russell@leach-morrison.info,Physics,6.0
+STU00324,,1652860521,adrienne.gonzalez@holt.com,Art,54.0
+STU00328,thomas wright,0944328359,thomas.wright@cox-fuller.com,Mathematics,88.0
+ID-WaVY-0428,Jennifer Cole,4450787259,jennifer.cole@fisher.com,Computer Science,88.0
+STU00119,Ashley Ellis,0303376678,ashley.ellis@berry-parks.com,Chemistry,86.0
+STU00433,Alyssa Barrett,4307276915,alyssa.barrett@waller.net,Mathematics,6.0
+STU00368,STEPHANIE LEE,9312184500,stephanie.lee@ramirez.com,Art,34.0
+STU00251,Stacey Griffith,1291634105,stacey.griffith@martinez.com,Art,29.0
+STU00252,kristy gonzalez,5344251506,,History,
+STU00392,Erin Martinez,9848169984,erin.martinez@thompson-young.biz,Literature,76.0
+STU00135,Gloria Werner,5835533600,gloria.werner@martinez.com,History,14.0
+STU00424,Tyler Medina,2705116848,tyler.medina@williams.info,History,86.0
+ID-lbTZ-3939,Claudia Patterson,2824139687,claudia.patterson@carroll.org,Biology,9.0
+ID-zGen-0242,Laura Edwards,6733206887,laura.edwards@riley.biz,Physics,11.0
+STU00334,Joseph Weaver,0654990515,joseph.weaver@johnson-bailey.com,Biology,48.0
+STU00364,Kimberly Garcia,6348554464,kimberly.garcia@harper.info,Mathematics,30.0
+STU00245,SAMANTHA FISCHER,1146306820,samantha.fischer@davis.biz,Physics,42.0
+STU00182,Eric Hardy,3145264915,eric.hardy@jones.com,Art,92.0
+ID-BDEQ-5140,Greg Bradford,8157300618,greg.bradford@walker-giles.org,History,81.0
+STU00382,,8434667800,mackenzie.friedman@spencer.info,Computer Science,18.0
+STU00345,Maria Dixon,2529454117,maria.dixon@scott.biz,Computer Science,51.0
+STU00311,Anthony Williams,1875943448,anthony.williams@green.net,Art,50.0
+STU00468,Dylan Rice,2215510301,dylan.rice@mercado.com,Chemistry,93.0
+STU00085,LESLIE WILSON,4631352917,leslie.wilson@morris-andrade.net,Computer Science,99.0
+STU00432,rebecca snow,1345508362,rebecca.snow@day.net,Chemistry,96.0
+STU00159,Christopher Robinson,7023971096,christopher.robinson@reed.info,Art,32.0
+STU00177,,7744257978,jacob.franklin@beltran-christensen.org,Physics,57.0
+STU00108,john jones,7123668273,john.jones@ramos.com,Computer Science,25.0
+STU00242,Julie Hill,0471440981,julie.hill@curtis-case.net,History,43.0
+STU00172,Kevin Johnson,9403741524,kevin.johnson@pope.com,History,53.0
+STU00115,Peter Patterson,3292850594,peter.patterson@yang-taylor.com,Mathematics,69.0
+STU00298,Amy Rowland,2644306528,amy.rowland@farley-hill.com,Art,124.0
+STU00035,Erik Miller,2894367124,,Chemistry,62.0
+STU00037,Nicole Harris,3716262689,nicole.harris@lara-huffman.com,Art,-20.0
+STU00034,Madison Reyes,5619144871,madison.reyes@gonzalez-smith.info,Mathematics,1.0
+STU00001,James Davis,8537536631,,Biology,77.0
+STU00373,Matthew Wade,3951890856,matthew.wade@hardin.com,History,28.0
+STU00422,Anthony Kim,2839463533,anthony.kim@myers-osborn.com,History,2.0
+STU00031,Xavier Adams,9125902965,xavier.adams@campbell.biz,Biology,6.0
+STU00101,Joel Martinez,3767526583,joel.martinez@cortez.info,Mathematics,3.0
+STU00150,Erica Long,4290446417,erica.long@clark.com,Literature,88.0
+STU00475,vanessa meyer,6353612034,vanessa.meyer@ward.net,Economics,50.0
+STU00306,Austin Perry,8829701221,austin.perry@davila-williams.net,Art,61.0
+STU00448,EMILY YOUNG,2931696312,emily.young@anderson-matthews.com,Mathematics,32.0
+ID-qocj-9993,Michael Kennedy,3539937659,michael.kennedy@pitts.org,Biology,33.0
+STU00011,Elizabeth Carrillo,2700491197,elizabeth.carrillo@meyer-jones.info,Literature,83.0
+STU00302,michael glover,4445389853,michael.glover@coleman-meza.com,Computer Science,56.0
+STU00223,Christine Johnson,5328451580,christine.johnson@robertson-foster.biz,Mathematics,12.0
+STU00025,Michael Mercado,6539444862,,Literature,-36.0
+STU00449,KATHERINE HOWARD,4571236065,katherine.howard@jennings-meza.com,Computer Science,58.0
+STU00456,Michael Lee,0453788141,,Computer Science,87.0
+STU00399,Scott Hernandez,0180479861,scott.hernandez@harris-west.com,Economics,13.0
+STU00346,Michael Beasley,2790978738,michael.beasley@smith.com,Mathematics,-10.0
+STU00063,Jacqueline Hunt,2608344519,jacqueline.hunt@jennings.biz,Art,80.0
+STU00192,Andrew Oneill,2672608235,andrew.oneill@thomas.com,Mathematics,-4.0
+STU00221,,6845348895,mary.tanner@kane-watson.com,Literature,90.0
+STU00208,Eric Gentry,6501991898,eric.gentry@williams.net,Literature,24.0
+STU00453,Emily Washington,3690722439,,Biology,73.0
+STU00311,Anthony Williams,1875943448,anthony.williams@green.net,Art,50.0
+STU00398,ISAAC DAVIS,5741631631,isaac.davis@wiggins.info,Physics,139.0
+STU00451,Daniel Johnson,2645124589,daniel.johnson@moses.com,Computer Science,17.0
+STU00022,,4899389132,allison.hart@hansen.com,Computer Science,78.0
+ID-lCEu-8330,kimberly murphy,2579935922,kimberly.murphy@wallace.com,Economics,29.0
+STU00348,Aaron Barker,1965759135,aaron.barker@thompson.biz,Mathematics,119.0
+STU00006,Andrea Lutz,7034514247,andrea.lutz@coleman.com,Literature,85.0
+STU00349,James Ross,8306498629,james.ross@butler.com,History,27.0
+,Jennifer Sanders,5124735643,jennifer.sanders@jones.com,Chemistry,-10.0
+STU00088,JOHN MILLER,2613963045,john.miller@herring.org,History,100.0
+STU00322,Jennifer Gallegos,8369969684,jennifer.gallegos@hensley.com,Literature,38.0
+STU00050,kristopher stone,1807035593,kristopher.stone@scott-dickerson.com,Biology,52.0
+STU00080,Robert Vaughan,6084723473,robert.vaughan@adams-johnson.org,Computer Science,40.0
+STU00258,Dustin Price,,dustin.price@peterson.info,,12.0
+STU00454,JUSTIN MAXWELL,8213141369,justin.maxwell@adams.info,Physics,35.0
+,Alexis Johnson,,alexis.johnson@reynolds-wong.com,Computer Science,84.0
+STU00145,ASHLEY SHAFFER,5786843082,ashley.shaffer@smith.info,Economics,92.0
+STU00054,Tristan Calderon,1676298039,tristan.calderon@wilson.net,Literature,99.0
+STU00232,Clinton Gutierrez,6602005135,clinton.gutierrez@harris.info,Art,92.0
+,Samuel Dalton,6230544893,samuel.dalton@olsen-lee.net,Mathematics,86.0
+STU00234,Cameron Sweeney,0261791400,cameron.sweeney@barry.biz,Physics,55.0
+STU00026,Allison Colon,2437793211,allison.colon@lester-lang.biz,Biology,18.0
+STU00151,Sara Klein,9965181349,sara.klein@martinez.com,Physics,31.0
+STU00185,Nancy Mercer,2702766042,nancy.mercer@norris.info,Chemistry,28.0
+STU00318,Kenneth Armstrong,1539521326,kenneth.armstrong@williams-mccarthy.info,,99.0
+STU00122,,0301686860,jeremy.bailey@nelson.net,Mathematics,16.0
+STU00096,Nancy Jarvis,5254138517,nancy.jarvis@walker.org,,25.0
+STU00355,Carlos Gallagher,3512588745,carlos.gallagher@roach-sparks.com,Economics,5.0
+STU00190,samantha miller,4655100879,samantha.miller@nelson-cline.com,Literature,5.0
+STU00495,,3929612998,tiffany.boyd@zimmerman.com,Literature,20.0
+STU00084,KIM WILSON,7517953464,kim.wilson@martin.biz,Chemistry,13.0
+,Mark Mitchell,,mark.mitchell@conrad.org,Economics,8.0
+STU00466,David Gonzalez,1137786330,david.gonzalez@lang.info,Economics,42.0
+STU00442,ricardo roberts,4557326500,ricardo.roberts@barton-wood.com,Art,41.0
+STU00087,Michelle Alvarado,0611399290,michelle.alvarado@boyd-hart.com,Chemistry,26.0
+STU00270,Heather Jenkins,5053597579,heather.jenkins@sims.com,History,33.0
+STU00307,Elizabeth Edwards,7061924195,elizabeth.edwards@velasquez-reilly.net,Chemistry,55.0
+,Andrea Morales,0804599378,andrea.morales@brown-goodman.com,Mathematics,46.0
+ID-Ueof-1266,Cody Thompson,5029517649,cody.thompson@underwood.com,History,29.0
+ID-HHwp-3034,ERIC MARTINEZ,9303526962,eric.martinez@edwards.com,Computer Science,23.0
+STU00068,David Myers,6489427071,david.myers@shah.com,Economics,65.0
+STU00079,nicholas harrison,2411605108,nicholas.harrison@little.net,Biology,41.0
+,Laurie Williams,0962815963,laurie.williams@ortiz-green.org,Chemistry,83.0
+STU00299,Timothy Carlson,8341462463,timothy.carlson@clark.com,Art,24.0
+STU00067,KIMBERLY STEWART,8905863550,kimberly.stewart@steele-marshall.com,Chemistry,
+STU00414,Roger Allen,1292437137,roger.allen@murray.info,,66.0
+STU00125,JOHN ALLEN,4025608314,john.allen@lowe.com,,98.0
+STU00480,Jennifer Hall,8719951028,jennifer.hall@hunter-pennington.com,Physics,64.0
+STU00166,Christine Peck,7318580522,christine.peck@sparks.biz,,32.0
+STU00292,HAROLD MULLINS,6950490785,harold.mullins@wiley.org,Biology,52.0
+STU00097,,7346533737,samantha.kelly@wright.com,History,100.0
+STU00301,Allison Grant,6357853253,allison.grant@brown.com,History,13.0
+STU00219,emily fletcher,5077551798,emily.fletcher@price.org,Physics,6.0
+ID-XQUt-8073,Sarah Phillips,3417107174,sarah.phillips@lawrence.com,,12.0
+,Nathan Randolph,8039516318,nathan.randolph@zimmerman.com,Computer Science,44.0
+STU00309,david blevins,1650119421,,Art,56.0
+STU00408,Lonnie Parsons,5108556304,lonnie.parsons@reese-schwartz.com,Physics,2.0
+STU00445,David Robbins,1866224419,david.robbins@lewis-roberts.com,,66.0
+STU00370,Michelle Escobar,6320954565,michelle.escobar@jackson-shaw.net,Computer Science,57.0
+STU00465,Barbara Ibarra,5751232635,barbara.ibarra@may-hale.com,Physics,122.0
+,Nicholas Jordan,8213002817,nicholas.jordan@wilson-evans.info,Computer Science,85.0
+STU00180,Julie Lin,5059861816,julie.lin@logan.com,Art,76.0
+STU00404,David Gonzales,8604014602,david.gonzales@smith.org,Economics,93.0
+STU00280,Terry Gregory,9441797387,terry.gregory@wallace.com,Computer Science,87.0
+STU00397,JOHN FLORES,6090045391,john.flores@ramirez.net,Physics,82.0
+STU00253,Bianca Archer,1413611329,bianca.archer@sanchez.net,Economics,92.0
+STU00052,Tyler Webb,9861101137,tyler.webb@nguyen.com,Mathematics,28.0
+STU00486,joshua sims,0383849065,joshua.sims@mitchell.com,Literature,
+STU00298,Amy Rowland,,amy.rowland@farley-hill.com,Art,124.0
+STU00470,Mario Espinoza,2585596835,mario.espinoza@pennington.info,Literature,33.0
+STU00142,BENJAMIN WATSON,7012449148,benjamin.watson@keller-miller.com,Chemistry,59.0
+STU00434,Paul Douglas,0981066228,paul.douglas@keith-lee.net,Biology,54.0
+STU00184,Juan Keith,2297996779,juan.keith@davis.com,Literature,41.0
+,Lisa Wade,,lisa.wade@matthews.com,Art,102.0
+STU00358,Sharon Leonard,6020470175,sharon.leonard@johnson.com,Literature,77.0
+STU00077,kathy davis,1655822886,kathy.davis@wheeler.com,Literature,4.0
+STU00082,christina brown,2069764063,christina.brown@garcia.com,Mathematics,48.0
+STU00018,BRADLEY BROWN,0627612674,bradley.brown@arellano-chandler.org,Literature,59.0
+STU00217,John Roach,5962465252,john.roach@cabrera-arnold.com,Mathematics,32.0
+ID-XYZU-8871,JENNIFER LEONARD,,jennifer.leonard@cole.info,Art,-28.0
+STU00089,,0598960637,sherri.newman@lopez-bass.com,Economics,25.0
+,Nancy Smith,2928960959,nancy.smith@mcdaniel.net,Mathematics,57.0
+STU00492,Tracey Weber,7919933005,tracey.weber@duarte.info,Literature,44.0
+,Natalie Galvan,5987717259,,History,45.0
+STU00356,Christopher Middleton,3643673110,christopher.middleton@stevens.info,Computer Science,54.0
+STU00094,Joanna Dunn,2880427593,joanna.dunn@smith-townsend.com,Literature,44.0
+STU00383,Laura Solis,2073517580,laura.solis@tran.org,Computer Science,63.0
+STU00254,Joseph Willis,9337873460,joseph.willis@williams-cabrera.biz,History,12.0
+STU00235,,5896985112,travis.trujillo@lopez-simpson.com,Literature,94.0
+STU00023,Catherine Olson,4222276702,catherine.olson@shaffer-jones.com,Biology,34.0
+ID-kqTk-5910,Whitney Brown,7456218388,whitney.brown@singh-hines.com,Physics,35.0
+STU00488,HOLLY LEE,1001346416,holly.lee@wilson.com,Art,9.0
+STU00149,John Ramirez,5921909725,john.ramirez@turner-shaffer.com,Computer Science,81.0
+STU00285,Christopher Hall,6064653753,christopher.hall@knight.com,Art,30.0
+STU00461,alison foster,7155139038,alison.foster@munoz.com,Computer Science,33.0
+STU00131,William Obrien,8814616289,william.obrien@spears.com,Art,73.0
+STU00046,Sherri Jones,1429802713,sherri.jones@cox.info,History,87.0
+STU00441,Jacob White,6636874264,jacob.white@meyer.com,Mathematics,47.0
+STU00338,Christina Merritt,1855435931,christina.merritt@haley.com,Literature,31.0
+STU00226,Richard Malone,9850945041,richard.malone@thomas.com,Biology,73.0
+STU00207,Andrew Stanley,2751599389,andrew.stanley@morgan.com,Biology,0.0
+ID-WRcU-5872,LAURA CARROLL,5078144519,laura.carroll@white-oconnell.com,Economics,51.0
+STU00407,Luke Moreno,5390966489,,Physics,15.0
+STU00244,Joshua Smith,1337801584,joshua.smith@james-becker.com,History,18.0
+ID-DTlh-2857,Jennifer Perez,1397213377,jennifer.perez@wheeler.com,Chemistry,70.0
+STU00071,Brandon Mcdonald,2658848978,,Economics,92.0
+STU00366,Kevin Best,2968214224,kevin.best@jones.com,Economics,38.0
+,,7269146097,kelly.murray@lee-mathews.com,,63.0
+STU00493,William Porter,8435092099,william.porter@riley-stevens.com,Chemistry,2.0
+STU00262,Toni Hopkins,4873625806,toni.hopkins@mcguire.net,Physics,60.0
+ID-IBZn-7368,Danny Spencer,5189705259,danny.spencer@maldonado.com,Literature,52.0
+STU00120,karen johnson,5585928743,karen.johnson@grant-ritter.com,Physics,23.0
+STU00462,Cheryl Combs,5720774331,cheryl.combs@morgan.com,Computer Science,97.0
+STU00494,Amy Hoffman,4705910902,amy.hoffman@dalton.net,Computer Science,57.0
+STU00197,BRITTANY PARK,0119625902,brittany.park@smith.biz,Economics,90.0
+STU00250,David Richards,2784417326,david.richards@walker.org,Mathematics,68.0
+STU00014,Daniel Mcneil,7999914620,daniel.mcneil@roberts.com,Art,15.0
+ID-juDy-9742,Chad Chapman,9478195718,chad.chapman@beard.com,Computer Science,33.0
+,Kevin Good,6735715273,,Biology,63.0
+STU00339,Brandon Anderson,8008435401,brandon.anderson@thompson.com,,99.0
+STU00003,Nathan Ward,4920624126,nathan.ward@ritter.org,Art,98.0
+STU00028,Michelle Carson,,michelle.carson@pacheco.com,Literature,65.0
+STU00497,Veronica Williams,1616841128,veronica.williams@douglas-bell.biz,Biology,
+STU00113,Kelly Rodgers,6395057234,kelly.rodgers@collins-conner.info,History,5.0
+STU00394,Charles Smith,3967859355,charles.smith@richardson.info,Physics,27.0
+STU00395,Kimberly Chung,3776716918,kimberly.chung@torres-thompson.org,Literature,38.0
+STU00092,Jared Henry,6247741669,jared.henry@gonzales.com,History,56.0
+STU00320,AMBER TYLER,7651214265,,Art,32.0
+,Caitlin Yang,3891485739,caitlin.yang@thompson.com,Art,50.0
+STU00236,JOHN LANE,8254289896,john.lane@martin.info,Computer Science,3.0
+STU00386,Ronald Smith,4155278736,ronald.smith@moore.com,Literature,31.0
+STU00173,Gerald Jones,6806567380,gerald.jones@rice.com,Art,77.0
+STU00137,Andrew Williams,9365909142,andrew.williams@byrd-hanna.com,Literature,2.0
+STU00214,KEVIN MONTGOMERY,5861741563,kevin.montgomery@barron-lee.info,Physics,123.0
+STU00229,RICHARD WALLACE,7644370218,richard.wallace@vasquez.biz,Computer Science,21.0
+STU00438,Joanne Smith,8749186997,joanne.smith@ramos.com,Chemistry,-17.0
+STU00047,Carlos Henry,7623489689,carlos.henry@peterson.info,Biology,21.0
+STU00174,Matthew Kim,1587870989,matthew.kim@walker.com,Literature,99.0
+ID-ZRww-4435,Anna Gomez,4811793013,anna.gomez@ramirez.com,Art,50.0
+STU00282,Matthew Randolph,4238183046,matthew.randolph@bowers.com,Art,24.0
+STU00378,Ronald Thompson,7655782866,ronald.thompson@mcdowell.com,Physics,92.0
+STU00342,MARY PEREZ,1399005584,mary.perez@ferguson.com,Mathematics,40.0
+STU00457,mark watts,,mark.watts@ramirez.biz,Literature,78.0
+,Julie Miller,0684416589,julie.miller@kane.com,Chemistry,9.0
+STU00276,Shirley Gomez,8477583759,shirley.gomez@phillips-deleon.com,Literature,14.0
+ID-ArKA-4022,Melissa Ramos,7592121686,melissa.ramos@fields.info,Physics,39.0
+STU00444,Tiffany Jimenez,4422865502,tiffany.jimenez@montgomery.com,Biology,84.0
+,Karen Sanchez,9577048307,karen.sanchez@weeks.info,Computer Science,23.0
+STU00030,Ashley Ponce,0176434328,ashley.ponce@stein.net,Biology,55.0
+STU00419,Cheryl Gaines,7700519601,cheryl.gaines@stewart.com,Literature,84.0
+STU00498,Jonathan Williams,6507796627,jonathan.williams@lewis.com,Economics,79.0
+STU00204,Kathy Hernandez,8505159793,kathy.hernandez@gaines.info,Literature,44.0
+STU00191,Angela Solis,7131118913,angela.solis@walters-graves.com,History,76.0
+STU00380,Lauren King,4422801611,lauren.king@collins-west.biz,Art,71.0
+STU00164,Rachel Obrien,8218990493,rachel.obrien@hobbs.com,Physics,28.0
+STU00152,ROBIN MCLAUGHLIN,5546181924,robin.mclaughlin@rivas-daniel.biz,Art,12.0
+STU00403,KENNETH CARTER,9684438733,kenneth.carter@kennedy-wood.net,Literature,133.0
+STU00353,Nicole Shaffer,6158360622,nicole.shaffer@thompson.com,Chemistry,71.0
+STU00463,Jeffrey French,4962653482,jeffrey.french@williams-clayton.com,Chemistry,77.0
+STU00499,Robin Martin,0613090287,robin.martin@young.com,Mathematics,58.0
+STU00203,Heather Cameron,3821342906,heather.cameron@anthony-myers.org,Biology,81.0
+STU00248,CHRISTOPHER BLAKE,1606425747,christopher.blake@li-owens.com,Physics,97.0
+STU00273,Dawn Dixon,7276576599,dawn.dixon@curtis.net,Mathematics,62.0
+STU00140,Crystal Simmons,5922414200,crystal.simmons@fuller-vega.com,History,145.0
+STU00362,Danielle Moss,0499824458,danielle.moss@johnson.info,Economics,1.0
+STU00095,John Phillips,7266410387,john.phillips@sexton.net,Art,48.0
+STU00300,Ariel Reynolds,8620854671,ariel.reynolds@johnson.info,Biology,56.0
+STU00327,Alison Cruz,9429028799,alison.cruz@nelson.info,Economics,26.0
+ID-tLpD-3848,Karen Flowers,3196537311,karen.flowers@maldonado-conway.biz,Mathematics,-21.0
+,Stacey Fuentes,8634979356,stacey.fuentes@ruiz.com,Art,-20.0
+STU00289,JULIE SEXTON,4187933504,julie.sexton@miller.org,Chemistry,89.0
+STU00329,Emily Smith,5353507843,emily.smith@dominguez.com,Physics,48.0
+STU00294,NICOLE BURGESS,1292476617,nicole.burgess@nelson.com,History,9.0
+STU00440,Michele Nelson,3491914325,michele.nelson@horn.com,Mathematics,74.0
+STU00436,Randy Marks,5770848090,randy.marks@smith-stokes.biz,Economics,-25.0
+ID-IBZn-7368,Danny Spencer,5189705259,danny.spencer@maldonado.com,Literature,52.0
+STU00284,Tricia Ray,6283064928,tricia.ray@hunt.com,Biology,-24.0
+STU00099,Christian Boyer,2797406165,christian.boyer@stone.com,Literature,76.0
+STU00264,Mark Hull,0797773068,mark.hull@garcia-conner.biz,Physics,0.0
+STU00239,David Hunter,3452575518,david.hunter@watkins.com,Literature,1.0
+STU00457,mark watts,7199437986,mark.watts@ramirez.biz,Literature,78.0
+STU00004,Thomas Jimenez,8428011095,thomas.jimenez@shah.com,Biology,81.0
+STU00105,Michael Mason,0491592135,,Computer Science,10.0
+STU00343,Austin Brown,8441341970,,Literature,84.0
+ID-aCWG-3865,Jennifer Sanders,0972389037,jennifer.sanders@marshall.com,Physics,72.0
+STU00275,Kara Valentine,9657870392,kara.valentine@cooper.com,Biology,120.0
+STU00249,Timothy Roth,,timothy.roth@price.com,Economics,53.0
+STU00418,diane kaufman,1864422688,diane.kaufman@massey.com,Economics,20.0
+STU00059,Whitney Shaw,5511259238,whitney.shaw@lopez.com,Art,34.0
+STU00371,Jerry Fox,2405850694,jerry.fox@morton-carpenter.com,Physics,143.0
+STU00136,Robert Jackson,5907400181,robert.jackson@mcclain.com,History,53.0
+STU00032,EMILY HOLMES,3600453352,emily.holmes@mccann.com,,85.0
+STU00049,Jennifer Harrington,2914298888,jennifer.harrington@burgess-alvarez.com,Mathematics,30.0
+,Troy Grant,,,Chemistry,93.0
+STU00477,charles powell,0867534447,charles.powell@porter.org,Economics,129.0
+STU00005,Emma Bishop,9722387212,emma.bishop@morgan-jones.net,Art,
+STU00110,Alex Lewis,8319370669,alex.lewis@wright.com,Biology,95.0
+STU00316,Erin Santos,7631882143,erin.santos@cunningham-mendoza.org,Physics,
+STU00393,Jenna Montgomery,0604172533,jenna.montgomery@santiago.com,History,24.0
+,Matthew Ward,8875168174,matthew.ward@mclean.com,Art,-28.0
+STU00337,Adam Todd,3786508152,adam.todd@moore.com,Physics,10.0
+STU00243,Peter Chang,9514135680,peter.chang@murray-parker.com,,89.0

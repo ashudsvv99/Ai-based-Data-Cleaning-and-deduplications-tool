@@ -1,0 +1,16 @@
+/.venv
+/reports
+__pycache__
+*.db
+temp.csv
+temp2.txt
+Live_Database_HEAD.py
+Live_Database_log.txt
+test_live_db_modules.py
+test_messy_data.sql
+All Scripts Working Guide.zip
+COMPLETE_DOCUMENTATION_NON_TECH.md
+*temp*.py
+.cache/
+exports/
+*test*.py
